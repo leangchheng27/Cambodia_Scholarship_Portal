@@ -1,0 +1,163 @@
+.header {
+  position: relative;
+  color: #fff;
+  width: 100vw;
+  margin: 0;
+  margin-left: calc(-50vw + 50%);
+  padding: 0;
+  z-index: 10;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300%;
+  object-fit: cover;
+  object-position: top;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.top-bar {
+  position: relative;
+  z-index: 1;
+}
+
+.top-bar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2px 32px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}   
+
+.top-links {
+  display: flex;
+  gap: 20px;
+}
+
+.top-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.top-links a:hover {
+  color: #fff;
+}
+
+.language-selector {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  padding-left: 20px;
+}
+
+/* Logo */
+.logo-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  justify-content: space-between;
+}
+
+.header-logo {
+  height: 80px;
+  width: auto;
+}
+
+.nav-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Main Header */
+.header-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  transition: opacity 0.2s;
+}
+
+.nav-menu a:hover {
+  opacity: 0.8;
+}
+
+.nav-menu a.has-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.bookmark-btn,
+.profile-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.bookmark-btn:hover,
+.profile-btn:hover {
+  background: none;
+}
+
+.bookmark-btn img,
+.profile-btn img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}

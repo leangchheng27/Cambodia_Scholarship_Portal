@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import { Link, useNavigate } from "react-router-dom";
+import logo from '../assets/Login/logo.png';
+import gmailIcon from '../assets/Login/gmail.png';
+import phoneIcon from '../assets/Login/phone.png';
 
 const LoginPage = () => {
+  const navigate = useNavigate(); // <-- get navigate function
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     // Handle login logic here
+    navigate("/home")
   };
 
   return (
@@ -16,9 +20,13 @@ const LoginPage = () => {
       <div className="auth-container">
         {/* Left: Login Form */}
         <div className="auth-left">
-          <h1 className="auth-title">Login</h1>
-          <button className="social-btn"><span className="icon">🌐</span> Continue with Google</button>
-          <button className="social-btn secondary">Continue with Phone Number</button>
+            <h1 className="auth-title">Login</h1>
+          <button className="oauth-btn">
+            <img src={gmailIcon} alt="Google" style={{ marginRight: 8, width: 20, height: 20 }} /> Sign in with Google
+          </button>
+          <button className="phone-btn">
+            <img src={phoneIcon} alt="Phone" style={{ marginRight: 8, width: 20, height: 20 }} /> Sign in with Phone Number
+          </button>
           <div className="divider-row">
             <div className="line" />
             <span className="or-text">OR</span>
@@ -29,7 +37,7 @@ const LoginPage = () => {
               <label className="form-label">Email</label>
               <input
                 type="email"
-                placeholder="Ratan Asinike"
+                placeholder="Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="form-input"
@@ -40,7 +48,7 @@ const LoginPage = () => {
               <label className="form-label">Password</label>
               <input
                 type="password"
-                placeholder="************"
+                placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="form-input"
@@ -52,7 +60,7 @@ const LoginPage = () => {
             </div>
             <button type="submit" className="submit-btn">Login</button>
           </form>
-          <div className="muted-text">Don't Have Account? <Link to="/register">Sign up</Link></div>
+          <div className="muted-text">Don't Have Account? <Link to="/register" style={{ color: '#333', fontWeight: 600, textDecoration: 'none' }}>Sign up</Link></div>
         </div>
         {/* Right: Logo */}
         <div className="auth-right">

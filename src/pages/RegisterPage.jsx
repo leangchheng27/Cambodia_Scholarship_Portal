@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../assets/Login/logo.png';
+import gmailIcon from '../assets/Login/gmail.png';
+import phoneIcon from '../assets/Login/phone.png';
 import '../styles/register.css';
 
 const RegisterPage = () => {
@@ -33,10 +35,14 @@ const RegisterPage = () => {
         </div>
         <div className="right">
           <h1 className="title">Sign Up</h1>
-          <button className="oauth-btn">
-            <span style={{ marginRight: 8, fontSize: 20 }}>🌐</span> Sign up with Google
-          </button>
-          <button className="phone-btn">Sign up with Phone Number</button>
+          <div>
+            <button className="oauth-btn">
+              <img src={gmailIcon} alt="Google" style={{ marginRight: 8, width: 20, height: 20 }} /> Sign up with Google
+            </button>
+            <button className="phone-btn">
+              <img src={phoneIcon} alt="Phone" style={{ marginRight: 8, width: 20, height: 20 }} /> Sign up with Phone Number
+            </button>
+          </div>
 
           <div className="divider">
             <div className="line" />
@@ -50,27 +56,27 @@ const RegisterPage = () => {
             <div className="form-row">
               <div className="form-col">
                 <label>First Name</label>
-                <input className="input" type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Asinike" required />
+                <input className="input" type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" required />
               </div>
               <div className="form-col">
                 <label>Last Name</label>
-                <input className="input" type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Ratana" required />
+                <input className="input" type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" required />
               </div>
             </div>
 
             <div style={{ marginBottom: 16 }}>
               <label>Phone Number</label>
-              <input className="input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="012 588 8425" required />
+              <input className="input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone Number" required />
             </div>
 
             <div style={{ marginBottom: 16 }}>
               <label>Email</label>
-              <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="asinike191@gmail.com" required />
+              <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email Address" required />
             </div>
 
             <div style={{ marginBottom: 8 }}>
               <label>Password</label>
-              <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="********************" required />
+              <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
               <div className="helper">Use 8 or more characters with a mix of letters, numbers & symbols</div>
             </div>
 
@@ -98,13 +104,16 @@ const RegisterPage = () => {
             {error && <div className="error">{error}</div>}
 
             <div className="terms">
-              By creating an account, you agree to the <a href="#">Terms of use</a> and <a href="#">Privacy Policy</a>.
+              By creating an account, you agree to the
+              <a href="#" style={{ color: '#333', fontWeight: 600, textDecoration: 'none', marginLeft: 4 }}>Terms of use </a>
+              and
+              <a href="#" style={{ color: '#333', fontWeight: 600, textDecoration: 'none', marginLeft: 4 }}>Privacy Policy</a>.
             </div>
 
             <button type="submit" className="submit-btn">Sign up</button>
           </form>
 
-          <div className="footer-text">Already have an account? <Link to="/login">Sign in</Link></div>
+          <div className="footer-text">Already have an account? <Link to="/login" style={{ color: '#333', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link></div>
         </div>
       </div>
     </div>

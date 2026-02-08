@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
