@@ -1,0 +1,32 @@
+.university-list-container {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 24px;
+}
+
+.university-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.university-list-table th {
+  background: #2bb7df;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.university-list-table td {
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #e0e7ef;
+}
+
+.university-list-table tr:last-child td {
+  border-bottom: none;
+}

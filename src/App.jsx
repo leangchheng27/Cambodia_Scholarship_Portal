@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import { useAuth } from './context/AuthContext.jsx';
+import UniversityPage from './pages/UniversityPage.jsx';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -15,7 +16,7 @@ const App = () => {
     <div className="app-shell">
       <main>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/university" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route 
@@ -26,7 +27,8 @@ const App = () => {
               </ProtectedRoute>
             } 
           />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/university" element={<UniversityPage />} />
+          <Route path="*" element={<Navigate to="/university" replace />} />
         </Routes>
       </main>
     </div>
