@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Header from '../components/Header/header.jsx';
+import Header from '../layouts/Header/header.jsx';
 import p1 from '../assets/p1.jpg';
 
 export default function HomePage() {

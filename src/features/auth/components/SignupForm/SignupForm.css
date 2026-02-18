@@ -1,0 +1,135 @@
+/* SignupForm styles (same format as LoginForm) */
+.auth-title {
+  font-weight: 700;
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #000;
+  text-align: center;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 12px;
+  font-size: 15px;
+  background: #fff;
+  cursor: pointer;
+  color: #666;
+  font-weight: 500;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.social-btn:hover {
+  border-color: #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.social-btn .icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+.divider-row {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+.divider-row .line {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+.or-text {
+  margin: 0 16px;
+  color: #999;
+  font-size: 14px;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #666;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+.form-input::placeholder {
+  color: #aaa;
+}
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  background: #999;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.submit-btn:hover {
+  background: #777;
+}
+.muted-text, .footer-text {
+  text-align: center;
+  margin-top: 12px;
+  color: #999;
+  font-size: 14px;
+}
+.muted-text a, .footer-text a {
+  color: #666;
+  text-decoration: none;
+  font-weight: 500;
+}
+.muted-text a:hover, .footer-text a:hover {
+  text-decoration: underline;
+}
+.form-error, .error {
+  margin: 8px 0 0;
+  color: #e53e3e;
+  font-weight: 500;
+  font-size: 13px;
+}
+.dob-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.dob-row select {
+  flex: 1 1 0;
+  padding: 10px 8px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 15px;
+  background: #fafbfc;
+  color: #333;
+}
+.dob-row select:focus {
+  border-color: #666;
+  outline: none;
+}

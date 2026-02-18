@@ -1,4 +1,4 @@
-/* LoginPage layout styles */
+/* SignupPage layout styles */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -56,4 +56,3 @@
     padding: 40px 24px;
   }
 }
-  
