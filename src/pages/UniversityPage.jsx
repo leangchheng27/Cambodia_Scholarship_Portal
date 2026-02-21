@@ -4,8 +4,16 @@ import CambodiaMap from '../features/university/components/CambodiaMap/Map.jsx';
 import UniversityFilter from '../features/university/components/UniversityFilter/UniversityFilter.jsx';
 import UniversityFilterMapLayout from '../features/university/Layout/UniversityFilterMapLayout.jsx';
 import UniversityList from '../features/university/components/UniversityList/UniversityList.jsx';
+import { useNavigate } from "react-router-dom";
 
 export default function UniversityPage() {
+    const navigate = useNavigate();
+
+    // Handler for clicking the first university
+    const handleFirstUniversityClick = (universityId) => {
+        navigate(`/universities/${universityId}`);
+    };
+
     return (
       <>
         <Header/>
@@ -14,7 +22,7 @@ export default function UniversityPage() {
             <UniversityFilter />
             <CambodiaMap />
         </UniversityFilterMapLayout>
-        <UniversityList />
+        <UniversityList onUniversityClick={handleFirstUniversityClick} />
       </>
     );
 }

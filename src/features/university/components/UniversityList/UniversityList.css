@@ -19,6 +19,7 @@
   font-size: 18px;
   padding: 12px 16px;
   text-align: left;
+  border: none;
 }
 
 .university-list-table td {
@@ -29,4 +30,11 @@
 
 .university-list-table tr:last-child td {
   border-bottom: none;
+}
+
+.university-list-table tr.clickable-row:hover td {
+  background: #f0f8ff;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: background 0.2s;
 }
