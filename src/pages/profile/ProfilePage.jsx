@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Navbar from '../../layout/Header/Navbar';
-import Footer from '../../layout/Footer/Footer';
-import './profile.css';
+import Header from '../../layouts/Header/header.jsx';
+import Footer from '../../layouts/Footer/footer.jsx';
+import './ProfilePage.css';
 
 const ProfilePage = () => {
-  const { user, logout, updateProfile } = useAuth();
+  const { user, profile, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
   
@@ -31,10 +31,13 @@ const ProfilePage = () => {
     avatar: null,
   };
 
-  const userData = user || defaultUser;
+  // Merge user and profile data
+  const userData = user ? { ...defaultUser, ...user, ...profile } : defaultUser;
   
   // Debug log to see what user data we have
   console.log("ProfilePage - User data:", user);
+  console.log("ProfilePage - Profile data:", profile);
+  console.log("ProfilePage - Merged userData:", userData);
   console.log("ProfilePage - Interests:", userData.interests);
 
   const handleLogout = () => {
@@ -84,7 +87,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-page">
-      <Navbar />
+      <Header />
       
       <div className="profile-content">
         <div className="profile-header">

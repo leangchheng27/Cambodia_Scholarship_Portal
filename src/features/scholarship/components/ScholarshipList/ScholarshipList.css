@@ -1,0 +1,29 @@
+.scholarship-list-container {
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.scholarship-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.no-scholarships {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .scholarship-list-container {
+    padding: 30px 15px;
+  }
+
+  .scholarship-list-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

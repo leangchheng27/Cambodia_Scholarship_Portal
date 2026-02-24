@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
-import '../styles/profileSetup.css';
+import '../styles/ProfileSetup.css';
 
 const ProfileSetupPage = () => {
   const navigate = useNavigate();
@@ -293,7 +293,7 @@ const ProfileSetupPage = () => {
           </div>
         )}
 
-        {/* Step 3: Final Step (placeholder) */}
+        {/* Step 3: Final Step */}
         {currentStep === 3 && (
           <div className="step-content success-step">
             <h2 className="success-title">Your Profile Create Successfully</h2>

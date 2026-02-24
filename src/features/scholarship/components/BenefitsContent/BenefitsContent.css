@@ -1,0 +1,42 @@
+/* Tab Content */
+.tab-content {
+  background: white;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.benefit-item {
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  align-items: flex-start;
+}
+
+.info-item .icon {
+  font-size: 20px;
+  color: #FF6B6B;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-item p {
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+}
+
+.info-item ol {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.info-item ol li {
+  line-height: 1.6;
+  margin-bottom: 8px;
+  color: #333;
+}

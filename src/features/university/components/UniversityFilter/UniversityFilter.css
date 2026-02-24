@@ -1,0 +1,43 @@
+.university-filter {
+  background: #fff;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 24px 24px 16px 24px;
+  width: 420px;
+  margin-bottom: 24px;
+}
+.filter-header {
+  background: #2bb7df;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 8px 0 8px 20px;
+  border-radius: 4px 12px 0 0;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.filter-list-2col {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  width: 100%;
+}
+.filter-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.filter-item {
+  color: #222;
+  font-size: 16px;
+  padding: 4px 0 4px 12px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.filter-item.active, .filter-item:hover {
+  color: #2bb7df;
+  border-left: 3px solid #2bb7df;
+  background: #f5fafd;
+}

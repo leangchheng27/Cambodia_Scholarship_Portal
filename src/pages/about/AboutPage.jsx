@@ -1,122 +1,97 @@
 import React from 'react';
-import Navbar from '../../layout/Header/Navbar';
-import Footer from '../../layout/Footer/Footer';
-import './AboutPage.css';
+import Header from '../../layouts/Header/header.jsx';
+import Footer from '../../layouts/Footer/footer.jsx';
+import AboutLayout from '../../features/about/Layout/AboutLayout.jsx';
+import FeatureCard from '../../features/about/components/FeatureCard/FeatureCard.jsx';
 import teamPhoto from '../../assets/about/about.png';
+import './AboutPage.css';
 
-const AboutPage = () => {
+export default function AboutPage() {
   return (
-    <div className="about-page">
-      {/* Header */}
-      <Navbar />
-
-      
-
-      {/* WHO WE ARE Section */}
-      <section className="who-we-are-section">
-        <div className="container">
-          <h1 className="section-main-title">WHO WE ARE</h1>
-          <div className="team-photo-container">
-            <img src={teamPhoto} alt="CSP Team" className="team-photo" />
+    <>
+      <Header />
+      <AboutLayout>
+        {/* Who We Are Section */}
+        <section className="about-section who-we-are">
+          <h2>WHO WE ARE</h2>
+          <div className="team-photo">
+            <img src={teamPhoto} alt="Our Team" />
           </div>
-          <p className="team-description">
-            We are third-year Computer Science students specializing in Software Engineering at CADT, passionate about
-            creating practical and innovative software solutions.
+          <p>
+            We are dedicated to helping Cambodian students discover and access scholarship opportunities
+            both locally and internationally. Our platform is designed to simplify the scholarship search
+            process and make educational opportunities more accessible for everyone.
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* About CSP Section */}
-      <section className="about-csp-section">
-        <div className="container">
-          <h2 className="section-heading">About Cambodia Scholarship Portal (CSP)</h2>
-          <p className="about-description">
-            CSP is a digital platform designed to help Cambodian students easily discover, explore, and access scholarship opportunities both locally and
-            internationally. Our goal is to simplify the scholarship search process and make educational opportunities more accessible for everyone.
-          </p>
-        </div>
-      </section>
-
-      {/* What We Provide Section */}
-      <section className="what-we-provide-section">
-        <div className="container">
-          <h2 className="section-heading">What We Provide</h2>
-          <div className="features-list">
-            <div className="feature-item">
-              <span className="feature-icon">✓</span>
-              <span className="feature-text">Up-to-date scholarship listings</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">✓</span>
-              <span className="feature-text">Clear eligibility and application details</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">✓</span>
-              <span className="feature-text">Easy-to-navigate user interface</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">✓</span>
-              <span className="feature-text">A platform designed for students, by students</span>
-            </div>
+        {/* What We Provide Section */}
+        <section className="about-section what-we-provide">
+          <h2>What We Provide</h2>
+          <div className="features-grid-about">
+            <FeatureCard
+              icon="✓"
+              title="Up-to-date Listings"
+              description="Access the latest scholarship opportunities with regularly updated information"
+            />
+            <FeatureCard
+              icon="📋"
+              title="Clear Details"
+              description="Find clear eligibility criteria and application requirements for each scholarship"
+            />
+            <FeatureCard
+              icon="🔍"
+              title="Easy Search"
+              description="Navigate through our user-friendly interface to find the perfect scholarship"
+            />
+            <FeatureCard
+              icon="🎓"
+              title="Student Focused"
+              description="A platform designed for students, by students who understand your needs"
+            />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Our Vision Section */}
-      <section className="our-vision-section">
-        <div className="container">
-          <h2 className="section-heading">Our Vision</h2>
-          <p className="vision-description">
+        {/* Our Vision Section */}
+        <section className="about-section our-vision">
+          <h2>Our Vision</h2>
+          <p>
             A future where every Cambodian student can access the right scholarship without barriers.
+            We believe education is the key to personal and national development.
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Features & Bottom Section */}
-      <section className="bottom-features-section">
-        <div className="container">
-          <div className="bottom-content">
-            <div className="why-choose-csp">
-              <h3 className="bottom-heading">Why choose CSP?</h3>
-              <p className="bottom-text">
-                Find. Apply. Succeed. Discover scholarships quickly with <span className="highlight">CSP</span> verified programs and
-                personalized tools.
-              </p>
+        {/* Why Choose CSP Section */}
+        <section className="about-section why-choose">
+          <h2>Why Choose CSP?</h2>
+          <p className="why-choose-intro">
+            Find. Apply. Succeed. Discover scholarships quickly with verified programs and personalized tools.
+          </p>
+          <div className="why-choose-grid">
+            <div className="why-choose-item">
+              <span className="why-icon">⚡</span>
+              <div>
+                <h4>Fast Access</h4>
+                <p>Quick and easy access to scholarship information</p>
+              </div>
             </div>
-            
-            <div className="features-grid">
-              <div className="feature-card">
-                <div className="feature-card-icon">⚡</div>
-                <h4 className="feature-card-title">Fast Application</h4>
-                <p className="feature-card-text">Apply for scholarship quickly without hassle</p>
+            <div className="why-choose-item">
+              <span className="why-icon">✓</span>
+              <div>
+                <h4>Verified Programs</h4>
+                <p>All scholarships are checked and verified</p>
               </div>
-              
-              <div className="feature-card">
-                <div className="feature-card-icon">✓</div>
-                <h4 className="feature-card-title">Verified Programs</h4>
-                <p className="feature-card-text">All scholarships are checked and up-to-date</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-card-icon">👤</div>
-                <h4 className="feature-card-title">Personalized Matches</h4>
-                <p className="feature-card-text">Find scholarships that fit your profile</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-card-icon">📍</div>
-                <h4 className="feature-card-title">Helpful Resources</h4>
-                <p className="feature-card-text">Access guide and tips to improve your applications</p>
+            </div>
+            <div className="why-choose-item">
+              <span className="why-icon">🎯</span>
+              <div>
+                <h4>Personalized Search</h4>
+                <p>Find scholarships that match your profile</p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Footer */}
+        </section>
+      </AboutLayout>
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default AboutPage;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Navbar from '../../layout/Header/Navbar';
-import Footer from '../../layout/Footer/Footer';
-import './contact.css';
+import Header from '../../layouts/Header/header.jsx';
+import Footer from '../../layouts/Footer/footer.jsx';
+import './ContactPage.css';
 import contactBanner from '../../assets/contact/banner.png';
 import contactIllustration from '../../assets/contact/contact.png';
 
@@ -35,7 +35,7 @@ const ContactPage = () => {
 
   return (
     <div className="contact-page">
-      <Navbar />
+      <Header />
       
       {/* Hero Banner */}
       <div className="contact-hero-banner">

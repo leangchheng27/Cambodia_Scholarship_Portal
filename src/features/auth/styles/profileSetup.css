@@ -7,6 +7,14 @@
   padding: 20px;
 }
 
+.profile-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px 56px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
 
 .profile-title {
   text-align: center;
@@ -173,7 +181,7 @@
 .next-btn {
   min-width: 250px;
   height: 56px;
-  background: #4dd0e1;
+  background: #2bb7df;
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -189,16 +197,16 @@
 }
 
 .next-btn:hover {
-  background: #26c6da;
+  background: #26a6c7;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(77, 208, 225, 0.4);
+  box-shadow: 0 4px 12px rgba(43, 183, 223, 0.4);
 }
 
 /* Back Button */
 .back-btn {
   min-width: 250px;
   height: 56px;
-  background: #4dd0e1;
+  background: #2bb7df;
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -214,48 +222,9 @@
 }
 
 .back-btn:hover {
-  background: #26c6da;
+  background: #26a6c7;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(77, 208, 225, 0.4);
-}
-
-/* Interests Grid - Step 2 */
-.interests-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.interest-chip {
-  background: #000;
-  color: #fff;
-  border: 2px solid #000;
-  border-radius: 24px;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: flex-start;
-}
-
-.interest-chip:hover {
-  background: #333;
-  border-color: #333;
-}
-
-.interest-chip.selected {
-  background: #fff;
-  color: #000;
-  border-color: #000;
-}
-
-.chip-icon {
-  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(43, 183, 223, 0.4);
 }
 
 /* Step 3 - Success */
@@ -272,7 +241,7 @@
 }
 
 .explore-btn {
-  background: #4dd0e1;
+  background: #2bb7df;
   color: #fff;
   border: none;
   border-radius: 24px;
@@ -286,9 +255,9 @@
 }
 
 .explore-btn:hover {
-  background: #26c6da;
+  background: #26a6c7;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(77, 208, 225, 0.4);
+  box-shadow: 0 6px 16px rgba(43, 183, 223, 0.4);
 }
 
 /* Step 2 - Updated Design */
@@ -336,7 +305,7 @@
 
 .interest-chip-new.selected {
   background: #000;
-  box-shadow: 0 0 0 2px #4dd0e1;
+  box-shadow: 0 0 0 2px #2bb7df;
 }
 
 .chip-icon-new {
@@ -363,8 +332,8 @@
 }
 
 .interest-chip-new.selected .chip-checkbox {
-  background: #4dd0e1;
-  border-color: #4dd0e1;
+  background: #2bb7df;
+  border-color: #2bb7df;
 }
 
 .interest-chip-new.selected .chip-checkbox::after {
@@ -386,10 +355,6 @@
   }
 
   .student-type-options {
-    grid-template-columns: 1fr;
-  }
-
-  .interests-grid {
     grid-template-columns: 1fr;
   }
 
