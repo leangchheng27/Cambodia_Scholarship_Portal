@@ -1,0 +1,23 @@
+.home-layout-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.map-section {
+  padding: 60px 20px;
+  background-color: #fff;
+}
+
+.map-section .section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cambodia-map {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

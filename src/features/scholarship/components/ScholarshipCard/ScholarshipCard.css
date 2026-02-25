@@ -1,0 +1,83 @@
+.scholarship-card-item {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.scholarship-card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.scholarship-card-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.scholarship-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scholarship-card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.scholarship-card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.scholarship-card-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 15px;
+  flex: 1;
+  line-height: 1.6;
+}
+
+.scholarship-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.deadline {
+  color: #d9534f;
+  font-weight: 500;
+}
+
+.level {
+  color: #5bc0de;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .scholarship-card-image {
+    height: 150px;
+  }
+
+  .scholarship-card-content {
+    padding: 15px;
+  }
+
+  .scholarship-card-title {
+    font-size: 1.1rem;
+  }
+}

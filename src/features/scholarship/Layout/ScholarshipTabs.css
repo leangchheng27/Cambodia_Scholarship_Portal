@@ -1,0 +1,147 @@
+/* Import base tabbed section styles */
+@import '../../../components/ui/TabbedSection/TabbedSection.css';
+
+/* Override/extend for scholarship tabs with routing */
+.scholarship-tabbed-section {
+  /* Inherits styles from .tabbed-section-container */
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+  margin: 40px auto;
+  max-width: 1200px;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.scholarship-tab-navigation {
+  /* Inherits styles from .tab-navigation */
+  min-width: 250px;
+  background: #fff;
+  border-right: 1px solid #e0e7ef;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 0 40px 32px;
+  gap: 12px;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 20px 0;
+  text-decoration: none;
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  border-bottom: 1px solid #e0e7ef;
+  margin-bottom: 20px;
+}
+
+.back-arrow {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.scholarship-tab {
+  /* Inherits styles from .tab */
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #888;
+  text-align: left;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 400;
+  transition: color 0.2s, font-weight 0.2s;
+  text-decoration: none;
+  display: block;
+  border-left: 4px solid transparent;
+  padding-left: 0;
+}
+
+.scholarship-tab.active {
+  /* Inherits styles from .tab.active */
+  color: #222;
+  font-weight: 700;
+  border-left-color: #222;
+  padding-left: 12px;
+}
+
+.scholarship-tab:hover:not(.active) {
+  color: #2FA6C4;
+}
+
+.scholarship-tab-content {
+  /* Inherits styles from .tab-content */
+  flex: 1;
+  padding: 48px;
+  font-size: 16px;
+  color: #222;
+  line-height: 1.7;
+  background: #fff;
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .scholarship-tabbed-section {
+    flex-direction: column;
+    margin: 20px;
+  }
+
+  .scholarship-tab-navigation {
+    min-width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 20px;
+    border-right: none;
+    border-bottom: 1px solid #e0e7ef;
+    gap: 20px;
+  }
+
+  .back-link {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding: 8px 20px 8px 0;
+    border-right: 1px solid #e0e7ef;
+    margin-right: 10px;
+  }
+
+  .scholarship-tab {
+    white-space: nowrap;
+    padding: 12px 16px;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+
+  .scholarship-tab.active {
+    border-left: none;
+    border-bottom-color: #222;
+    padding-left: 16px;
+  }
+
+  .scholarship-tab-content {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .scholarship-tabbed-section {
+    margin: 10px;
+    border-radius: 8px;
+  }
+
+  .scholarship-tab {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .scholarship-tab-content {
+    padding: 20px 16px;
+    font-size: 15px;
+  }
+}
+

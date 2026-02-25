@@ -1,0 +1,296 @@
+.profile-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.profile-content {
+  flex: 1;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 200px 20px 40px 20px;
+  width: 100%;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profile-header h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+
+.logout-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.profile-main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* User Profile Section */
+.user-profile-section {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 32px;
+}
+
+.user-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-info h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 8px 0;
+}
+
+.user-email {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+}
+
+.edit-profile-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.edit-profile-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.edit-icon {
+  font-size: 16px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.action-btn {
+  background: #d1d5db;
+  border: none;
+  padding: 20px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.action-btn:hover {
+  background: #9ca3af;
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  font-size: 24px;
+}
+
+.action-btn span:nth-child(2) {
+  flex: 1;
+}
+
+.arrow {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+/* Info Detail Section */
+.info-detail-section {
+  margin-bottom: 40px;
+}
+
+.info-detail-section h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 24px 0;
+}
+
+.info-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  min-width: 120px;
+}
+
+.info-value {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Interest and Skill Sections */
+.interest-section,
+.skill-section {
+  margin-bottom: 32px;
+}
+
+.interest-section:last-child,
+.skill-section:last-child {
+  margin-bottom: 0;
+}
+
+.interest-section h3,
+.skill-section h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 16px 0;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tag {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.interest-tag {
+  background: #000;
+}
+
+.skill-tag {
+  background: #000;
+}
+
+.tag-icon {
+  font-size: 16px;
+}
+
+.no-data {
+  font-size: 14px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .profile-header h1 {
+    font-size: 36px;
+  }
+
+  .profile-card {
+    padding: 24px;
+  }
+
+  .user-profile-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-label {
+    min-width: auto;
+  }
+}

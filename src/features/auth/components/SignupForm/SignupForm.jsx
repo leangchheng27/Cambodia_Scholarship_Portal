@@ -53,7 +53,7 @@ const SignupForm = ({ onRegister }) => {
         </div>
         <div className="form-group">
           <label className="form-label">Password</label>
-          <input className="form-input" type="password" valu      e={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+          <input className="form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
           <div className="muted-text">Use 8 or more characters with a mix of letters, numbers & symbols</div>
         </div>
         <div className="form-group">
