@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import LoginPage from "./pages/auth/LoginPage.jsx";
+import SignupPage from "./pages/auth/SignupPage.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
-import UniversityPage from "./pages/UniversityPage.jsx";
-import UniversityDetailPage from "./pages/UniversityDetailPage.jsx";
+import UniversityPage from "./pages/university/UniversityPage.jsx";
+import UniversityDetailPage from "./pages/university/UniversityDetailPage.jsx";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
