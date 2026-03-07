@@ -198,7 +198,7 @@ router.get(
         );
 
         // Redirect to frontend with token
-        res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/?token=${token}`);
+        res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/home?token=${token}`);
     }
 );
 
