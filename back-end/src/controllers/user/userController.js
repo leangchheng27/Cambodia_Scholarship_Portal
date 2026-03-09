@@ -1,7 +1,7 @@
 // User Controller - business logic for users
 // Controllers should NOT contain database queries - use repositories for that
-const UserRepository = require('../repositories/userRepository');
-const { validateUserCreation } = require('../validators/userValidator');
+const UserRepository = require('../../repositories/userRepository');
+const { validateUserCreation } = require('../../validators/userValidator');
 
 class UserController {
   // Get all users

@@ -1,6 +1,6 @@
 // User Routes - defines all user-related endpoints
 const express = require('express');
-const UserController = require('../controllers/userController');
+const UserController = require('../../controllers/user/userController');
 
 const router = express.Router();
 

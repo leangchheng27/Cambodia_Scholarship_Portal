@@ -1,6 +1,6 @@
 // User Repository - handles all database queries for users
-const pool = require('../db/database');
-const User = require('../models/User');
+const pool = require('../../db/database');
+const User = require('../../models/user/User');
 
 class UserRepository {
   // Get all users

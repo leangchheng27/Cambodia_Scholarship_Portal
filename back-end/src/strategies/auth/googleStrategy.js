@@ -1,6 +1,6 @@
 // src/strategies/googleStrategy.js
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
-const config = require('../config');
+const config = require('../../config');
 
 /**
  * Create Google OAuth strategy for Passport

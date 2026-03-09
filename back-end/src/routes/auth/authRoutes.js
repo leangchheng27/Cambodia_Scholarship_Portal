@@ -3,9 +3,9 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const config = require('../config');
-const { authenticateToken } = require('../middlewares/authToken');
-const { sendOTPEmail, sendPasswordResetEmail } = require('../utils/mailer');
+const config = require('../../config');
+const { authenticateToken } = require('../../middlewares/authToken');
+const { sendOTPEmail, sendPasswordResetEmail } = require('../../utils/mailer');
 
 const router = express.Router();
 
