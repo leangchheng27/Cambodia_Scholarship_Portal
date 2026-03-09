@@ -53,7 +53,7 @@ const LoginForm = () => {
           />
         </div>
         <div style={{ textAlign: "right", marginBottom: 16 }}>
-          <a href="#" className="forgot-link">Forgot Password ?</a>
+          <Link to="/forgot-password" className="forgot-link">Forgot Password ?</Link>
         </div>
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}

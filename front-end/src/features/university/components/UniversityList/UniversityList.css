@@ -1,9 +1,6 @@
 .university-list-container {
   margin-top: 32px;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 24px;
 }
 
 .university-list-table {
@@ -34,7 +31,6 @@
 
 .university-list-table tr.clickable-row:hover td {
   background: #f0f8ff;
-  text-decoration: underline;
   cursor: pointer;
   transition: background 0.2s;
 }
