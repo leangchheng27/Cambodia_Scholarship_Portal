@@ -86,10 +86,10 @@ initAuthRoutes(AuthUser);
 initAdminRoutes(AuthUser);
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/recommendations', recommendationRoutes);
+app.use('/users', userRoutes);
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
+app.use('/recommendations', recommendationRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
