@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL pointing to auth server
 const API = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'http://localhost:3000',
 });
 
 // Set auth header on every request
