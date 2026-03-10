@@ -7,6 +7,7 @@ import config from './src/config/index.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import userRoutes from './src/routes/user/userRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
+import { adminRouter as adminRoutes, initAdminRoutes } from './src/routes/admin/adminRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
 
@@ -81,10 +82,12 @@ passport.deserializeUser(async (id, done) => {
 
 // Initialize auth routes with AuthUser model
 initAuthRoutes(AuthUser);
+initAdminRoutes(AuthUser);
 
 // Routes
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

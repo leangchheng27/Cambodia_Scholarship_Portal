@@ -16,6 +16,7 @@ import InternshipOverviewPage from "./pages/scholarship/internship/InternshipOve
 import InternshipEligibilityPage from "./pages/scholarship/internship/InternshipEligibilityPage.jsx";
 import InternshipApplicableProgramPage from "./pages/scholarship/internship/InternshipApplicableProgramPage.jsx";
 import InternshipBenefitsPage from "./pages/scholarship/internship/InternshipBenefitsPage.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/home/HomePage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
@@ -31,6 +32,20 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" replace />;
 };
 
+const AdminRoute = ({ children }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== 'admin') {
+    return <Navigate to="/home" replace />;
+  }
+
+  return children;
+};
+
 const App = () => {
   return (
     <div className="app-shell">
@@ -40,6 +55,14 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
           <Route
             path="/home"
             element={

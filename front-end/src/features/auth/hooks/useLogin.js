@@ -21,8 +21,12 @@ export function useLogin() {
       
       console.log('Login successful:', user);
       
-      // Navigate to home page
-      navigate('/home');
+      // Navigate based on user role
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/home');
+      }
       
       return user;
     } catch (err) {
