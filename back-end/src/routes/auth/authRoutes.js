@@ -178,7 +178,7 @@ router.get('/users', authenticateToken, async (req, res) => {
 
 /**
  * GET /auth/google
- * Redirect to Google login
+ * Redirect to Google login (only if Google OAuth is configured)
  */
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
