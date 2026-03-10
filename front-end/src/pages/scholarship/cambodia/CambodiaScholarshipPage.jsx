@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
+import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import './CambodiaScholarshipPage.css';
 import { cambodiaScholarships } from '../../../data/cambodiaScholarships.js';
 
@@ -17,7 +18,7 @@ export default function CambodiaScholarshipPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(cambodiaScholarships.length / itemsPerPage);
   
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -47,25 +48,11 @@ export default function CambodiaScholarshipPage() {
       <div className="scholarship-list-container">
         <div className="scholarship-grid">
           {currentScholarships.map((scholarship) => (
-            <div key={scholarship.id} className="scholarship-card">
-              <div className="card-image-wrapper">
-                <img 
-                  src={scholarship.image} 
-                  alt={scholarship.title} 
-                  className="card-image" 
-                />
-              </div>
-              <div className="card-content">
-                <h3 className="card-title">{scholarship.title}</h3>
-                <p className="card-description">{scholarship.description}</p>
-                <Link 
-                  to={`/scholarships/cambodia/detail/${scholarship.id}/overview`} 
-                  className="view-detail-btn"
-                >
-                  View more detail 
-                </Link>
-              </div>
-            </div>
+            <ScholarshipCard
+              key={scholarship.id}
+              scholarship={scholarship}
+              basePath="/scholarships/cambodia"
+            />
           ))}
         </div>
 

@@ -74,7 +74,8 @@ export function useSignup() {
       loginContext({ ...user, token });
       
       setMessage('Registration successful!');
-      navigate('/home');
+      // New users should complete profile setup
+      navigate('/profile-setup');
       return true;
     } catch (err) {
       setError(err.message);

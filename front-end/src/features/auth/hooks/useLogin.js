@@ -25,7 +25,13 @@ export function useLogin() {
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        navigate('/home');
+        // Check if profile is completed, if not redirect to profile setup
+        const savedProfile = localStorage.getItem('profile');
+        if (!savedProfile) {
+          navigate('/profile-setup');
+        } else {
+          navigate('/home');
+        }
       }
       
       return user;

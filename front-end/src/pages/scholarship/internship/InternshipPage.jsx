@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
+import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import './InternshipPage.css';
 import { internshipScholarships } from '../../../data/internshipScholarships.js';
 
@@ -17,7 +18,7 @@ export default function InternshipPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(internshipScholarships.length / itemsPerPage);
   
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -47,61 +48,60 @@ export default function InternshipPage() {
       <div className="scholarship-list-container">
         <div className="scholarship-grid">
           {currentInternships.map((internship) => (
-            <div key={internship.id} className="scholarship-card">
-              <div className="card-image-wrapper">
-                <img 
-                  src={internship.image} 
-                  alt={internship.title} 
-                  className="card-image" 
-                />
-              </div>
-              <div className="card-content">
-                <h3 className="card-title">{internship.title}</h3>
-                <p className="card-description">{internship.description}</p>
-                <p className="card-deadline">Deadline: {internship.deadline}</p>
-                <Link 
-                  to={`/scholarships/internship/detail/${internship.id}/overview`} 
-                  className="view-detail-btn"
-                >
-                  View Details →
-                </Link>
-              </div>
-            </div>
+            <ScholarshipCard
+              key={internship.id}
+              scholarship={internship}
+              basePath="/scholarships/internship"
+            />
           ))}
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="pagination">
+        <div className="pagination">
+          {currentPage > 1 && (
             <button 
+              className="page-btn"
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="pagination-btn"
             >
-              ← Previous
+              ←
             </button>
+          )}
+          
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNumber = index + 1;
             
-            <div className="pagination-numbers">
-              {[...Array(totalPages)].map((_, index) => (
+            if (
+              pageNumber === 1 ||
+              pageNumber === totalPages ||
+              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+            ) {
+              return (
                 <button
-                  key={index + 1}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`pagination-number ${currentPage === index + 1 ? 'active' : ''}`}
+                  key={pageNumber}
+                  className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`}
+                  onClick={() => handlePageChange(pageNumber)}
                 >
-                  {index + 1}
+                  {pageNumber}
                 </button>
-              ))}
-            </div>
-
+              );
+            } else if (
+              pageNumber === currentPage - 2 ||
+              pageNumber === currentPage + 2
+            ) {
+              return <span key={pageNumber} className="page-dots">...</span>;
+            }
+            return null;
+          })}
+          
+          {currentPage < totalPages && (
             <button 
+              className="page-btn"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="pagination-btn"
             >
-              Next →
+              →
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <Footer />

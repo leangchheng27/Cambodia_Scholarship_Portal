@@ -20,7 +20,7 @@ const AdminDashboard = () => {
             }
 
             const API = axios.create({
-                baseURL: 'http://localhost:3000',
+                baseURL: 'http://localhost:3000/api',
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/admin/users/${userId}`, {
+            await axios.delete(`http://localhost:3000/api/admin/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
