@@ -59,6 +59,7 @@ initAuthRoutes(AuthUser);
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/recommendations', require('./src/routes/recommendationRoutes'));
 
 // Health check endpoint
 app.get('/', (req, res) => {

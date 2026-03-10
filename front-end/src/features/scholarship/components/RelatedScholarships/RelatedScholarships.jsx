@@ -13,7 +13,7 @@ const RelatedScholarships = ({ items, basePath, title = "Scholarship You might l
               <img src={item.image} alt={item.title || item.details?.title} />
               <h3>{item.title || item.details?.title}</h3>
               <p>អាហារូបករណ៍ទាំងនេះអាចជួយសិស្សានុសិស្សដែលមានសិទ្ធិទទួលបាន</p>
-              <Link to={`${basePath}/detail/${item.id}/overview`} className="view-detail-link">
+              <Link to={`${basePath}/detail/${item.id}`} className="view-detail-link">
                 View more detail &gt;
               </Link>
             </div>

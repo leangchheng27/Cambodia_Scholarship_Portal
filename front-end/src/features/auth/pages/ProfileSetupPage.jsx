@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
-import '../styles/ProfileSetup.css';
+import ProfileSetupLayout from '../../../features/profile-setup/Layout/ProfileSetupLayout';
+import ProfileProgressIndicator from '../../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
+import ProfileTypeSelector from '../../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
+import AcademicTypeSelector from '../../../features/profile-setup/components/AcademicTypeSelector/AcademicTypeSelector';
+import GradeEntryForm from '../../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
+import FieldSelector from '../../../features/profile-setup/components/FieldSelector/FieldSelector';
+import ProfileSummary from '../../../features/profile-setup/components/ProfileSummary/ProfileSummary';
+import { analyzeProfile } from '../../../services/recommendationApi';
+import '../../../features/profile-setup/pages/ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
   const navigate = useNavigate();
@@ -10,9 +18,64 @@ const ProfileSetupPage = () => {
   const [profileType, setProfileType] = useState("");
   const [studentType, setStudentType] = useState("");
   const [parentType, setParentType] = useState("");
-  const [interests, setInterests] = useState([]);
+  const [academicType, setAcademicType] = useState("science");
+  const [universityField, setUniversityField] = useState("");
+  const [grades, setGrades] = useState({});
+  
+  // Profile analysis data from backend
+  const [profileData, setProfileData] = useState({
+    gpa: 0,
+    strongSubjects: [],
+    recommendedFields: []
+  });
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState(null);
+
+  // Check if user is at university level
+  const isUniversityLevel = (studentType === 'college' || studentType === 'graduate') || 
+                           (parentType === 'college' || parentType === 'graduate');
+
+  // Analyze profile when reaching step 3
+  useEffect(() => {
+    const fetchProfileAnalysis = async () => {
+      if (currentStep === 3 && !isUniversityLevel && Object.keys(grades).length > 0) {
+        console.log('Step 3: Fetching profile analysis...');
+        setIsAnalyzing(true);
+        setAnalysisError(null);
+        try {
+          const response = await analyzeProfile(academicType, grades);
+          console.log('API Response:', response);
+          if (response.success) {
+            setProfileData({
+              gpa: response.data.gpa,
+              strongSubjects: response.data.strongSubjects,
+              recommendedFields: response.data.recommendedFields
+            });
+            console.log('Profile data updated successfully');
+          } else {
+            setAnalysisError('Failed to analyze profile');
+          }
+        } catch (error) {
+          console.error('Error analyzing profile:', error);
+          setAnalysisError('Backend not connected. Showing profile without AI recommendations.');
+          // Set basic fallback data
+          setProfileData({
+            gpa: 0,
+            strongSubjects: [],
+            recommendedFields: []
+          });
+        } finally {
+          setIsAnalyzing(false);
+        }
+      }
+    };
+
+    fetchProfileAnalysis();
+  }, [currentStep, academicType, grades, isUniversityLevel]);
 
   const handleNext = () => {
+    console.log(`handleNext called - Current step: ${currentStep}`);
+    
     if (currentStep === 1 && !profileType) {
       alert("Please select an option");
       return;
@@ -26,15 +89,47 @@ const ProfileSetupPage = () => {
       return;
     }
     
-    // Save interests when moving from step 2 to step 3
+    // Validate before moving from step 2 to step 3
     if (currentStep === 2) {
-      console.log("Saving interests from step 2:", interests);
-      updateProfile({
-        profileType,
-        studentType,
-        parentType,
-        interests,
-      });
+      console.log('Step 2 validation - About to move to step 3');
+      const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
+      const isUniversityParent = parentType === 'college' || parentType === 'graduate';
+      
+      if (profileType === "student" && isUniversityStudent) {
+        if (!universityField) {
+          alert("Please select your field of study");
+          return;
+        }
+        updateProfile({
+          profileType,
+          studentType,
+          universityField,
+        });
+      } else if (profileType === "parent" && isUniversityParent) {
+        if (!universityField) {
+          alert("Please select your child's field of study");
+          return;
+        }
+        updateProfile({
+          profileType,
+          parentType,
+          universityField,
+        });
+      } else {
+        const enteredGrades = Object.keys(grades).filter(key => grades[key]);
+        if (enteredGrades.length === 0) {
+          alert("Please enter at least one subject grade before proceeding");
+          return;
+        }
+        
+        updateProfile({
+          profileType,
+          studentType,
+          parentType,
+          academicType,
+          grades,
+        });
+      }
     }
     
     if (currentStep < 3) {
@@ -43,14 +138,28 @@ const ProfileSetupPage = () => {
   };
 
   const handleComplete = () => {
-    // Save profile data and navigate to home
-    console.log("Completing profile with data:", { profileType, studentType, parentType, interests });
-    updateProfile({
-      profileType,
-      studentType,
-      parentType,
-      interests,
-    });
+    const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
+    const isUniversityParent = parentType === 'college' || parentType === 'graduate';
+    
+    const profileToSave = (profileType === "student" && isUniversityStudent) || (profileType === "parent" && isUniversityParent)
+      ? {
+          profileType,
+          studentType,
+          parentType,
+          universityField,
+          ...profileData // Include GPA and recommendations
+        }
+      : {
+          profileType,
+          studentType,
+          academicType,
+          parentType,
+          grades,
+          ...profileData // Include GPA and recommendations
+        };
+    
+    console.log('ProfileSetupPage - Saving profile:', profileToSave);
+    updateProfile(profileToSave);
     navigate('/home');
   };
 
@@ -60,251 +169,126 @@ const ProfileSetupPage = () => {
     }
   };
 
-  const toggleInterest = (interest) => {
-    if (interests.includes(interest)) {
-      setInterests(interests.filter(i => i !== interest));
-    } else {
-      setInterests([...interests, interest]);
-    }
+  const handleGradeChange = (subject, grade) => {
+    setGrades(prev => ({
+      ...prev,
+      [subject]: grade
+    }));
+  };
+
+  const handleAcademicTypeChange = (type) => {
+    setAcademicType(type);
+    setGrades({});
   };
 
   const handleProfileTypeSelect = (type) => {
     setProfileType(type);
     if (type !== "student") {
-      setStudentType(""); // Reset student type if not a student
+      setStudentType("");
     }
     if (type !== "parent") {
-      setParentType(""); // Reset parent type if not a parent
+      setParentType("");
     }
   };
 
+  const handleStudentTypeSelect = (type) => {
+    setStudentType(type);
+  };
+
+  const handleParentTypeSelect = (type) => {
+    setParentType(type);
+  };
+
   return (
-    <div className="profile-setup-container">
-      <div className="profile-card">
-        <h1 className="profile-title">Create Your Profile</h1>
-        
-        {/* Progress Indicator */}
-        <div className="progress-indicator">
-          <div className={`step ${currentStep === 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>1</div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className={`step ${currentStep === 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>2</div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className="progress-dot"></div>
-          <div className={`step ${currentStep === 3 ? 'active' : ''}`}>3</div>
-        </div>
+    <ProfileSetupLayout>
+      <h1 className="profile-title">Create Your Profile</h1>
+      
+      <ProfileProgressIndicator currentStep={currentStep} />
 
-        {/* Step 1: Profile Type Selection */}
-        {currentStep === 1 && (
-          <div className="step-content">
-            <h2 className="profile-section-title">Which Best Describe About You</h2>
-            
-            <div className="profile-options">
-              <div 
-                className={`profile-option ${profileType === 'student' ? 'selected' : ''}`}
-                onClick={() => handleProfileTypeSelect('student')}
-              >
-                <div className="option-icon">🎓</div>
-                <div className="option-label">Current Student</div>
-              </div>
-              
-              <div 
-                className={`profile-option ${profileType === 'parent' ? 'selected' : ''}`}
-                onClick={() => handleProfileTypeSelect('parent')}
-              >
-                <div className="option-icon">👨‍👩‍👧</div>
-                <div className="option-label">Parent or Guardian of Student</div>
-              </div>
-              
-              <div 
-                className={`profile-option ${profileType === 'staff' ? 'selected' : ''}`}
-                onClick={() => handleProfileTypeSelect('staff')}
-              >
-                <div className="option-icon">🏫</div>
-                <div className="option-label">Institute Staff</div>
-              </div>
-            </div>
-
-            {/* Student Type - Only show if Current Student is selected */}
-            {profileType === 'student' && (
-              <div className="student-type-section">
-                <h3 className="student-type-title">What Kind of Student You Are?</h3>
-                
-                <div className="student-type-options">
-                  <button 
-                    className={`student-type-btn ${studentType === 'highschool' ? 'selected' : ''}`}
-                    onClick={() => setStudentType('highschool')}
-                  >
-                    High School Student
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${studentType === 'college' ? 'selected' : ''}`}
-                    onClick={() => setStudentType('college')}
-                  >
-                    College / University Student
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${studentType === 'graduate' ? 'selected' : ''}`}
-                    onClick={() => setStudentType('graduate')}
-                  >
-                    Graduate Student
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${studentType === 'other' ? 'selected' : ''}`}
-                    onClick={() => setStudentType('other')}
-                  >
-                    Other
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Parent Type - Only show if Parent or Guardian is selected */}
-            {profileType === 'parent' && (
-              <div className="student-type-section">
-                <h3 className="student-type-title">What is your child's education level?</h3>
-                
-                <div className="student-type-options">
-                  <button 
-                    className={`student-type-btn ${parentType === 'highschool' ? 'selected' : ''}`}
-                    onClick={() => setParentType('highschool')}
-                  >
-                    High School
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${parentType === 'college' ? 'selected' : ''}`}
-                    onClick={() => setParentType('college')}
-                  >
-                    College / University
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${parentType === 'graduate' ? 'selected' : ''}`}
-                    onClick={() => setParentType('graduate')}
-                  >
-                    Graduate School
-                  </button>
-                  
-                  <button 
-                    className={`student-type-btn ${parentType === 'planning' ? 'selected' : ''}`}
-                    onClick={() => setParentType('planning')}
-                  >
-                    Planning for Future
-                  </button>
-                </div>
-              </div>
-            )}
-
+      {/* Step 1: Profile Type Selection */}
+      {currentStep === 1 && (
+        <div className="step-content">
+          <ProfileTypeSelector
+            profileType={profileType}
+            studentType={studentType}
+            parentType={parentType}
+            onProfileTypeSelect={handleProfileTypeSelect}
+            onStudentTypeSelect={handleStudentTypeSelect}
+            onParentTypeSelect={handleParentTypeSelect}
+          />
+          <div className="button-group">
             <button className="next-btn" onClick={handleNext}>Next</button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Step 2: Interest Selection */}
-        {currentStep === 2 && (
-          <div className="step-content step-2-content">
-            <h2 className="profile-section-title white-title">What you interest</h2>
-            
-            <div className="interests-grid-new">
-              <button 
-                className={`interest-chip-new ${interests.includes('AI') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('AI')}
-              >
-                <span className="chip-icon-new">🤖</span>
-                <span className="chip-label">AI</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Hacking') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Hacking')}
-              >
-                <span className="chip-icon-new">💻</span>
-                <span className="chip-label">Hacking</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Engineering') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Engineering')}
-              >
-                <span className="chip-icon-new">⚙️</span>
-                <span className="chip-label">Engineering</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Technology') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Technology')}
-              >
-                <span className="chip-icon-new">📱</span>
-                <span className="chip-label">Technology</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Art') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Art')}
-              >
-                <span className="chip-icon-new">🎨</span>
-                <span className="chip-label">Art</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Health care') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Health care')}
-              >
-                <span className="chip-icon-new">🏥</span>
-                <span className="chip-label">Health care</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Business') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Business')}
-              >
-                <span className="chip-icon-new">💼</span>
-                <span className="chip-label">Business</span>
-                <span className="chip-checkbox"></span>
-              </button>
-              
-              <button 
-                className={`interest-chip-new ${interests.includes('Marketing') ? 'selected' : ''}`}
-                onClick={() => toggleInterest('Marketing')}
-              >
-                <span className="chip-icon-new">📊</span>
-                <span className="chip-label">Marketing</span>
-                <span className="chip-checkbox"></span>
-              </button>
-            </div>
+      {/* Step 2: Academic Profile & Grades */}
+      {currentStep === 2 && (
+        <div className="step-content step-2-content">
+          {isUniversityLevel ? (
+            <>
+              <h2 className="profile-section-title white-title">Your Field of Study</h2>
+              <FieldSelector
+                profileType={profileType}
+                universityField={universityField}
+                onFieldChange={setUniversityField}
+              />
+            </>
+          ) : (
+            <>
+              <h2 className="profile-section-title white-title">Your Academic Profile</h2>
+              <AcademicTypeSelector
+                academicType={academicType}
+                onAcademicTypeChange={handleAcademicTypeChange}
+              />
+              <GradeEntryForm
+                academicType={academicType}
+                grades={grades}
+                onGradeChange={handleGradeChange}
+              />
+            </>
+          )}
 
-            <div className="button-group">
-              <button className="back-btn" onClick={handleBack}>Back</button>
-              <button className="next-btn" onClick={handleNext}>Next</button>
-            </div>
+          <div className="button-group">
+            <button className="back-btn" onClick={handleBack}>Back</button>
+            <button className="next-btn" onClick={handleNext}>Next</button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Step 3: Final Step */}
-        {currentStep === 3 && (
-          <div className="step-content success-step">
-            <h2 className="success-title">Your Profile Create Successfully</h2>
-            
-            <button className="explore-btn" onClick={handleComplete}>
-              Start Explore Scholarship that you like
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Step 3: Final Step */}
+      {currentStep === 3 && (
+        <div className="step-content success-step">
+          <h2 className="success-title">Your Profile Created Successfully!</h2>
+          
+          {isAnalyzing && (
+            <div className="loading-message">Analyzing your profile...</div>
+          )}
+          
+          {analysisError && (
+            <div className="error-message">{analysisError}</div>
+          )}
+          
+          {!isAnalyzing && (
+            <ProfileSummary
+              profileType={profileType}
+              studentType={studentType}
+              parentType={parentType}
+              academicType={academicType}
+              universityField={universityField}
+              grades={grades}
+              gpa={profileData.gpa}
+              strongSubjects={profileData.strongSubjects}
+              recommendedFields={profileData.recommendedFields}
+            />
+          )}
+          
+          <button className="explore-btn" onClick={handleComplete} disabled={isAnalyzing}>
+            Start Exploring Scholarships
+          </button>
+        </div>
+      )}
+    </ProfileSetupLayout>
   );
 };
 

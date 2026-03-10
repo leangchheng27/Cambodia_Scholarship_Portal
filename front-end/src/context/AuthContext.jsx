@@ -78,13 +78,17 @@ export const AuthProvider = ({ children }) => {
   
   const updateProfile = (profileData) => {
     console.log("AuthContext - Updating profile with:", profileData);
+    console.log("AuthContext - Current profile before update:", profile);
+    console.log("AuthContext - Current user before update:", user);
     
     const newProfile = { ...profile, ...profileData };
+    console.log("AuthContext - New profile after merge:", newProfile);
     setProfile(newProfile);
     
     // Also merge profile data into user object
     if (user) {
       const newUser = { ...user, ...profileData };
+      console.log("AuthContext - New user after merge:", newUser);
       setUser(newUser);
     }
   };

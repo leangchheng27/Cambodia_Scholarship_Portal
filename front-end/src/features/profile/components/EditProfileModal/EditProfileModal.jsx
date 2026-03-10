@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditProfileModal.css';
+import { SUBJECTS } from '../../../../backend';
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
   // Edit form state
@@ -9,6 +10,8 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     nationality: '',
     interests: [],
     skills: [],
+    studentType: 'science', // 'science' or 'society'
+    grades: {}, // { 'Math': 'A', 'Physics': 'B', ... }
   });
 
   // Update form when userData changes
@@ -18,12 +21,23 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
       console.log("EditProfileModal - Skills from userData:", userData.skills);
       console.log("EditProfileModal - Interests from userData:", userData.interests);
       
+      // Use academicType if available, otherwise fall back to studentType
+      const studentType = userData.academicType || userData.studentType || 'science';
+      const defaultGrades = {};
+      
+      // Initialize grades for all subjects if not present
+      SUBJECTS[studentType].forEach(subject => {
+        defaultGrades[subject] = userData.grades?.[subject] || '';
+      });
+      
       setEditForm({
         name: userData.name || '',
         phone: userData.phone || '',
         nationality: userData.nationality || 'Cambodian',
         interests: Array.isArray(userData.interests) ? [...userData.interests] : [],
         skills: Array.isArray(userData.skills) ? [...userData.skills] : [],
+        studentType: studentType,
+        grades: defaultGrades,
       });
     }
   }, [userData, isOpen]);
@@ -32,7 +46,17 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     console.log("EditProfileModal - Saving profile data:", editForm);
     console.log("EditProfileModal - Skills being saved:", editForm.skills);
     console.log("EditProfileModal - Interests being saved:", editForm.interests);
-    onSave(editForm);
+    console.log("EditProfileModal - Grades being saved:", editForm.grades);
+    console.log("EditProfileModal - Student Type:", editForm.studentType);
+    
+    // Save with both studentType and academicType for compatibility
+    const dataToSave = {
+      ...editForm,
+      academicType: editForm.studentType, // For backward compatibility
+    };
+    
+    console.log("EditProfileModal - Final data to save:", dataToSave);
+    onSave(dataToSave);
     onClose();
   };
 
@@ -44,7 +68,30 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
         : [...prev.interests, interest]
     }));
   };
+const handleStudentTypeChange = (newType) => {
+    const newGrades = {};
+    SUBJECTS[newType].forEach(subject => {
+      newGrades[subject] = editForm.grades[subject] || '';
+    });
+    
+    setEditForm(prev => ({
+      ...prev,
+      studentType: newType,
+      grades: newGrades
+    }));
+  };
 
+  const handleGradeChange = (subject, grade) => {
+    setEditForm(prev => ({
+      ...prev,
+      grades: {
+        ...prev.grades,
+        [subject]: grade
+      }
+    }));
+  };
+
+  
   const toggleSkill = (skill) => {
     setEditForm(prev => ({
       ...prev,
@@ -76,6 +123,55 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
             />
           </div>
 
+          {/* Student Type Selection */}
+          <div className="form-group">
+            <label>Student Type (High School Graduate)</label>
+            <div className="student-type-selector">
+              <button
+                type="button"
+                className={`student-type-btn ${editForm.studentType === 'science' ? 'selected' : ''}`}
+                onClick={() => handleStudentTypeChange('science')}
+              >
+                <span className="type-icon">🔬</span>
+                <span>Science Student</span>
+              </button>
+              <button
+                type="button"
+                className={`student-type-btn ${editForm.studentType === 'society' ? 'selected' : ''}`}
+                onClick={() => handleStudentTypeChange('society')}
+              >
+                <span className="type-icon">📚</span>
+                <span>Society Student</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Grade Input Section */}
+          <div className="form-group">
+            <label>Subject Grades (High School)</label>
+            <div className="grades-container">
+              {SUBJECTS[editForm.studentType].map(subject => (
+                <div key={subject} className="grade-row">
+                  <span className="subject-name">{subject}</span>
+                  <select
+                    value={editForm.grades[subject] || ''}
+                    onChange={(e) => handleGradeChange(subject, e.target.value)}
+                    className="grade-select"
+                  >
+                    <option value="">Select Grade</option>
+                    <option value="A">A - Excellent</option>
+                    <option value="B">B - Good</option>
+                    <option value="C">C - Average</option>
+                    <option value="D">D - Below Average</option>
+                    <option value="E">E - Poor</option>
+                    <option value="F">F - Fail</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 
           {/* Phone Input */}
           <div className="form-group">
             <label>Phone</label>
