@@ -180,27 +180,38 @@ router.get('/users', authenticateToken, async (req, res) => {
  * GET /auth/google
  * Redirect to Google login (only if Google OAuth is configured)
  */
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
+    router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-/**
- * GET /auth/google/callback
- * Google OAuth callback
- */
-router.get(
-    '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/auth/login' }),
-    (req, res) => {
-        // User is authenticated, generate JWT
-        const token = jwt.sign(
-            { id: req.user.id, email: req.user.email },
-            config.JWT_SECRET,
-            { expiresIn: config.JWT_EXPIRE || '1d' }
-        );
+    /**
+     * GET /auth/google/callback
+     * Google OAuth callback
+     */
+    router.get(
+        '/google/callback',
+        passport.authenticate('google', { failureRedirect: '/auth/login' }),
+        (req, res) => {
+            // User is authenticated, generate JWT
+            const token = jwt.sign(
+                { id: req.user.id, email: req.user.email },
+                config.JWT_SECRET,
+                { expiresIn: config.JWT_EXPIRE || '1d' }
+            );
 
-        // Redirect to frontend with token
-        res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/home?token=${token}`);
-    }
-);
+            // Redirect to frontend with token
+            res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/home?token=${token}`);
+        }
+    );
+} else {
+    // Return error if Google OAuth is not configured
+    router.get('/google', (req, res) => {
+        res.status(503).json({ error: 'Google OAuth is not configured on this server' });
+    });
+    
+    router.get('/google/callback', (req, res) => {
+        res.status(503).json({ error: 'Google OAuth is not configured on this server' });
+    });
+}
 
 /**
  * POST /auth/logout
