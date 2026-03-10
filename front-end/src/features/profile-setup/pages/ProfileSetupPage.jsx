@@ -58,10 +58,8 @@ const ProfileSetupPage = () => {
           }
         } catch (error) {
           console.error('Error analyzing profile:', error);
-          // Surface server error when available to help debugging
-          const serverMessage = error?.response?.data?.error || error?.message;
-          setAnalysisError(serverMessage || 'Backend not connected. Showing profile without AI recommendations.');
-          // Set basic fallback data
+          // Silently fail - profile will show without AI recommendations
+          // No need to display error since profile still works with entered grades
           setProfileData({
             gpa: 0,
             strongSubjects: [],
@@ -145,20 +143,25 @@ const ProfileSetupPage = () => {
     const isUniversityParent = parentType === 'college' || parentType === 'graduate';
     
     if ((profileType === "student" && isUniversityStudent) || (profileType === "parent" && isUniversityParent)) {
-      updateProfile({
+      const profileData = {
         profileType,
         studentType,
         parentType,
         universityField,
-      });
+      };
+      console.log('ProfileSetupPage - Saving university profile:', profileData);
+      updateProfile(profileData);
     } else {
-      updateProfile({
+      const profileData = {
         profileType,
         studentType,
         academicType,
         parentType,
         grades,
-      });
+      };
+      console.log('ProfileSetupPage - Saving high school profile with grades:', profileData);
+      console.log('ProfileSetupPage - Grades object:', grades);
+      updateProfile(profileData);
     }
     navigate('/home');
   };
@@ -263,10 +266,6 @@ const ProfileSetupPage = () => {
           
           {isAnalyzing && (
             <div className="loading-message">Analyzing your profile...</div>
-          )}
-          
-          {analysisError && (
-            <div className="error-message">{analysisError}</div>
           )}
           
           {!isAnalyzing && (

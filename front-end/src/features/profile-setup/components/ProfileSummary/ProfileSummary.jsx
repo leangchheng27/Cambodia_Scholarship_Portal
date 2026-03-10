@@ -51,6 +51,21 @@ const ProfileSummary = ({
                 
                 {grades && Object.keys(grades).filter(k => grades[k]).length > 0 && (
                   <>
+                    {/* Display entered grades */}
+                    <div className="summary-item">
+                      <span className="summary-label">Your Grades:</span>
+                      <div className="grades-list">
+                        {Object.entries(grades)
+                          .filter(([_, grade]) => grade)
+                          .map(([subject, grade]) => (
+                            <div key={subject} className="grade-item">
+                              <span className="grade-subject">{subject}:</span>
+                              <span className="grade-value">{grade}</span>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                    
                     {gpa > 0 && (
                       <div className="summary-item">
                         <span className="summary-label">GPA:</span>
@@ -82,7 +97,7 @@ const ProfileSummary = ({
                     )}
                     
                     <div className="ai-notice">
-                      <span className="ai-icon">🤖</span>
+                      <span className="ai-icon"></span>
                       <p>Our AI will analyze your profile and recommend scholarships that match your grades, subjects, and academic strengths!</p>
                     </div>
                   </>

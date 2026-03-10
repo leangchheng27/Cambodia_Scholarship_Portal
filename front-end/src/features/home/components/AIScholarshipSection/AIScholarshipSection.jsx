@@ -12,6 +12,9 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
 
   useEffect(() => {
     const fetchRecommendations = async () => {
+      console.log(`AIScholarshipSection [${type}] - userProfile:`, userProfile);
+      console.log(`AIScholarshipSection [${type}] - userProfile.grades:`, userProfile?.grades);
+      
       setIsLoading(true);
       try {
         // Prepare scholarship list based on type
@@ -26,6 +29,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
 
         // If user has grades, get AI recommendations (sorted by match score)
         if (userProfile?.grades && Object.keys(userProfile.grades).length > 0) {
+          console.log(`AIScholarshipSection [${type}] - User has grades, getting AI recommendations`);
           const gpa = calculateGPA(userProfile.grades);
           const enrichedProfile = {
             ...userProfile,
@@ -40,7 +44,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
           setRecommendations(aiRecommendations);
         } else {
           // Show default scholarships for users without profile
-          console.log(`AIScholarshipSection [${type}] - No user profile, showing default scholarships`);
+          console.log(`AIScholarshipSection [${type}] - No user profile or grades, showing default scholarships`);
           setRecommendations(scholarshipList.slice(0, limit));
         }
       } catch (error) {
@@ -79,15 +83,15 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
       <div className="section-header">
         <div className="section-header-container">
           <h1 className="section-main-title">{title}</h1>
+          <p className="section-subtitle-header">
+            {userProfile?.grades && Object.keys(userProfile.grades).length > 0 
+              ? 'Scholarships that best match your academic profile and interests' 
+              : subtitle}
+          </p>
         </div>
       </div>
 
       <div className="section-container">
-        <p className="section-subtitle">
-          {userProfile?.grades && Object.keys(userProfile.grades).length > 0 
-            ? 'Scholarships that best match your academic profile and interests' 
-            : subtitle}
-        </p>
         
         {isLoading ? (
           <div className="scholarship-grid">

@@ -35,13 +35,13 @@
 
 .academic-type-btn:hover {
   background: white;
-  border-color: #3b82f6;
+  border-color: #2bb7df;
   transform: translateY(-2px);
 }
 
 .academic-type-btn.selected {
-  background: #3b82f6;
-  border-color: #2563eb;
+  background: #2bb7df;
+  border-color: #2bb7df;
   color: white;
 }
 

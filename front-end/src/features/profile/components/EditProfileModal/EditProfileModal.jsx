@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditProfileModal.css';
-import { SUBJECTS } from '../../../../utils/profileUtils';
+import { SUBJECTS } from '../../../../backend';
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
   // Edit form state
@@ -141,7 +141,7 @@ const handleStudentTypeChange = (newType) => {
                 onClick={() => handleStudentTypeChange('society')}
               >
                 <span className="type-icon">📚</span>
-                <span>Society Student</span>
+                <span>Social-Science Student</span>
               </button>
             </div>
           </div>
@@ -169,18 +169,6 @@ const handleStudentTypeChange = (newType) => {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* 
-          {/* Phone Input */}
-          <div className="form-group">
-            <label>Phone</label>
-            <input
-              type="tel"
-              value={editForm.phone}
-              onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-              placeholder="Enter your phone number"
-            />
           </div>
 
           {/* Nationality Input */}

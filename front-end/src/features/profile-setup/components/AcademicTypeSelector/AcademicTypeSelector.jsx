@@ -18,7 +18,7 @@ const AcademicTypeSelector = ({ academicType, onAcademicTypeChange }) => {
           onClick={() => onAcademicTypeChange('society')}
         >
           <span className="type-icon">📚</span>
-          <span className="type-label">Society Student</span>
+          <span className="type-label">Social-Science Student</span>
         </button>
       </div>
     </div>

@@ -126,24 +126,40 @@ export function getRecommendedFields(studentType, grades) {
  * Returns a score from 0-100
  */
 export function calculateMatchScore(userProfile, scholarship) {
+  console.log(`\n=== calculateMatchScore for ${scholarship.title} ===`);
+  console.log('userProfile:', userProfile);
+  console.log('userProfile.grades:', userProfile?.grades);
+  console.log('typeof grades:', typeof userProfile?.grades);
+  console.log('grades keys:', userProfile?.grades ? Object.keys(userProfile.grades) : 'No grades');
+  
   let score = 0;
   const maxScore = 100;
   
+  // Validate grades exist
+  if (!userProfile || !userProfile.grades || Object.keys(userProfile.grades).length === 0) {
+    console.warn(`No valid grades found for ${scholarship.title}, returning default score 50`);
+    return 50; // Default score if no grades
+  }
+  
   // Use academicType if studentType is not available (for backward compatibility)
-  const studentType = userProfile.studentType || userProfile.academicType;
+  const studentType = userProfile.studentType || userProfile.academicType || 'highschool';
+  console.log('studentType:', studentType);
   
   // 1. Check student type compatibility (20 points)
   if (scholarship.aiMetadata?.studentTypes) {
     if (scholarship.aiMetadata.studentTypes.includes(studentType) || 
         scholarship.aiMetadata.studentTypes.includes('both')) {
       score += 20;
+      console.log('Student type match: +20 points');
     }
   } else {
     score += 10; // Partial credit if not specified
+    console.log('No student type specified: +10 points');
   }
   
   // 2. Check field of study match (40 points)
   const recommendedFields = getRecommendedFields(studentType, userProfile.grades);
+  console.log('recommendedFields:', recommendedFields);
   if (scholarship.aiMetadata?.fieldCategories) {
     const matchingFields = recommendedFields.filter(field => 
       scholarship.aiMetadata.fieldCategories.some(category => 
@@ -151,34 +167,48 @@ export function calculateMatchScore(userProfile, scholarship) {
         field.toLowerCase().includes(category.toLowerCase())
       )
     );
-    score += Math.min(40, matchingFields.length * 10);
+    const fieldPoints = Math.min(40, matchingFields.length * 10);
+    score += fieldPoints;
+    console.log(`Field match (${matchingFields.length} fields): +${fieldPoints} points`);
   }
   
   // 3. Check GPA requirements (20 points)
   const gpa = parseFloat(calculateGPA(userProfile.grades));
-  if (scholarship.aiMetadata?.minGPA) {
+  console.log('Calculated GPA:', gpa);
+  if (!isNaN(gpa) && scholarship.aiMetadata?.minGPA) {
     if (gpa >= scholarship.aiMetadata.minGPA) {
       score += 20;
+      console.log('GPA meets requirement: +20 points');
     } else if (gpa >= scholarship.aiMetadata.minGPA - 0.5) {
       score += 10; // Close to requirement
+      console.log('GPA close to requirement: +10 points');
     }
   } else {
     score += 15; // Partial credit if not specified
+    console.log('No GPA requirement or GPA is NaN: +15 points');
   }
   
   // 4. Check required subjects (20 points)
   if (scholarship.aiMetadata?.requiredSubjects) {
     const userStrongSubjects = analyzeStrongSubjects(userProfile.grades);
+    console.log('userStrongSubjects:', userStrongSubjects);
     const matchingSubjects = scholarship.aiMetadata.requiredSubjects.filter(subject =>
       userStrongSubjects.includes(subject)
     );
     const subjectMatchRatio = matchingSubjects.length / scholarship.aiMetadata.requiredSubjects.length;
-    score += Math.round(20 * subjectMatchRatio);
+    const subjectPoints = Math.round(20 * subjectMatchRatio);
+    score += subjectPoints;
+    console.log(`Subject match (${matchingSubjects.length}/${scholarship.aiMetadata.requiredSubjects.length}): +${subjectPoints} points`);
   } else {
     score += 10; // Partial credit if not specified
+    console.log('No required subjects: +10 points');
   }
   
-  return Math.min(maxScore, Math.round(score));
+  const finalScore = Math.min(maxScore, Math.round(score));
+  console.log(`Final score for ${scholarship.title}: ${finalScore}`);
+  const result = isNaN(finalScore) ? 50 : finalScore; // Ensure we never return NaN
+  console.log(`Returning: ${result} (isNaN check: ${isNaN(finalScore)})`);
+  return result;
 }
 
 /**
@@ -186,15 +216,31 @@ export function calculateMatchScore(userProfile, scholarship) {
  * Returns scholarships sorted by match score
  */
 export function getScholarshipRecommendations(userProfile, scholarships, limit = 10) {
+  console.log('getScholarshipRecommendations - userProfile:', userProfile);
+  console.log('getScholarshipRecommendations - scholarships count:', scholarships.length);
+  
   // Calculate match score for each scholarship
-  const scoredScholarships = scholarships.map(scholarship => ({
-    ...scholarship,
-    matchScore: calculateMatchScore(userProfile, scholarship),
-    matchReasons: generateMatchReasons(userProfile, scholarship)
-  }));
+  const scoredScholarships = scholarships.map(scholarship => {
+    const matchScore = calculateMatchScore(userProfile, scholarship);
+    console.log(`Calculated match score for ${scholarship.title}: ${matchScore}%`);
+    return {
+      ...scholarship,
+      matchScore,
+      matchReasons: generateMatchReasons(userProfile, scholarship)
+    };
+  });
   
   // Sort by match score (highest first)
-  scoredScholarships.sort((a, b) => b.matchScore - a.matchScore);
+  scoredScholarships.sort((a, b) => {
+    const diff = b.matchScore - a.matchScore;
+    console.log(`Comparing: ${a.title}(${a.matchScore}) vs ${b.title}(${b.matchScore}) = ${diff}`);
+    return diff;
+  });
+  
+  console.log('Sorted scholarships (top 5):');
+  scoredScholarships.slice(0, 5).forEach((s, i) => {
+    console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}%`);
+  });
   
   // Return top matches
   return scoredScholarships.slice(0, limit);

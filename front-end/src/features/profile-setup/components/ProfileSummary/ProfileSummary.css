@@ -49,6 +49,35 @@
   color: gold;
 }
 
+.grades-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.grade-item {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.grade-subject {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.grade-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: gold;
+}
+
 .strong-subjects-list,
 .recommended-fields-list {
   display: flex;
@@ -98,4 +127,22 @@
   font-size: 14px;
   line-height: 1.5;
   color: white;
+}
+
+@media (max-width: 768px) {
+  .profile-summary {
+    padding: 24px;
+  }
+
+  .grades-list {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-value {
+    font-size: 16px;
+  }
+
+  .gpa-display {
+    font-size: 20px;
+  }
 }

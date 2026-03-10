@@ -42,9 +42,9 @@
   margin-top: 30px;
 }
 
-.next-btn,
-.back-btn {
-  min-width: 250px;
+.button-group .next-btn,
+.button-group .back-btn {
+  width: 250px;
   height: 56px;
   background: #2bb7df;
   color: #fff;
@@ -59,15 +59,18 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  /* allow buttons to share available space equally when side-by-side */
-  flex: 1 1 auto;
 }
 
-.next-btn:hover,
-.back-btn:hover {
+.button-group .next-btn:hover,
+.button-group .back-btn:hover {
   background: #26a6c7;
+  color: #fff;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(43, 183, 223, 0.4);
+}
+
+.button-group .back-btn {
+  margin-top: 1px;
 }
 
 .success-step {

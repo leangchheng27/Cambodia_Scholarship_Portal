@@ -4,6 +4,9 @@
   height: 730px;
   overflow: hidden;
   background-color: #000;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
 .banner-slider {

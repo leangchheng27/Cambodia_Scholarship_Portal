@@ -25,12 +25,32 @@ export function useLogin() {
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        // Check if profile is completed, if not redirect to profile setup
+        // For regular users, check if they have any profile data
         const savedProfile = localStorage.getItem('profile');
-        if (!savedProfile) {
-          navigate('/profile-setup');
+        
+        if (savedProfile) {
+          // If profile exists, parse and check it has meaningful data
+          try {
+            const profile = JSON.parse(savedProfile);
+            console.log('Existing profile found:', profile);
+            
+            // If profile has any meaningful data, go to homepage
+            // This allows existing users to access the site
+            if (profile && (profile.profileType || profile.grades || profile.studentType)) {
+              console.log('Profile has data, redirecting to homepage');
+              navigate('/home');
+            } else {
+              console.log('Profile exists but empty, redirecting to setup');
+              navigate('/profile-setup');
+            }
+          } catch (e) {
+            console.error('Error parsing profile:', e);
+            navigate('/profile-setup');
+          }
         } else {
-          navigate('/home');
+          // No profile at all - definitely new user
+          console.log('No profile found, redirecting to setup');
+          navigate('/profile-setup');
         }
       }
       

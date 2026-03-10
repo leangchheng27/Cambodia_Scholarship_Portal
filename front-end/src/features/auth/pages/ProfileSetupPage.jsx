@@ -57,8 +57,7 @@ const ProfileSetupPage = () => {
           }
         } catch (error) {
           console.error('Error analyzing profile:', error);
-          setAnalysisError('Backend not connected. Showing profile without AI recommendations.');
-          // Set basic fallback data
+          // Silently fail - profile will show without AI recommendations
           setProfileData({
             gpa: 0,
             strongSubjects: [],
@@ -263,10 +262,6 @@ const ProfileSetupPage = () => {
           
           {isAnalyzing && (
             <div className="loading-message">Analyzing your profile...</div>
-          )}
-          
-          {analysisError && (
-            <div className="error-message">{analysisError}</div>
           )}
           
           {!isAnalyzing && (

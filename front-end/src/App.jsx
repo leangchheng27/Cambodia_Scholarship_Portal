@@ -8,7 +8,7 @@ import CambodiaScholarshipDetailPage from "./pages/scholarship/cambodia/Cambodia
 import InternshipPage from "./pages/scholarship/internship/InternshipPage.jsx";
 import InternshipDetailPage from "./pages/scholarship/internship/InternshipDetailPage.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useParams, useLocation } from "react-router-dom";
 import HomePage from "./pages/home/HomePage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import SignupPage from "./pages/auth/SignupPage.jsx";
@@ -17,6 +17,7 @@ import ProfileSetupPage from "./features/auth/pages/ProfileSetupPage.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import UniversityPage from "./pages/university/UniversityPage.jsx";
 import UniversityDetailPage from "./pages/university/UniversityDetailPage.jsx";
+import { isProfileCompleted } from "./utils/profileHelpers.js";
 
 // Redirect component for old routes
 const ScholarshipRedirect = ({ basePath }) => {
@@ -24,10 +25,33 @@ const ScholarshipRedirect = ({ basePath }) => {
   return <Navigate to={`${basePath}/detail/${id}`} replace />;
 };
 
-const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+const ProtectedRoute = ({ children, requireProfile = true }) => {
+  const { user, profile } = useAuth();
+  const location = useLocation();
 
-  return user ? children : <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Only check profile completion for homepage access
+  // Allow users with any profile data to access the site
+  if (requireProfile && location.pathname === '/home') {
+    // Check if profile has ANY data at all (lenient check for existing users)
+    const hasProfileData = profile && (
+      profile.profileType || 
+      profile.grades || 
+      profile.studentType || 
+      profile.universityField ||
+      Object.keys(profile).length > 0
+    );
+    
+    if (!hasProfileData) {
+      console.log('No profile data found, redirecting to profile setup');
+      return <Navigate to="/profile-setup" replace />;
+    }
+  }
+
+  return children;
 };
 
 const AdminRoute = ({ children }) => {
@@ -53,7 +77,14 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/profile-setup" element={<ProfileSetupPage />} />
+          <Route 
+            path="/profile-setup" 
+            element={
+              <ProtectedRoute requireProfile={false}>
+                <ProfileSetupPage />
+              </ProtectedRoute>
+            } 
+          />
           <Route
             path="/admin/dashboard"
             element={

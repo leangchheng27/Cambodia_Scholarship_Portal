@@ -45,6 +45,18 @@ body {
   padding: 0;
 }
 
+/* Ensure no gaps between banner and sections */
+.home-page .hero-banner {
+  margin-bottom: 0 !important;
+  display: block;
+}
+
+.home-page .scholarship-section,
+.home-page .international-section {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 /* Map Section */
 .map-section {
   padding: 60px 20px;

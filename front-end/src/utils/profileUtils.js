@@ -97,29 +97,68 @@ export function analyzeStrongSubjects(grades) {
 
 /**
  * Get AI-powered scholarship recommendations
- * This is a placeholder that calls the backend API
- * @param {Object} profile - User profile data
- * @returns {Promise<Array>} - Array of recommended scholarships
+ * @param {Object} userProfile - User profile data with grades and GPA
+ * @param {Array} scholarships - List of scholarships to match against
+ * @param {number} limit - Maximum number of recommendations (default: 10)
+ * @returns {Promise<Array>} - Array of recommended scholarships with match scores
  */
-export async function getAIRecommendations(profile) {
+export async function getAIRecommendations(userProfile, scholarships, limit = 10) {
+  console.log('getAIRecommendations called with:', { 
+    userProfile, 
+    scholarshipsCount: scholarships.length, 
+    limit 
+  });
+  
+  // Import scholarshipMatcher for fallback
+  const { getScholarshipRecommendations } = await import('./scholarshipMatcher');
+  
   try {
-    const response = await fetch('http://localhost:3000/api/recommendations', {
+    console.log('Sending request to backend...');
+    const response = await fetch('http://localhost:3000/recommendations/scholarships', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({ profile })
+      body: JSON.stringify({ 
+        userProfile,
+        scholarships,
+        useAI: true,
+        limit
+      })
     });
 
+    console.log('Backend response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error('Failed to get recommendations');
+      const errorText = await response.text();
+      console.error('Backend error response:', errorText);
+      throw new Error(`Failed to get recommendations: ${response.status}`);
     }
 
     const data = await response.json();
-    return data.recommendations || [];
+    console.log('Backend recommendations response:', data);
+    
+    if (data.success && data.data?.recommendations) {
+      console.log(`Received ${data.data.recommendations.length} recommendations with match scores`);
+      const sorted = data.data.recommendations.sort((a, b) => b.matchScore - a.matchScore);
+      sorted.forEach((rec, i) => {
+        console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
+      });
+      return sorted;
+    }
+    
+    console.warn('Backend response format unexpected:', data);
+    throw new Error('Invalid backend response format');
   } catch (error) {
     console.error('Error getting AI recommendations:', error);
-    return [];
+    console.log('Falling back to local client-side matching...');
+    // Use local client-side matching as fallback
+    const localRecommendations = getScholarshipRecommendations(userProfile, scholarships, limit);
+    console.log(`Local matching generated ${localRecommendations.length} recommendations with scores`);
+    localRecommendations.forEach((rec, i) => {
+      console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
+    });
+    return localRecommendations;
   }
 }

@@ -199,8 +199,8 @@ if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
                 { expiresIn: config.JWT_EXPIRE || '1d' }
             );
 
-            // Redirect to frontend with token
-            res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/home?token=${token}`);
+            // Redirect to frontend profile setup - ProtectedRoute will handle if they already have a profile
+            res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/profile-setup?token=${token}`);
         }
     );
 } else {

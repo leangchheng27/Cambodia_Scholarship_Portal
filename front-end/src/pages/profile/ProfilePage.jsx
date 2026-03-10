@@ -138,11 +138,6 @@ const ProfilePage = () => {
               </div>
               
               <div className="info-item">
-                <span className="info-label">Tell :</span>
-                <span className="info-value">{userData.phone}</span>
-              </div>
-              
-              <div className="info-item">
                 <span className="info-label">Nationality :</span>
                 <span className="info-value">{userData.nationality}</span>
               </div>
