@@ -2,6 +2,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
+// Synchronously parse Google OAuth token from URL before first render
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get('token');
+if (urlToken) {
+  localStorage.setItem('token', urlToken);
+  try {
+    const payload = JSON.parse(atob(urlToken.split('.')[1]));
+    localStorage.setItem('user', JSON.stringify({ id: payload.id, email: payload.email }));
+  } catch (e) {}
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
 export const AuthProvider = ({ children }) => {
   // Initialize state from localStorage
   const [user, setUser] = useState(() => {
@@ -18,30 +30,6 @@ export const AuthProvider = ({ children }) => {
     return savedProfile ? JSON.parse(savedProfile) : null;
   });
 
-  // Check for token in URL (from Google OAuth callback)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlToken = urlParams.get('token');
-    
-    if (urlToken) {
-      localStorage.setItem('token', urlToken);
-      setToken(urlToken);
-      
-      // Decode token to get user info (simple JWT decode)
-      try {
-        const payload = JSON.parse(atob(urlToken.split('.')[1]));
-        const userData = { id: payload.id, email: payload.email };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-      } catch (e) {
-        console.error('Failed to decode token:', e);
-      }
-      
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-  
   // Persist user to localStorage whenever it changes
   useEffect(() => {
     if (user) {

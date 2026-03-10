@@ -25,7 +25,5 @@ const validateUserCreation = (name, email, password) => {
   };
 };
 
-module.exports = {
-  validateEmail,
-  validateUserCreation,
-};
+export { validateEmail, validateUserCreation };
+

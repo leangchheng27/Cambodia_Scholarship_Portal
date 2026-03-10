@@ -1,6 +1,6 @@
 // User Repository - handles all database queries for users
-const pool = require('../db/database');
-const User = require('../models/User');
+import pool from '../../db/database.js';
+import User from '../../models/user/User.js';
 
 class UserRepository {
   // Get all users
@@ -70,4 +70,4 @@ class UserRepository {
   }
 }
 
-module.exports = UserRepository;
+export default UserRepository;

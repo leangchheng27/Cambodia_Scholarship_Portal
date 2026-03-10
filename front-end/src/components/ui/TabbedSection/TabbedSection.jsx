@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import './TabbedSection.css';
 
-const TabbedSection = ({ tabs, content }) => {
+const TabbedSection = ({ tabs, content, showSectionHeader }) => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
-    <div className="tabbed-section-container">
-      <div className="tab-navigation">
+    <>
+      {showSectionHeader && (
+        <div className="tab-section-header">
+          <h2>{activeTab}</h2>
+        </div>
+      )}
+      <div className="tabbed-section-container">
+        <div className="tab-navigation">
         {tabs.map(tab => (
           <button
             key={tab}
@@ -18,10 +24,11 @@ const TabbedSection = ({ tabs, content }) => {
           </button>
         ))}
       </div>
-      <div className="tab-content">
-        {content[activeTab]}
+        <div className="tab-content">
+          {content[activeTab]}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

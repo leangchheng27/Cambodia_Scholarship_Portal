@@ -86,7 +86,39 @@ export async function getCurrentUser() {
  * Initiate Google OAuth login
  */
 export function loginWithGoogle() {
-  window.location.href = 'http://localhost:3000/api/auth/google';
+  window.location.href = 'http://localhost:3000/auth/google';
+}
+
+/**
+ * Step 1: Forgot Password - Send OTP to email
+ * @param {string} email 
+ * @returns {Object} - { message }
+ */
+export async function forgotPassword(email) {
+  try {
+    const response = await API.post('/auth/forgot-password', { email });
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error || 'Failed to send reset email';
+    throw new Error(message);
+  }
+}
+
+/**
+ * Step 2: Reset Password - Verify OTP and reset password
+ * @param {string} email 
+ * @param {string} otp 
+ * @param {string} newPassword 
+ * @returns {Object} - { message }
+ */
+export async function resetPassword(email, otp, newPassword) {
+  try {
+    const response = await API.post('/auth/reset-password', { email, otp, newPassword });
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error || 'Failed to reset password';
+    throw new Error(message);
+  }
 }
 
 /**

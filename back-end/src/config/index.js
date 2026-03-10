@@ -1,5 +1,5 @@
 // Configuration file for environment variables
-module.exports = {
+ const config = {
   PORT: process.env.PORT || 3000,
   NODE_ENV: process.env.NODE_ENV || 'development',
   
@@ -25,4 +25,6 @@ module.exports = {
 
   // Frontend URL (for OAuth redirects)
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
-};
+ };
+ 
+ export default config;

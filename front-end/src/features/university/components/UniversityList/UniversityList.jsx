@@ -1,16 +1,13 @@
 import React from "react";
 import './UniversityList.css';
+import { universities } from '../../../../data/universities';
 
-const universities = [
-  { id: 1, name: "Cambodia Academy of Digital Technology", province: "Phnom Penh", city: "Phnom Penh" },
-  { id: 2, name: "Royal University of Phnom Penh", province: "Phnom Penh", city: "Phnom Penh" },
-  { id: 3, name: "Institute of Technology of Cambodia", province: "Phnom Penh", city: "Phnom Penh" },
-  { id: 4, name: "Royal University of Agriculture", province: "Phnom Penh", city: "Phnom Penh" },
-  { id: 5, name: "Royal University of Law and Economics", province: "Phnom Penh", city: "Phnom Penh" },
-  // ...add more as needed
-];
+const UniversityList = ({ onUniversityClick, selectedProvince }) => {
+  const filtered = selectedProvince
+    ? universities.filter((u) => u.province === selectedProvince)
+    : universities;
 
-const UniversityList = ({ onUniversityClick }) => (
+  return (
   <div className="university-list-container">
     <table className="university-list-table">
       <thead>
@@ -21,7 +18,7 @@ const UniversityList = ({ onUniversityClick }) => (
         </tr>
       </thead>
       <tbody>
-        {universities.map((university) => (
+        {filtered.map((university) => (
           <tr
             key={university.id}
             className="clickable-row"
@@ -39,6 +36,7 @@ const UniversityList = ({ onUniversityClick }) => (
       </tbody>
     </table>
   </div>
-);
+  );
+};
 
 export default UniversityList;

@@ -5,7 +5,7 @@ import './ScholarshipTabs.css';
 const ScholarshipTabs = ({ id, basePath, activePage, children }) => {
   const tabs = [
     { key: 'overview', label: 'Overview', path: `${basePath}/detail/${id}/overview` },
-    { key: 'program', label: 'Application Program', path: `${basePath}/detail/${id}/program` },
+    { key: 'applicable-program', label: 'Application Program', path: `${basePath}/detail/${id}/applicable-program` },
     { key: 'benefits', label: 'Benefits', path: `${basePath}/detail/${id}/benefits` },
     { key: 'eligibility', label: 'Eligibility', path: `${basePath}/detail/${id}/eligibility` }
   ];

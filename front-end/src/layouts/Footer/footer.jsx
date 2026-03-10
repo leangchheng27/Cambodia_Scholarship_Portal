@@ -6,49 +6,76 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-container">
         {/* Why Choose CSP and Features Section */}
-        <div className="footer-section why-choose">
+        <div className="footer-top-band">
           <div className="why-choose-content">
-            <h3 className="footer-title">Why choose CSP?</h3>
-            <p className="footer-text">
-              Find, Apply, Succeed. Discover scholarships quickly with 
-              <span className="highlight"> 100% </span> 
+            <h3 className="why-choose-title">Why choose CSP?</h3>
+            <p className="why-choose-text">
+              Find. Apply. Succeed. Discover scholarships quickly with{' '}
+              <span className="highlight">CSP</span>{' '}
               verified programs and personalized tools.
             </p>
           </div>
 
           {/* Features Section */}
-          <div className="footer-section features">
-            <h3 className="footer-title">Features</h3>
-          <div className="features-grid">
-            <div className="feature-item">
-              <div className="feature-icon">🚀</div>
-              <div>
+          <div className="features-section">
+            <div className="features-header">
+              <h3 className="features-title">Features</h3>
+              <div className="features-search">
+                <input type="text" placeholder="" readOnly />
+                <span className="search-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div className="features-grid">
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                  </svg>
+                </div>
                 <h4>Fast Application</h4>
-                <p>Apply for scholarships quickly without hassle</p>
+                <p>Apply for scholarship quickly without hassle</p>
               </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">✓</div>
-              <div>
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="5" y="2" width="14" height="20" rx="2"/>
+                    <line x1="9" y1="7" x2="15" y2="7"/>
+                    <line x1="9" y1="11" x2="15" y2="11"/>
+                    <line x1="9" y1="15" x2="12" y2="15"/>
+                  </svg>
+                </div>
                 <h4>Verified Programs</h4>
-                <p>All scholarships are checked and verified</p>
+                <p>All scholarship are checked and up-to-date</p>
               </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">👤</div>
-              <div>
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                </div>
                 <h4>Personalized Matches</h4>
-                <p>Find scholarships that fit in your profile</p>
+                <p>Find scholarship that fit your profile</p>
               </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">📍</div>
-              <div>
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
                 <h4>Helpful Resources</h4>
-                <p>Access guide and tips to improve your application</p>
+                <p>Access guide and tips to improve your applications</p>
               </div>
             </div>
-          </div>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 .university-filter-map-row {
   display: flex;
   gap: 32px;
-  align-items: flex-start;
-  margin-top: 30px;
+  align-items: center;
+  margin-top: 0;
+  position: relative;
 }

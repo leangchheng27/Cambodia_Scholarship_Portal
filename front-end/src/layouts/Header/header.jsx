@@ -109,7 +109,7 @@ export default function Header()  {
 
             <div className="logo-container">
                 <div className="logo-section">
-                    <img src={logo} alt="Cambodia Scholarship Portal" className="header-logo" />
+                    <Link to="/home"><img src={logo} alt="Cambodia Scholarship Portal" className="header-logo" /></Link>
 
                     <div className="nav-actions-group">
                         <nav className="nav-menu">

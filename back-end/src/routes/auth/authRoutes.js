@@ -1,11 +1,11 @@
 // src/routes/authRoutes.js
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const config = require('../config');
-const { authenticateToken } = require('../middlewares/authToken');
-const { sendOTPEmail } = require('../utils/mailer');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import config from '../../config/index.js';
+import { authenticateToken } from '../../middlewares/auth/authToken.js';
+import { sendOTPEmail, sendPasswordResetEmail } from '../../utils/mailer.js';
 
 const router = express.Router();
 
@@ -188,7 +188,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
  */
 router.get(
     '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/api/auth/login' }),
+    passport.authenticate('google', { failureRedirect: '/auth/login' }),
     (req, res) => {
         // User is authenticated, generate JWT
         const token = jwt.sign(
@@ -198,7 +198,7 @@ router.get(
         );
 
         // Redirect to frontend with token
-        res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/?token=${token}`);
+        res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/home?token=${token}`);
     }
 );
 
@@ -210,4 +210,66 @@ router.post('/logout', (req, res) => {
     res.json({ message: 'Logged out successfully' });
 });
 
-module.exports = { router, initAuthRoutes };
+/**
+ * POST /auth/forgot-password
+ * Step 1 - Send password reset OTP to email
+ */
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await AuthUser.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ error: 'No account found with this email' });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        user.otp = otp;
+        user.otpExpiresAt = otpExpiresAt;
+        await user.save();
+
+        await sendPasswordResetEmail(email, otp);
+
+        res.json({ message: 'Password reset code sent to your email. Please check your inbox.' });
+    } catch (err) {
+        console.error('Forgot password error:', err);
+        res.status(500).json({ error: 'Failed to send reset email', details: err.message });
+    }
+});
+
+/**
+ * POST /auth/reset-password
+ * Step 2 - Verify OTP and reset password
+ */
+router.post('/reset-password', async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    try {
+        const user = await AuthUser.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (!user.otp || user.otp !== otp) {
+            return res.status(400).json({ error: 'Invalid reset code' });
+        }
+
+        if (new Date() > new Date(user.otpExpiresAt)) {
+            return res.status(400).json({ error: 'Reset code has expired. Please request a new one.' });
+        }
+
+        user.password = newPassword;
+        user.otp = null;
+        user.otpExpiresAt = null;
+        await user.save();
+
+        res.json({ message: 'Password has been reset successfully! You can now login with your new password.' });
+    } catch (err) {
+        console.error('Reset password error:', err);
+        res.status(500).json({ error: 'Failed to reset password', details: err.message });
+    }
+});
+
+export { router, initAuthRoutes };
