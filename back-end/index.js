@@ -57,8 +57,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Configure Google strategy
-passport.use(createGoogleStrategy(AuthUser));
+// Configure Google strategy only if credentials are provided
+if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
+  passport.use(createGoogleStrategy(AuthUser));
+  console.log('✅ Google OAuth enabled');
+} else {
+  console.log('⚠️  Google OAuth disabled (credentials not configured)');
+}
 
 // Passport serialization
 passport.serializeUser((user, done) => {
