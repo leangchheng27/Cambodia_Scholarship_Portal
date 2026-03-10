@@ -1,16 +1,37 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const session = require('express-session');
-const passport = require('passport');
-const config = require('./src/config');
-const errorHandler = require('./src/middlewares/errorHandler');
-const userRoutes = require('./src/routes/userRoutes');
-const { router: authRoutes, initAuthRoutes } = require('./src/routes/authRoutes');
-const { sequelize, AuthUser } = require('./src/db/sequelize');
-const { createGoogleStrategy } = require('./src/strategies/googleStrategy');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import session from 'express-session';
+import passport from 'passport';
+import config from './src/config/index.js';
+import errorHandler from './src/middlewares/errorHandler.js';
+import userRoutes from './src/routes/user/userRoutes.js';
+import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
+import sequelize from './src/db/database.js';
+import AuthUserModel from './src/models/auth/AuthUser.js';
+
+const AuthUser = AuthUserModel(sequelize);
+import { createGoogleStrategy } from './src/strategies/auth/googleStrategy.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
+
+// Swagger setup
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'CSP API',
+      version: '1.0.0',
+      description: 'API documentation for Cambodia Scholarship Portal',
+    },
+  },
+  apis: ['./routes/*.js'], // Path to your route files for Swagger comments
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware
 app.use(express.json());
@@ -63,7 +84,7 @@ app.use('/api/recommendations', require('./src/routes/recommendationRoutes'));
 
 // Health check endpoint
 app.get('/', (req, res) => {
-  res.json({ message: 'API is running', status: 'success' });
+  res.json({ message: 'App is running', status: 'success' });
 });
 
 // 404 handler
@@ -74,22 +95,11 @@ app.use((req, res) => {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server with database sync
-sequelize.sync().then(() => {
-  app.listen(config.PORT, () => {
-    console.log(`
+// Start server without database sync
+app.listen(config.PORT, () => {
+  console.log(`
 🚀 Server running on http://localhost:${config.PORT}
 📝 Environment: ${config.NODE_ENV}
-🔐 Auth routes available at /api/auth
-    `);
-  });
-}).catch((err) => {
-  console.error('Failed to sync database:', err);
-  // Fall back to starting without database sync
-  app.listen(config.PORT, () => {
-    console.log(`
-🚀 Server running on http://localhost:${config.PORT} (DB sync failed)
-📝 Environment: ${config.NODE_ENV}
-    `);
-  });
+🔐 Auth routes available at /auth
+  `);
 });

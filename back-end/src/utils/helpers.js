@@ -22,8 +22,4 @@ const formatResponse = (success, data = null, message = '') => {
   };
 };
 
-module.exports = {
-  hashPassword,
-  comparePassword,
-  formatResponse,
-};
+export { hashPassword, comparePassword, formatResponse };

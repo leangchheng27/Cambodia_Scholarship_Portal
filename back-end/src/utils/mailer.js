@@ -1,6 +1,6 @@
 // src/utils/mailer.js
-const nodemailer = require('nodemailer');
-const config = require('../config');
+import nodemailer from 'nodemailer';
+import config from '../config/index.js';
 
 // Create transporter for sending emails
 const transporter = nodemailer.createTransport({
@@ -209,4 +209,4 @@ async function sendPasswordResetEmail(to, otp) {
     await transporter.sendMail(mailOptions);
 }
 
-module.exports = { sendOTPEmail, sendPasswordResetEmail };
+export { sendOTPEmail, sendPasswordResetEmail };
