@@ -1,6 +1,9 @@
 // Admin routes - only accessible by admin users
 import express from 'express';
 import { authenticateAdmin } from '../../middlewares/auth/adminMiddleware.js';
+import University from '../../models/university/University.js';
+import Scholarship from '../../models/scholarship/Scholarship.js';
+import Internship from '../../models/internship/Internship.js';
 
 const router = express.Router();
 
@@ -26,6 +29,10 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         const totalAdmins = await AuthUser.count({ where: { role: 'admin' } });
         const verifiedUsers = await AuthUser.count({ where: { isVerified: true, role: 'user' } });
         const unverifiedUsers = await AuthUser.count({ where: { isVerified: false, role: 'user' } });
+        
+        const totalUniversities = await University.count();
+        const totalScholarships = await Scholarship.count();
+        const totalInternships = await Internship.count();
 
         res.json({
             stats: {
@@ -34,6 +41,9 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
                 verifiedUsers,
                 unverifiedUsers,
                 totalAll: totalUsers + totalAdmins,
+                totalUniversities,
+                totalScholarships,
+                totalInternships,
             }
         });
     } catch (err) {
@@ -159,6 +169,352 @@ router.get('/profile', authenticateAdmin, async (req, res) => {
         res.json({ admin });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch profile', details: err.message });
+    }
+});
+
+// ============================================
+// UNIVERSITY MANAGEMENT ROUTES
+// ============================================
+
+/**
+ * GET /admin/universities
+ * Get all universities
+ */
+router.get('/universities', authenticateAdmin, async (req, res) => {
+    try {
+        const universities = await University.findAll({
+            order: [['id', 'DESC']],
+        });
+        res.json({ universities });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch universities', details: err.message });
+    }
+});
+
+/**
+ * GET /admin/universities/:id
+ * Get single university
+ */
+router.get('/universities/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const university = await University.findByPk(req.params.id);
+        if (!university) {
+            return res.status(404).json({ error: 'University not found' });
+        }
+        res.json({ university });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch university', details: err.message });
+    }
+});
+
+/**
+ * POST /admin/universities
+ * Create new university
+ */
+router.post('/universities', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, location, image_url, website } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ error: 'University name is required' });
+        }
+
+        const university = await University.create({
+            name,
+            description,
+            location,
+            image_url,
+            website,
+        });
+
+        res.status(201).json({ 
+            message: 'University created successfully',
+            university 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create university', details: err.message });
+    }
+});
+
+/**
+ * PUT /admin/universities/:id
+ * Update university
+ */
+router.put('/universities/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, location, image_url, website } = req.body;
+        const university = await University.findByPk(req.params.id);
+        
+        if (!university) {
+            return res.status(404).json({ error: 'University not found' });
+        }
+
+        if (name !== undefined) university.name = name;
+        if (description !== undefined) university.description = description;
+        if (location !== undefined) university.location = location;
+        if (image_url !== undefined) university.image_url = image_url;
+        if (website !== undefined) university.website = website;
+
+        await university.save();
+        
+        res.json({ 
+            message: 'University updated successfully',
+            university 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update university', details: err.message });
+    }
+});
+
+/**
+ * DELETE /admin/universities/:id
+ * Delete university
+ */
+router.delete('/universities/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const university = await University.findByPk(req.params.id);
+        
+        if (!university) {
+            return res.status(404).json({ error: 'University not found' });
+        }
+
+        await university.destroy();
+        
+        res.json({ message: 'University deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete university', details: err.message });
+    }
+});
+
+// ============================================
+// SCHOLARSHIP MANAGEMENT ROUTES
+// ============================================
+
+/**
+ * GET /admin/scholarships
+ * Get all scholarships
+ */
+router.get('/scholarships', authenticateAdmin, async (req, res) => {
+    try {
+        const scholarships = await Scholarship.findAll({
+            order: [['id', 'DESC']],
+        });
+        res.json({ scholarships });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch scholarships', details: err.message });
+    }
+});
+
+/**
+ * GET /admin/scholarships/:id
+ * Get single scholarship
+ */
+router.get('/scholarships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const scholarship = await Scholarship.findByPk(req.params.id);
+        if (!scholarship) {
+            return res.status(404).json({ error: 'Scholarship not found' });
+        }
+        res.json({ scholarship });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch scholarship', details: err.message });
+    }
+});
+
+/**
+ * POST /admin/scholarships
+ * Create new scholarship
+ */
+router.post('/scholarships', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, funded_by, course_duration, registration_link, image_url } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ error: 'Scholarship name is required' });
+        }
+
+        const scholarship = await Scholarship.create({
+            name,
+            description,
+            funded_by,
+            course_duration,
+            registration_link,
+            image_url,
+        });
+
+        res.status(201).json({ 
+            message: 'Scholarship created successfully',
+            scholarship 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create scholarship', details: err.message });
+    }
+});
+
+/**
+ * PUT /admin/scholarships/:id
+ * Update scholarship
+ */
+router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, funded_by, course_duration, registration_link, image_url } = req.body;
+        const scholarship = await Scholarship.findByPk(req.params.id);
+        
+        if (!scholarship) {
+            return res.status(404).json({ error: 'Scholarship not found' });
+        }
+
+        if (name !== undefined) scholarship.name = name;
+        if (description !== undefined) scholarship.description = description;
+        if (funded_by !== undefined) scholarship.funded_by = funded_by;
+        if (course_duration !== undefined) scholarship.course_duration = course_duration;
+        if (registration_link !== undefined) scholarship.registration_link = registration_link;
+        if (image_url !== undefined) scholarship.image_url = image_url;
+
+        await scholarship.save();
+        
+        res.json({ 
+            message: 'Scholarship updated successfully',
+            scholarship 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update scholarship', details: err.message });
+    }
+});
+
+/**
+ * DELETE /admin/scholarships/:id
+ * Delete scholarship
+ */
+router.delete('/scholarships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const scholarship = await Scholarship.findByPk(req.params.id);
+        
+        if (!scholarship) {
+            return res.status(404).json({ error: 'Scholarship not found' });
+        }
+
+        await scholarship.destroy();
+        
+        res.json({ message: 'Scholarship deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete scholarship', details: err.message });
+    }
+});
+
+// ============================================
+// INTERNSHIP MANAGEMENT ROUTES
+// ============================================
+
+/**
+ * GET /admin/internships
+ * Get all internships
+ */
+router.get('/internships', authenticateAdmin, async (req, res) => {
+    try {
+        const internships = await Internship.findAll({
+            order: [['id', 'DESC']],
+        });
+        res.json({ internships });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch internships', details: err.message });
+    }
+});
+
+/**
+ * GET /admin/internships/:id
+ * Get single internship
+ */
+router.get('/internships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const internship = await Internship.findByPk(req.params.id);
+        if (!internship) {
+            return res.status(404).json({ error: 'Internship not found' });
+        }
+        res.json({ internship });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch internship', details: err.message });
+    }
+});
+
+/**
+ * POST /admin/internships
+ * Create new internship
+ */
+router.post('/internships', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, company, duration, registration_link, image_url } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ error: 'Internship name is required' });
+        }
+
+        const internship = await Internship.create({
+            name,
+            description,
+            company,
+            duration,
+            registration_link,
+            image_url,
+        });
+
+        res.status(201).json({ 
+            message: 'Internship created successfully',
+            internship 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create internship', details: err.message });
+    }
+});
+
+/**
+ * PUT /admin/internships/:id
+ * Update internship
+ */
+router.put('/internships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, description, company, duration, registration_link, image_url } = req.body;
+        const internship = await Internship.findByPk(req.params.id);
+        
+        if (!internship) {
+            return res.status(404).json({ error: 'Internship not found' });
+        }
+
+        if (name !== undefined) internship.name = name;
+        if (description !== undefined) internship.description = description;
+        if (company !== undefined) internship.company = company;
+        if (duration !== undefined) internship.duration = duration;
+        if (registration_link !== undefined) internship.registration_link = registration_link;
+        if (image_url !== undefined) internship.image_url = image_url;
+
+        await internship.save();
+        
+        res.json({ 
+            message: 'Internship updated successfully',
+            internship 
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update internship', details: err.message });
+    }
+});
+
+/**
+ * DELETE /admin/internships/:id
+ * Delete internship
+ */
+router.delete('/internships/:id', authenticateAdmin, async (req, res) => {
+    try {
+        const internship = await Internship.findByPk(req.params.id);
+        
+        if (!internship) {
+            return res.status(404).json({ error: 'Internship not found' });
+        }
+
+        await internship.destroy();
+        
+        res.json({ message: 'Internship deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete internship', details: err.message });
     }
 });
 

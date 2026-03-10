@@ -5,7 +5,7 @@ import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
 import EditProfileModal from '../../features/profile/components/EditProfileModal/EditProfileModal.jsx';
 import AIRecommendations from '../../features/profile/components/AIRecommendations/AIRecommendations.jsx';
-import { calculateGPA, analyzeStrongSubjects } from '../../backend';
+import { calculateGPA, analyzeStrongSubjects } from '../../utils/profileUtils';
 import './ProfilePage.css';
 
 const ProfilePage = () => {

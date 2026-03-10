@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAIRecommendations, calculateGPA } from '../../../../backend';
+import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
 import { cambodiaScholarships } from '../../../../data/cambodiaScholarships';
 import { abroadScholarships } from '../../../../data/abroadScholarships';
 import './AIScholarshipSection.css';

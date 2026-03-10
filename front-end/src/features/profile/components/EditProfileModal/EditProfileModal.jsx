@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditProfileModal.css';
-import { SUBJECTS } from '../../../../backend';
+import { SUBJECTS } from '../../../../utils/profileUtils';
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
   // Edit form state
