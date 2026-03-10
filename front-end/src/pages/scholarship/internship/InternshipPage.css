@@ -1,10 +1,10 @@
+/* Import Shared Scholarship Card Styles */
+@import '../../../components/ScholarshipCard/ScholarshipCard.css';
+
 .internship-list-page {
   min-height: 100vh;
   background-color: #f8f9fa;
 }
-
-/* Import Shared Scholarship Card Styles */
-@import '../../../components/ScholarshipCard/ScholarshipCard.css';
 
 /* Page Header */
 .page-header {

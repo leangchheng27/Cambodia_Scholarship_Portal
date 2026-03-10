@@ -3,8 +3,8 @@
  * Maps student subjects to recommended fields of study
  */
 
-const { SUBJECT_FIELD_MAPPING } = require('../../config/ai/constants');
-const { analyzeStrongSubjects } = require('./profileAnalyzer');
+import { SUBJECT_FIELD_MAPPING } from '../../config/ai/constants.js';
+import { analyzeStrongSubjects } from './profileAnalyzer.js';
 
 /**
  * Get recommended fields based on strong subject combinations
@@ -77,7 +77,7 @@ function getMatchingFields(recommendedFields, scholarshipFields) {
   );
 }
 
-module.exports = {
+export {
   getRecommendedFields,
   isFieldMatch,
   getMatchingFields

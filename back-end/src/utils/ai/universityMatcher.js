@@ -180,7 +180,7 @@ function generateUniversityMatchReasons(scholarship, userField, matchScore) {
   return reasons.length > 0 ? reasons : ['Consider this opportunity'];
 }
 
-module.exports = {
+export {
   matchesUniversityField,
   calculateUniversityMatchScore,
   getUniversityInternshipRecommendations,

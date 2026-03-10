@@ -3,13 +3,13 @@
  * Provides AI-powered scholarship matching using semantic embeddings
  */
 
-const { HfInference } = require('@huggingface/inference');
-const { 
+import { HfInference } from '@huggingface/inference';
+import { 
   getScholarshipEmbeddingText, 
   getUserProfileEmbeddingText,
   calculateMatchScore 
-} = require('./recommendationEngine');
-const { AI_CONFIG, MATCH_THRESHOLDS } = require('../../config/ai/constants');
+} from './recommendationEngine.js';
+import { AI_CONFIG, MATCH_THRESHOLDS } from '../../config/ai/constants.js';
 
 // Initialize Hugging Face client
 // API key should be set in environment variables
@@ -262,7 +262,7 @@ function clearEmbeddingsCache() {
   console.log('Embeddings cache cleared');
 }
 
-module.exports = {
+export {
   generateEmbedding,
   cosineSimilarity,
   getAIRecommendations,

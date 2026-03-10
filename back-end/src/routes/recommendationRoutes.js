@@ -3,14 +3,14 @@
  * API endpoints for scholarship recommendations
  */
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {
+import {
   analyzeProfile,
   getRecommendations,
   analyzeUniversityProfile,
   precomputeEmbeddings
-} = require('../controllers/recommendationController');
+} from '../controllers/recommendationController.js';
 
 /**
  * @route   POST /api/recommendations/analyze-profile
@@ -48,4 +48,4 @@ router.post('/university-profile', analyzeUniversityProfile);
  */
 router.post('/precompute-embeddings', precomputeEmbeddings);
 
-module.exports = router;
+export default router;

@@ -3,7 +3,7 @@
  * Analyzes student profiles and calculates metrics
  */
 
-const { GRADE_POINTS } = require('../../config/ai/constants');
+import { GRADE_POINTS } from '../../config/ai/constants.js';
 
 /**
  * Analyze student's strong subjects (grades A or B)
@@ -75,7 +75,7 @@ function validateProfile(userProfile) {
   };
 }
 
-module.exports = {
+export {
   analyzeStrongSubjects,
   calculateGPA,
   getPerformanceLevel,

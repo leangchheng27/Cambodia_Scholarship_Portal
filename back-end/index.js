@@ -7,6 +7,7 @@ import config from './src/config/index.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import userRoutes from './src/routes/user/userRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
+import recommendationRoutes from './src/routes/recommendationRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
 
@@ -80,7 +81,7 @@ initAuthRoutes(AuthUser);
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/recommendations', require('./src/routes/recommendationRoutes'));
+app.use('/api/recommendations', recommendationRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

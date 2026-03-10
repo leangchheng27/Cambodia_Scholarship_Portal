@@ -3,9 +3,9 @@
  * Rule-based scholarship matching algorithm
  */
 
-const { MATCH_WEIGHTS } = require('../../config/ai/constants');
-const { calculateGPA, analyzeStrongSubjects } = require('../../utils/ai/profileAnalyzer');
-const { getRecommendedFields, getMatchingFields } = require('../../utils/ai/fieldMatcher');
+import { MATCH_WEIGHTS } from '../../config/ai/constants.js';
+import { calculateGPA, analyzeStrongSubjects } from '../../utils/ai/profileAnalyzer.js';
+import { getRecommendedFields, getMatchingFields } from '../../utils/ai/fieldMatcher.js';
 
 /**
  * Calculate match score between user profile and scholarship
@@ -154,7 +154,7 @@ function getUserProfileEmbeddingText(userProfile) {
   return `${userProfile.studentType} student with GPA ${gpa}. Strong in ${strongSubjects.join(', ')}. Interested in ${recommendedFields.slice(0, 5).join(', ')}.`;
 }
 
-module.exports = {
+export {
   calculateMatchScore,
   generateMatchReasons,
   getScholarshipRecommendations,

@@ -102,7 +102,7 @@ const MATCH_THRESHOLDS = {
   POTENTIAL: 0
 };
 
-module.exports = {
+export {
   SUBJECT_FIELD_MAPPING,
   GRADE_POINTS,
   SUBJECTS,

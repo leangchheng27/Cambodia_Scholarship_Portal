@@ -67,8 +67,13 @@ const ProfilePage = () => {
   };
 
   const handleLogout = () => {
+    console.log('Logout button clicked');
     logout();
-    navigate('/login');
+    console.log('Logout completed, navigating to login');
+    // Use setTimeout to ensure state updates complete before navigation
+    setTimeout(() => {
+      navigate('/login', { replace: true });
+    }, 0);
   };
 
   const handleEditProfile = () => {
@@ -94,7 +99,7 @@ const ProfilePage = () => {
       <div className="profile-content">
         <div className="profile-header">
           <h1>My Profile</h1>
-          <button className="logout-btn" onClick={handleLogout}>
+          <button type="button" className="logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </div>
@@ -122,20 +127,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="action-buttons">
-              <button className="action-btn favorite-btn">
-                <span className="btn-icon">❤️</span>
-                <span>Favorite</span>
-                <span className="arrow"></span>
-              </button>
-              
-              <button className="action-btn language-btn">
-                <span className="btn-icon">🌐</span>
-                <span>Language</span>
-                <span className="arrow"></span>
-              </button>
-            </div>
 
             {/* Info Detail Section */}
             <div className="info-detail-section">
@@ -217,7 +208,7 @@ const ProfilePage = () => {
                           </div>
 
                           <div className="info-item">
-                            <span className="info-label">Strong Subjects :</span>
+                            <span className="info-label">Strong Subjects:</span>
                             <div className="tags-container" style={{display: 'inline-flex', gap: '6px', marginLeft: '8px'}}>
                               {getStrongSubjects().map((subject, index) => (
                                 <span key={index} className="tag strong-subject-tag">

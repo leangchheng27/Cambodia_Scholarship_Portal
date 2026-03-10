@@ -3,24 +3,24 @@
  * Handles API requests for AI-powered scholarship recommendations
  */
 
-const { 
+import { 
   calculateGPA, 
   analyzeStrongSubjects, 
   getPerformanceLevel,
   validateProfile
-} = require('../utils/ai/profileAnalyzer');
-const { getRecommendedFields } = require('../utils/ai/fieldMatcher');
-const { 
+} from '../utils/ai/profileAnalyzer.js';
+import { getRecommendedFields } from '../utils/ai/fieldMatcher.js';
+import { 
   calculateUniversityMatchScore,
   getUniversityInternshipRecommendations 
-} = require('../utils/ai/universityMatcher');
-const { 
+} from '../utils/ai/universityMatcher.js';
+import { 
   getScholarshipRecommendations 
-} = require('../services/ai/recommendationEngine');
-const { 
+} from '../services/ai/recommendationEngine.js';
+import { 
   getAIRecommendations,
   precomputeScholarshipEmbeddings
-} = require('../services/ai/huggingface');
+} from '../services/ai/huggingface.js';
 
 /**
  * Analyze user profile and return academic insights
@@ -221,7 +221,7 @@ const precomputeEmbeddings = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   analyzeProfile,
   getRecommendations,
   analyzeUniversityProfile,
