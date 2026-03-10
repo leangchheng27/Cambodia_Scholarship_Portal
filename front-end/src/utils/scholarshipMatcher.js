@@ -219,10 +219,17 @@ export function getScholarshipRecommendations(userProfile, scholarships, limit =
   console.log('getScholarshipRecommendations - userProfile:', userProfile);
   console.log('getScholarshipRecommendations - scholarships count:', scholarships.length);
   
+  // Check if scholarships have category tags
+  const withCategory = scholarships.filter(s => s.category);
+  console.log(`Scholarships with category: ${withCategory.length}`);
+  if (withCategory.length > 0) {
+    console.log('Sample scholarship:', withCategory[0].title, 'Category:', withCategory[0].category);
+  }
+  
   // Calculate match score for each scholarship
   const scoredScholarships = scholarships.map(scholarship => {
     const matchScore = calculateMatchScore(userProfile, scholarship);
-    console.log(`Calculated match score for ${scholarship.title}: ${matchScore}%`);
+    console.log(`Calculated match score for ${scholarship.title}: ${matchScore}% (Category: ${scholarship.category || 'MISSING'})`);
     return {
       ...scholarship,
       matchScore,
@@ -233,13 +240,12 @@ export function getScholarshipRecommendations(userProfile, scholarships, limit =
   // Sort by match score (highest first)
   scoredScholarships.sort((a, b) => {
     const diff = b.matchScore - a.matchScore;
-    console.log(`Comparing: ${a.title}(${a.matchScore}) vs ${b.title}(${b.matchScore}) = ${diff}`);
     return diff;
   });
   
   console.log('Sorted scholarships (top 5):');
   scoredScholarships.slice(0, 5).forEach((s, i) => {
-    console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}%`);
+    console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}% - Category: ${s.category || 'MISSING'}`);
   });
   
   // Return top matches

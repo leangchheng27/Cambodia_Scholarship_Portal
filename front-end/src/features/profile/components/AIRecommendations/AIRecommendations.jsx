@@ -24,8 +24,17 @@ const AIRecommendations = ({ userProfile }) => {
           return;
         }
 
-        // Combine all scholarships
-        const allScholarships = [...cambodiaScholarships, ...abroadScholarships];
+        // Tag scholarships with their category before combining
+        const taggedCambodiaScholarships = cambodiaScholarships.map(s => ({ ...s, category: 'cambodia' }));
+        const taggedAbroadScholarships = abroadScholarships.map(s => ({ ...s, category: 'abroad' }));
+        
+        console.log('Tagged Cambodia scholarships:', taggedCambodiaScholarships.length);
+        console.log('Tagged Abroad scholarships:', taggedAbroadScholarships.length);
+        console.log('Sample Cambodia:', taggedCambodiaScholarships[0]?.title, 'has category:', taggedCambodiaScholarships[0]?.category);
+        console.log('Sample Abroad:', taggedAbroadScholarships[0]?.title, 'has category:', taggedAbroadScholarships[0]?.category);
+        
+        const allScholarships = [...taggedCambodiaScholarships, ...taggedAbroadScholarships];
+        console.log('Combined scholarships:', allScholarships.length);
 
         // Calculate GPA for user profile
         const gpa = calculateGPA(userProfile.grades);
@@ -36,6 +45,8 @@ const AIRecommendations = ({ userProfile }) => {
 
         // Get AI recommendations
         const aiRecommendations = getScholarshipRecommendations(enrichedProfile, allScholarships, 12);
+        console.log('Received recommendations:', aiRecommendations.length);
+        console.log('Categories in recommendations:', aiRecommendations.map(r => r.category));
         setRecommendations(aiRecommendations);
         setLoading(false);
       } catch (err) {
@@ -52,13 +63,25 @@ const AIRecommendations = ({ userProfile }) => {
 
   const filteredRecommendations = recommendations.filter(scholarship => {
     if (showType === 'all') return true;
-    if (showType === 'cambodia') return cambodiaScholarships.some(s => s.id === scholarship.id);
-    if (showType === 'abroad') return abroadScholarships.some(s => s.id === scholarship.id);
+    if (showType === 'cambodia') return scholarship.category === 'cambodia';
+    if (showType === 'abroad') return scholarship.category === 'abroad';
     return true;
   });
 
+  console.log('=== FILTER DEBUG ===');
+  console.log('AIRecommendations - Current filter:', showType);
+  console.log('AIRecommendations - Total recommendations:', recommendations.length);
+  console.log('AIRecommendations - Filtered count:', filteredRecommendations.length);
+  console.log('AIRecommendations - Cambodia count:', recommendations.filter(s => s.category === 'cambodia').length);
+  console.log('AIRecommendations - Abroad count:', recommendations.filter(s => s.category === 'abroad').length);
+  console.log('Sample scholarships with categories:');
+  recommendations.slice(0, 3).forEach(s => {
+    console.log(`  - ${s.title}: category = ${s.category || 'UNDEFINED'}`);
+  });
+  console.log('===================');
+
   const getBasePath = (scholarship) => {
-    return cambodiaScholarships.some(s => s.id === scholarship.id) 
+    return scholarship.category === 'cambodia' 
       ? '/scholarships/cambodia' 
       : '/scholarships/abroad';
   };
@@ -125,21 +148,30 @@ const AIRecommendations = ({ userProfile }) => {
         <div className="filter-buttons">
           <button 
             className={`filter-btn ${showType === 'all' ? 'active' : ''}`}
-            onClick={() => setShowType('all')}
+            onClick={() => {
+              console.log('Filter clicked: all');
+              setShowType('all');
+            }}
           >
             All ({recommendations.length})
           </button>
           <button 
             className={`filter-btn ${showType === 'cambodia' ? 'active' : ''}`}
-            onClick={() => setShowType('cambodia')}
+            onClick={() => {
+              console.log('Filter clicked: cambodia');
+              setShowType('cambodia');
+            }}
           >
-            Cambodia ({recommendations.filter(s => cambodiaScholarships.some(cs => cs.id === s.id)).length})
+            Cambodia ({recommendations.filter(s => s.category === 'cambodia').length})
           </button>
           <button 
             className={`filter-btn ${showType === 'abroad' ? 'active' : ''}`}
-            onClick={() => setShowType('abroad')}
+            onClick={() => {
+              console.log('Filter clicked: abroad');
+              setShowType('abroad');
+            }}
           >
-            Abroad ({recommendations.filter(s => abroadScholarships.some(as => as.id === s.id)).length})
+            Abroad ({recommendations.filter(s => s.category === 'abroad').length})
           </button>
         </div>
       </div>
