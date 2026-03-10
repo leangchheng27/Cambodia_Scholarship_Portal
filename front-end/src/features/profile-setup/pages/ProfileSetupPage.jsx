@@ -43,7 +43,8 @@ const ProfileSetupPage = () => {
         setIsAnalyzing(true);
         setAnalysisError(null);
         try {
-          const response = await analyzeProfile(academicType, grades);
+          // pass a studentType (falls back to profileType or academicType) so backend validation succeeds
+          const response = await analyzeProfile(studentType || profileType || academicType, grades);
           console.log('API Response:', response);
           if (response.success) {
             setProfileData({
@@ -57,7 +58,9 @@ const ProfileSetupPage = () => {
           }
         } catch (error) {
           console.error('Error analyzing profile:', error);
-          setAnalysisError('Backend not connected. Showing profile without AI recommendations.');
+          // Surface server error when available to help debugging
+          const serverMessage = error?.response?.data?.error || error?.message;
+          setAnalysisError(serverMessage || 'Backend not connected. Showing profile without AI recommendations.');
           // Set basic fallback data
           setProfileData({
             gpa: 0,

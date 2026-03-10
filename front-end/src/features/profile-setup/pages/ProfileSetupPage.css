@@ -59,6 +59,8 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  /* allow buttons to share available space equally when side-by-side */
+  flex: 1 1 auto;
 }
 
 .next-btn:hover,
@@ -109,8 +111,13 @@
     flex-direction: column;
   }
 
+  /* Make buttons full-width and equal on small screens */
   .back-btn,
   .next-btn {
     max-width: 100%;
+    width: 100%;
+    min-width: 0; /* override desktop min-width */
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
