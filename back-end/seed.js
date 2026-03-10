@@ -1,8 +1,7 @@
-const { faker } = require('@faker-js/faker');
-const mysql = require('mysql2/promise');
+import { faker } from '@faker-js/faker';
+import mysql from 'mysql2/promise';
+import 'dotenv/config';
 
-// Update with your MySQL credentials
-require('dotenv').config();
 const dbConfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -34,9 +33,9 @@ async function seed() {
         'INSERT INTO university_major (university_id, name, degree_level, specialization) VALUES (?, ?, ?, ?)',
         [
           universityId,
-          faker.name.jobTitle(),
+          faker.person.jobTitle(),
           faker.helpers.arrayElement(['Bachelor', 'Master']),
-          faker.name.jobArea()
+          faker.person.jobArea()
         ]
       );
     }
@@ -117,7 +116,7 @@ async function seed() {
         'INSERT INTO scholarship_field_of_study (scholarship_id, field_name) VALUES (?, ?)',
         [
           scholarshipId,
-          faker.name.jobTitle()
+          faker.person.jobTitle()
         ]
       );
     }
@@ -178,7 +177,7 @@ async function seed() {
         'INSERT INTO internship_field_of_study (internship_id, field_name) VALUES (?, ?)',
         [
           internshipId,
-          faker.name.jobTitle()
+          faker.person.jobTitle()
         ]
       );
     }

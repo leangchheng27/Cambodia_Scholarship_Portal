@@ -1,7 +1,7 @@
 // src/models/AuthUser.js
 // User model for authentication using Sequelize
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+import { DataTypes } from 'sequelize';
+import bcrypt from 'bcrypt';
 
 const AuthUserModel = (sequelize) => {
     const AuthUser = sequelize.define('AuthUser', {
@@ -63,4 +63,4 @@ const AuthUserModel = (sequelize) => {
     return AuthUser;
 };
 
-module.exports = AuthUserModel;
+export default AuthUserModel;

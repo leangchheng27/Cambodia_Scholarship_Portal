@@ -1,11 +1,11 @@
 // src/routes/authRoutes.js
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const config = require('../../config');
-const { authenticateToken } = require('../../middlewares/authToken');
-const { sendOTPEmail, sendPasswordResetEmail } = require('../../utils/mailer');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import config from '../../config/index.js';
+import { authenticateToken } from '../../middlewares/auth/authToken.js';
+import { sendOTPEmail, sendPasswordResetEmail } from '../../utils/mailer.js';
 
 const router = express.Router();
 
@@ -188,7 +188,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
  */
 router.get(
     '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/api/auth/login' }),
+    passport.authenticate('google', { failureRedirect: '/auth/login' }),
     (req, res) => {
         // User is authenticated, generate JWT
         const token = jwt.sign(
@@ -272,4 +272,4 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-module.exports = { router, initAuthRoutes };
+export { router, initAuthRoutes };

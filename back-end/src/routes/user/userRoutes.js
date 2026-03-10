@@ -1,6 +1,6 @@
 // User Routes - defines all user-related endpoints
-const express = require('express');
-const UserController = require('../../controllers/user/userController');
+import express from 'express';
+import UserController from '../../controllers/user/userController.js';
 
 const router = express.Router();
 
@@ -19,4 +19,4 @@ router.put('/:id', UserController.updateUser);
 // DELETE /api/users/:id - Delete user
 router.delete('/:id', UserController.deleteUser);
 
-module.exports = router;
+export default router;
