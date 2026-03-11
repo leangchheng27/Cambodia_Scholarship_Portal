@@ -8,7 +8,14 @@ const scholarshipController = {
   // Get all scholarships
   async getAll(req, res) {
     try {
-      const scholarships = await Scholarship.findAll();
+      const scholarships = await Scholarship.findAll({
+        include: [
+          ScholarshipBenefit,
+          ScholarshipDeadline,
+          ScholarshipEligibility,
+          ScholarshipFieldOfStudy
+        ]
+      });
       res.json(scholarships);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -18,7 +25,14 @@ const scholarshipController = {
   // Get scholarship by ID
   async getById(req, res) {
     try {
-      const scholarship = await Scholarship.findByPk(req.params.id);
+      const scholarship = await Scholarship.findByPk(req.params.id, {
+        include: [
+          ScholarshipBenefit,
+          ScholarshipDeadline,
+          ScholarshipEligibility,
+          ScholarshipFieldOfStudy
+        ]
+      });
       if (!scholarship) return res.status(404).json({ error: 'Scholarship not found' });
       res.json(scholarship);
     } catch (error) {

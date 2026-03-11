@@ -17,4 +17,8 @@ const ScholarshipBenefit = sequelize.define('ScholarshipBenefit', {
   timestamps: false,
 });
 
+// Define association
+ScholarshipBenefit.belongsTo(Scholarship, { foreignKey: 'scholarship_id' });
+Scholarship.hasMany(ScholarshipBenefit, { foreignKey: 'scholarship_id' });
+
 export default ScholarshipBenefit;

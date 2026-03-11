@@ -16,4 +16,5 @@ const Scholarship = sequelize.define('Scholarship', {
   timestamps: false,
 });
 
+// Associations will be defined in related models
 export default Scholarship;

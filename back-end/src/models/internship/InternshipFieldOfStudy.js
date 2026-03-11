@@ -17,4 +17,8 @@ const InternshipFieldOfStudy = sequelize.define('InternshipFieldOfStudy', {
   timestamps: false,
 });
 
+// Define association
+InternshipFieldOfStudy.belongsTo(Internship, { foreignKey: 'internship_id' });
+Internship.hasMany(InternshipFieldOfStudy, { foreignKey: 'internship_id' });
+
 export default InternshipFieldOfStudy;

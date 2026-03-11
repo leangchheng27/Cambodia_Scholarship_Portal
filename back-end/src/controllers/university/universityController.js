@@ -11,7 +11,16 @@ const universityController = {
   // Get all universities
   async getAll(req, res) {
     try {
-      const universities = await University.findAll();
+      const universities = await University.findAll({
+        include: [
+          UniversityMajor,
+          UniversityApplicationGuideStep,
+          UniversityTuitionFee,
+          UniversityCampus,
+          UniversityNews,
+          UniversityStudentAchievement
+        ]
+      });
       res.json(universities);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -21,7 +30,16 @@ const universityController = {
   // Get university by ID
   async getById(req, res) {
     try {
-      const university = await University.findByPk(req.params.id);
+      const university = await University.findByPk(req.params.id, {
+        include: [
+          UniversityMajor,
+          UniversityApplicationGuideStep,
+          UniversityTuitionFee,
+          UniversityCampus,
+          UniversityNews,
+          UniversityStudentAchievement
+        ]
+      });
       if (!university) return res.status(404).json({ error: 'University not found' });
       res.json(university);
     } catch (error) {

@@ -18,4 +18,8 @@ const InternshipDeadline = sequelize.define('InternshipDeadline', {
   timestamps: false,
 });
 
+// Define association
+InternshipDeadline.belongsTo(Internship, { foreignKey: 'internship_id' });
+Internship.hasMany(InternshipDeadline, { foreignKey: 'internship_id' });
+
 export default InternshipDeadline;

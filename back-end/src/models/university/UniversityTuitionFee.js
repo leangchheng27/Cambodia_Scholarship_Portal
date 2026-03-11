@@ -19,4 +19,8 @@ const UniversityTuitionFee = sequelize.define('UniversityTuitionFee', {
   timestamps: false,
 });
 
+// Define association
+UniversityTuitionFee.belongsTo(University, { foreignKey: 'university_id' });
+University.hasMany(UniversityTuitionFee, { foreignKey: 'university_id' });
+
 export default UniversityTuitionFee;
