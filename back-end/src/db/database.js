@@ -13,7 +13,10 @@ const sequelize = new Sequelize(
     dialect: 'mysql',
     logging: false,
     dialectOptions: {
-      connectTimeout: 10000
+      connectTimeout: 10000,
+      ssl: {
+        rejectUnauthorized: false // Accept self-signed certificates for DigitalOcean
+      }
     }
   }
 );

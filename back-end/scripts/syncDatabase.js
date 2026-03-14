@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import sequelize from '../src/db/database.js';
 import AuthUserModel from '../src/models/auth/AuthUser.js';
+import '../src/models/feedback/UserFeedback.js';  // registers UserFeedback model
 
 const AuthUser = AuthUserModel(sequelize);
 
@@ -13,7 +14,7 @@ const syncDatabase = async () => {
         await sequelize.sync({ alter: true });
         
         console.log('✅ Database schema synced successfully');
-        console.log('ℹ️  Models updated: AuthUser');
+        console.log('ℹ️  Models updated: AuthUser, UserFeedback');
         
         process.exit(0);
     } catch (error) {

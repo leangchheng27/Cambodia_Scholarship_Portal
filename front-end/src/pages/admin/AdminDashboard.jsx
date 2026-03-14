@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AIAnalytics from './AIAnalytics';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -10,12 +11,14 @@ const AdminDashboard = () => {
     const [universities, setUniversities] = useState([]);
     const [scholarships, setScholarships] = useState([]);
     const [internships, setInternships] = useState([]);
-    const [activeTab, setActiveTab] = useState('users'); // users, universities, scholarships, internships
+    const [activeTab, setActiveTab] = useState('users'); // users, universities, scholarships, internships, ai-analytics
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState(''); // create or edit
     const [currentItem, setCurrentItem] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1); // Pagination for users
+    const USERS_PER_PAGE = 15;
     const navigate = useNavigate();
 
     const fetchDashboardData = async () => {
@@ -27,7 +30,7 @@ const AdminDashboard = () => {
             }
 
             const API = axios.create({
-                baseURL: 'http://localhost:3000/api',
+                baseURL: 'http://localhost:3000',
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -72,7 +75,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/api/admin/users/${userId}`, {
+            await axios.delete(`http://localhost:3000/admin/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -95,7 +98,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/api/admin/${type}/${id}`, {
+            await axios.delete(`http://localhost:3000/admin/${type}/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -122,12 +125,12 @@ const AdminDashboard = () => {
             
             if (currentItem) {
                 // Edit
-                await axios.put(`http://localhost:3000/api/admin/${endpoint}/${currentItem.id}`, data, {
+                await axios.put(`http://localhost:3000/admin/${endpoint}/${currentItem.id}`, data, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } else {
                 // Create
-                await axios.post(`http://localhost:3000/api/admin/${endpoint}`, data, {
+                await axios.post(`http://localhost:3000/admin/${endpoint}`, data, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }
@@ -207,6 +210,12 @@ const AdminDashboard = () => {
                 >
                     Internships
                 </button>
+                <button 
+                    className={`tab ${activeTab === 'ai-analytics' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('ai-analytics')}
+                >
+                    🤖 AI Analytics
+                </button>
             </div>
 
             {activeTab === 'users' && (
@@ -226,36 +235,94 @@ const AdminDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map(user => (
-                                    <tr key={user.id}>
-                                        <td>{user.id}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.name || 'N/A'}</td>
-                                        <td>
-                                            <span className={`role-badge ${user.role}`}>
-                                                {user.role}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={`status-badge ${user.isVerified ? 'verified' : 'unverified'}`}>
-                                                {user.isVerified ? 'Yes' : 'No'}
-                                            </span>
-                                        </td>
-                                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-                                        <td>
-                                            {user.role !== 'admin' && (
-                                                <button 
-                                                    onClick={() => handleDeleteUser(user.id)}
-                                                    className="delete-btn"
-                                                >
-                                                    Delete
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
+                                {users
+                                    .sort((a, b) => a.id - b.id) // Sort by ID lowest to highest
+                                    .slice(
+                                        (currentPage - 1) * USERS_PER_PAGE,
+                                        currentPage * USERS_PER_PAGE
+                                    )
+                                    .map(user => (
+                                        <tr key={user.id}>
+                                            <td>{user.id}</td>
+                                            <td>{user.email}</td>
+                                            <td>{user.name || 'N/A'}</td>
+                                            <td>
+                                                <span className={`role-badge ${user.role}`}>
+                                                    {user.role}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`status-badge ${user.isVerified ? 'verified' : 'unverified'}`}>
+                                                    {user.isVerified ? 'Yes' : 'No'}
+                                                </span>
+                                            </td>
+                                            <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                                            <td>
+                                                {user.role !== 'admin' && (
+                                                    <button 
+                                                        onClick={() => handleDeleteUser(user.id)}
+                                                        className="delete-btn"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
+                    </div>
+                    
+                    {/* Pagination Controls */}
+                    <div className="pagination-controls">
+                        {currentPage > 1 && (
+                            <button 
+                                onClick={() => setCurrentPage(1)}
+                                className="pagination-btn"
+                            >
+                                ← First
+                            </button>
+                        )}
+                        
+                        {Array.from({ length: Math.ceil(users.length / USERS_PER_PAGE) }, (_, i) => i + 1)
+                            .filter(pageNum => {
+                                // Show first 2 pages, last 2 pages, current page, and neighboring pages
+                                const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
+                                return (
+                                    pageNum <= 2 ||
+                                    pageNum > totalPages - 2 ||
+                                    Math.abs(pageNum - currentPage) <= 1
+                                );
+                            })
+                            .reduce((acc, pageNum, idx, arr) => {
+                                // Add ellipsis between page ranges
+                                if (idx > 0 && arr[idx - 1] !== pageNum - 1) {
+                                    acc.push(
+                                        <span key={`ellipsis-${pageNum}`} className="pagination-ellipsis">
+                                            ...
+                                        </span>
+                                    );
+                                }
+                                acc.push(
+                                    <button
+                                        key={pageNum}
+                                        onClick={() => setCurrentPage(pageNum)}
+                                        className={`pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                                return acc;
+                            }, [])}
+                        
+                        {currentPage < Math.ceil(users.length / USERS_PER_PAGE) && (
+                            <button 
+                                onClick={() => setCurrentPage(Math.ceil(users.length / USERS_PER_PAGE))}
+                                className="pagination-btn"
+                            >
+                                Last →
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
@@ -402,6 +469,10 @@ const AdminDashboard = () => {
                         </table>
                     </div>
                 </div>
+            )}
+
+            {activeTab === 'ai-analytics' && (
+                <AIAnalytics />
             )}
 
             {showModal && (

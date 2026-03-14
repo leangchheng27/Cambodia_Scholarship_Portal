@@ -139,13 +139,33 @@ function generateAIMatchReasons(userProfile, scholarship, matchScore, aiScore) {
  */
 async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG.DEFAULT_LIMIT) {
   try {
-    // Generate user profile embedding
+    // STAGE 1: Filter by hard eligibility requirements (MUST MEET)
+    const eligibleScholarships = scholarships.filter(scholarship => {
+      // Check GPA requirement (hard constraint)
+      if (scholarship.aiMetadata?.minGPA && userProfile.gpa) {
+        if (userProfile.gpa < scholarship.aiMetadata.minGPA) {
+          return false; // User doesn't meet GPA requirement - EXCLUDE
+        }
+      }
+      
+      // Check student type eligibility
+      if (scholarship.aiMetadata?.studentTypes) {
+        const types = scholarship.aiMetadata.studentTypes;
+        if (!types.includes('both') && !types.includes(userProfile.studentType)) {
+          return false; // Wrong student type - EXCLUDE
+        }
+      }
+      
+      return true; // Meets all hard constraints
+    });
+    
+    // STAGE 2: Generate user profile embedding
     const userText = getUserProfileEmbeddingText(userProfile);
     const userEmbedding = await generateEmbedding(userText);
     
-    // Calculate scores for each scholarship using AI
+    // STAGE 3: Calculate scores for eligible scholarships only
     const scoredScholarships = await Promise.all(
-      scholarships.map(async (scholarship) => {
+      eligibleScholarships.map(async (scholarship) => {
         let aiScore = 0;
         let matchScore = 0;
         
@@ -167,7 +187,7 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
             const similarity = cosineSimilarity(userEmbedding, scholarshipEmbedding);
             aiScore = similarity * 100;
             
-            // Apply basic eligibility filters
+            // Apply eligibility bonuses (since we already filtered)
             let eligibilityBonus = 0;
             
             // Check student type compatibility
@@ -178,14 +198,9 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
               }
             }
             
-            // Check GPA requirement
+            // GPA requirement bonus (since we filtered, user meets it)
             if (scholarship.aiMetadata?.minGPA && userProfile.gpa) {
-              if (userProfile.gpa >= scholarship.aiMetadata.minGPA) {
-                eligibilityBonus += 10;
-              } else {
-                // Penalize if below minimum GPA
-                aiScore = aiScore * 0.5;
-              }
+              eligibilityBonus += 10;
             }
             
             matchScore = Math.min(100, Math.round(aiScore + eligibilityBonus));
@@ -262,10 +277,61 @@ function clearEmbeddingsCache() {
   console.log('Embeddings cache cleared');
 }
 
+/**
+ * Get AI-powered recommendations blended with real user-feedback signals.
+ *
+ * How the "training" loop works at runtime:
+ *   1. The AI computes a semantic similarity score (0-100) via Hugging Face
+ *   2. We fetch a popularity map — an object keyed by scholarshipId whose
+ *      values are normalised engagement scores (0-10) accumulated from all
+ *      user interactions stored in the user_feedback table.
+ *   3. Final score = (AI score × 0.85) + (popularity bonus × 1.5)
+ *      → AI drives 85 % of the ranking; real engagement refines the last 15 %.
+ *
+ * Over time, as more users interact, the popularity map reflects which
+ * scholarships students actually care about — this IS the model learning.
+ *
+ * @param {Object} userProfile    - Student academic profile
+ * @param {Array}  scholarships   - Candidate scholarships
+ * @param {number} limit          - Max results to return
+ * @param {Object} popularityMap  - { [scholarshipId]: 0-10 bonus }
+ *                                  Fetch from GET /feedback/popularity-map
+ *                                  Pass {} if not available.
+ */
+async function getAIRecommendationsWithFeedback(
+  userProfile,
+  scholarships,
+  limit = AI_CONFIG.DEFAULT_LIMIT,
+  popularityMap = {}
+) {
+  // Get base AI recommendations first
+  const aiResults = await getAIRecommendations(userProfile, scholarships, scholarships.length);
+
+  // Blend in the popularity bonus
+  const blended = aiResults.map(scholarship => {
+    const popularityBonus = popularityMap[String(scholarship.id)] ?? 0;
+    const blendedScore = Math.min(100, Math.round(scholarship.matchScore * 0.85 + popularityBonus * 1.5));
+
+    let updatedReasons = [...(scholarship.matchReasons || [])];
+    if (popularityBonus >= 7) {
+      updatedReasons = ['🔥 Highly popular among students', ...updatedReasons];
+    } else if (popularityBonus >= 4) {
+      updatedReasons = ['📈 Trending with students like you', ...updatedReasons];
+    }
+
+    return { ...scholarship, matchScore: blendedScore, matchReasons: updatedReasons };
+  });
+
+  // Re-sort after blending
+  blended.sort((a, b) => b.matchScore - a.matchScore);
+  return blended.slice(0, limit);
+}
+
 export {
   generateEmbedding,
   cosineSimilarity,
   getAIRecommendations,
+  getAIRecommendationsWithFeedback,
   precomputeScholarshipEmbeddings,
   getCachedEmbeddings,
   clearEmbeddingsCache

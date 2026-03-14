@@ -9,7 +9,7 @@ export const internshipScholarships = [
     image: internship1,
     title: 'Google Summer of Code',
     description: 'Paid internship program for university students',
-    deadline: 'មិថុនា ១៥, ២០២៦',
+    deadline: 'June 15, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Computer Science', 'Software Engineering', 'Information Technology', 'Data Science', 'Web Development'],
@@ -67,7 +67,7 @@ export const internshipScholarships = [
     image: internship2,
     title: 'Microsoft TEALS Program',
     description: 'Teaching and technology internship opportunity',
-    deadline: 'កក្កដា ២០, ២០២៦',
+    deadline: 'July 20, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Computer Science', 'Education', 'Information Technology', 'Teaching'],
@@ -124,7 +124,7 @@ export const internshipScholarships = [
     image: internship3,
     title: 'Goldman Sachs Internship',
     description: 'Finance and technology internship program',
-    deadline: 'សីហា ១០, ២០២៦',
+    deadline: 'August 10, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Finance', 'Economics', 'Business Administration', 'Computer Science', 'Engineering', 'Banking'],
@@ -183,7 +183,7 @@ export const internshipScholarships = [
     image: internship1,
     title: 'Facebook/Meta Internship',
     description: 'Software engineering internship at Meta',
-    deadline: 'កញ្ញា ០៥, ២០២៦',
+    deadline: 'September 5, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Computer Science', 'Software Engineering', 'Data Science', 'Artificial Intelligence', 'Machine Learning'],
@@ -198,7 +198,7 @@ export const internshipScholarships = [
     image: internship2,
     title: 'Amazon Internship Program',
     description: 'Technology and business internship opportunities',
-    deadline: 'តុលា ១២, ២០២៦',
+    deadline: 'October 12, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Computer Science', 'Software Engineering', 'Business Administration', 'Operations Management', 'Data Science'],
@@ -213,7 +213,7 @@ export const internshipScholarships = [
     image: internship3,
     title: 'Accenture Internship',
     description: 'Consulting and technology internship program',
-    deadline: 'វិច្ឆិកា ២៥, ២០២៦',
+    deadline: 'November 25, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Business Administration', 'Management Consulting', 'Information Technology', 'Computer Science', 'Digital Transformation'],
@@ -228,7 +228,7 @@ export const internshipScholarships = [
     image: internship1,
     title: 'Deloitte Internship',
     description: 'Consulting and audit internship opportunities',
-    deadline: 'ធ្នូ ០៨, ២០២៦',
+    deadline: 'December 8, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Accounting', 'Business Administration', 'Finance', 'Management Consulting', 'Audit'],
@@ -243,7 +243,7 @@ export const internshipScholarships = [
     image: internship2,
     title: 'McKinsey & Company Internship',
     description: 'Management consulting internship program',
-    deadline: 'មករា ១៥, ២០២៧',
+    deadline: 'January 15, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Business Administration', 'Management Consulting', 'Economics', 'Strategy', 'Finance'],
@@ -258,7 +258,7 @@ export const internshipScholarships = [
     image: internship3,
     title: 'Boston Consulting Group Internship',
     description: 'Strategy and consulting internship opportunity',
-    deadline: 'កុម្ភៈ ២០, ២០២៧',
+    deadline: 'February 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Business Administration', 'Management Consulting', 'Economics', 'Strategy', 'Analytics'],
@@ -333,7 +333,7 @@ export const internshipScholarships = [
     image: internship2,
     title: 'World Bank Internship',
     description: 'Internship program at the World Bank Group',
-    deadline: 'មីនា 31, 2026',
+    deadline: 'March 31, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Economics', 'Finance', 'Development Studies', 'Business Administration', 'Public Policy', 'Data Science', 'Statistics'],
@@ -513,6 +513,561 @@ export const internshipScholarships = [
         'Willingness to work in field conditions',
         'Commitment to NGO mission and values'
       ]
+    }
+  },
+  {
+    id: 14,
+    image: internship1,
+    title: 'Intel Internship Program',
+    description: 'Semiconductor and technology internship',
+    deadline: 'January 30, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Engineering', 'Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['intel', 'semiconductor', 'technology', 'engineering']
+    }
+  },
+  {
+    id: 15,
+    image: internship2,
+    title: 'Shell Energy Internship',
+    description: 'Oil & energy industry internship',
+    deadline: 'February 15, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Energy', 'Environmental Science'],
+      requiredSubjects: ['Math', 'Science'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['shell', 'energy', 'oil', 'engineering']
+    }
+  },
+  {
+    id: 16,
+    image: internship3,
+    title: 'Nestlé Business Internship',
+    description: 'FMCG and business management internship',
+    deadline: 'March 5, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Business', 'Marketing', 'Food Science'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['nestle', 'fmcg', 'business', 'marketing']
+    }
+  },
+  {
+    id: 17,
+    image: internship1,
+    title: 'Siemens Engineering Internship',
+    description: 'Industrial engineering and automation',
+    deadline: 'March 20, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Automation', 'Technology'],
+      requiredSubjects: ['Math', 'Physics'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['siemens', 'engineering', 'automation', 'industrial']
+    }
+  },
+  {
+    id: 18,
+    image: internship2,
+    title: 'Procter & Gamble Internship',
+    description: 'Consumer goods brand management',
+    deadline: 'April 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Business', 'Marketing', 'Management'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['pg', 'procter gamble', 'marketing', 'business']
+    }
+  },
+  {
+    id: 19,
+    image: internship3,
+    title: 'EY Consulting Internship',
+    description: 'Management consulting experience',
+    deadline: 'April 25, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Business', 'Consulting', 'Finance'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['ey', 'consulting', 'business', 'finance']
+    }
+  },
+  {
+    id: 20,
+    image: internship1,
+    title: 'PwC Audit Internship',
+    description: 'Audit and assurance internship',
+    deadline: 'May 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Accounting', 'Finance', 'Business'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['pwc', 'audit', 'accounting', 'assurance']
+    }
+  },
+  {
+    id: 21,
+    image: internship2,
+    title: 'Unilever Marketing Internship',
+    description: 'Brand marketing and consumer insights',
+    deadline: 'May 25, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Marketing', 'Business', 'Consumer Science'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['unilever', 'marketing', 'business', 'brand']
+    }
+  },
+  {
+    id: 22,
+    image: internship3,
+    title: 'Cisco Technology Internship',
+    description: 'Networking and IT solutions',
+    deadline: 'June 5, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Networking', 'IT'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['cisco', 'networking', 'technology', 'it']
+    }
+  },
+  {
+    id: 23,
+    image: internship1,
+    title: 'Vodafone Telecom Internship',
+    description: 'Telecommunications industry experience',
+    deadline: 'June 20, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Telecommunications', 'Business', 'Engineering'],
+      requiredSubjects: ['English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['vodafone', 'telecom', 'business', 'engineering']
+    }
+  },
+  {
+    id: 24,
+    image: internship2,
+    title: 'Merck Pharmaceutical Internship',
+    description: 'Pharmaceutical research and development',
+    deadline: 'July 5, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Pharmacy', 'Chemistry', 'Research'],
+      requiredSubjects: ['Chemistry', 'Biology', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['merck', 'pharmaceutical', 'research', 'drug']
+    }
+  },
+  {
+    id: 25,
+    image: internship3,
+    title: 'Coca-Cola Supply Chain Internship',
+    description: 'Logistics and supply chain management',
+    deadline: 'July 20, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Business', 'Logistics', 'Supply Chain'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 2.95,
+      difficultyLevel: 'moderate',
+      keywords: ['coca cola', 'supply chain', 'logistics', 'business']
+    }
+  },
+  {
+    id: 26,
+    image: internship1,
+    title: 'Huawei Technology Internship',
+    description: '5G and telecommunications technology',
+    deadline: 'August 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Telecommunications', 'Technology'],
+      requiredSubjects: ['Math', 'Physics', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['huawei', '5g', 'telecommunications', 'technology']
+    }
+  },
+  {
+    id: 27,
+    image: internship2,
+    title: 'HSBC Banking Internship',
+    description: 'International banking and finance',
+    deadline: 'August 15, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Finance', 'Banking', 'Business'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['hsbc', 'banking', 'finance', 'international']
+    }
+  },
+  {
+    id: 28,
+    image: internship3,
+    title: 'Samsung Electronics Internship',
+    description: 'Electronics manufacturing and innovation',
+    deadline: 'September 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Electronics', 'Engineering', 'Technology'],
+      requiredSubjects: ['Physics', 'Math', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['samsung', 'electronics', 'engineering', 'innovation']
+    }
+  },
+  {
+    id: 29,
+    image: internship1,
+    title: 'Airbnb Product Internship',
+    description: 'Product management and UX design',
+    deadline: 'September 18, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Business', 'Product Management', 'Design'],
+      requiredSubjects: ['English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['airbnb', 'product', 'ux', 'startup']
+    }
+  },
+  {
+    id: 30,
+    image: internship2,
+    title: 'Spotify Engineering Internship',
+    description: 'Music streaming technology and platform',
+    deadline: 'October 5, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Software Engineering', 'Computer Science', 'Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['spotify', 'engineering', 'music', 'technology']
+    }
+  },
+  {
+    id: 31,
+    image: internship3,
+    title: 'Visa Financial Services Internship',
+    description: 'Payment systems and fintech',
+    deadline: 'October 20, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Finance Technology', 'Business', 'Engineering'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['visa', 'fintech', 'payments', 'finance']
+    }
+  },
+  {
+    id: 32,
+    image: internship1,
+    title: 'Tesoro Energy Internship',
+    description: 'Oil refining and energy production',
+    deadline: 'November 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Energy', 'Chemistry'],
+      requiredSubjects: ['Chemistry', 'Physics', 'English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['tesoro', 'energy', 'oil', 'engineering']
+    }
+  },
+  {
+    id: 33,
+    image: internship2,
+    title: 'Salesforce Cloud Internship',
+    description: 'Cloud computing and CRM solutions',
+    deadline: 'November 15, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Software Engineering', 'Cloud'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['salesforce', 'cloud', 'crm', 'software']
+    }
+  },
+  {
+    id: 34,
+    image: internship3,
+    title: 'Oracle Database Internship',
+    description: 'Database management and enterprise solutions',
+    deadline: 'December 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Database', 'Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['oracle', 'database', 'enterprise', 'technology']
+    }
+  },
+  {
+    id: 35,
+    image: internship1,
+    title: 'BMW Automotive Internship',
+    description: 'Automotive engineering and manufacturing',
+    deadline: 'December 15, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Mechanical Engineering', 'Automotive', 'Technology'],
+      requiredSubjects: ['Physics', 'Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['bmw', 'automotive', 'engineering', 'manufacturing']
+    }
+  },
+  {
+    id: 36,
+    image: internship2,
+    title: 'AstraZeneca Biotech Internship',
+    description: 'Biopharmaceutical research and development',
+    deadline: 'January 10, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Biotechnology', 'Pharmacy', 'Research'],
+      requiredSubjects: ['Biology', 'Chemistry', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['astrazeneca', 'biotech', 'pharmaceutical', 'research']
+    }
+  },
+  {
+    id: 37,
+    image: internship3,
+    title: 'Thomson Reuters Legal Tech',
+    description: 'Legal technology and information services',
+    deadline: 'January 25, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Law', 'Technology', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['thomson reuters', 'legal tech', 'law', 'technology']
+    }
+  },
+  {
+    id: 38,
+    image: internship1,
+    title: 'Quantumscape Materials Internship',
+    description: 'Advanced materials and battery technology',
+    deadline: 'February 10, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Materials Science', 'Chemistry', 'Engineering'],
+      requiredSubjects: ['Chemistry', 'Physics', 'English'],
+      minGPA: 3.4,
+      difficultyLevel: 'competitive',
+      keywords: ['quantum', 'materials', 'battery', 'technology']
+    }
+  },
+  {
+    id: 39,
+    image: internship2,
+    title: 'Slack Platform Internship',
+    description: 'Developer platform and collaboration tools',
+    deadline: 'February 25, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Software Engineering', 'Computer Science', 'API'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['slack', 'platform', 'developer', 'collaboration']
+    }
+  },
+  {
+    id: 40,
+    image: internship3,
+    title: 'NuBank Financial Internship',
+    description: 'Fintech banking innovation',
+    deadline: 'March 10, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Finance Technology', 'Business', 'Banking'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['nubank', 'fintech', 'banking', 'latin america']
+    }
+  },
+  {
+    id: 41,
+    image: internship1,
+    title: 'SpaceX Aerospace Internship',
+    description: 'Space exploration and rocket engineering',
+    deadline: 'March 25, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Aerospace Engineering', 'Physics', 'Technology'],
+      requiredSubjects: ['Physics', 'Math', 'English'],
+      minGPA: 3.5,
+      difficultyLevel: 'very-competitive',
+      keywords: ['spacex', 'aerospace', 'rocket', 'space']
+    }
+  },
+  {
+    id: 42,
+    image: internship2,
+    title: 'Stripe Payments Internship',
+    description: 'Online payment processing technology',
+    deadline: 'April 5, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Software Engineering', 'Finance Technology', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['stripe', 'payments', 'fintech', 'software']
+    }
+  },
+  {
+    id: 43,
+    image: internship3,
+    title: 'Canva Design Internship',
+    description: 'Graphic design and creative tools platform',
+    deadline: 'April 20, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Design', 'Software Engineering', 'User Experience'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['canva', 'design', 'creative', 'platform']
+    }
+  },
+  {
+    id: 44,
+    image: internship1,
+    title: 'Figma Product Design Internship',
+    description: 'Collaborative design platform development',
+    deadline: 'May 5, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Design', 'Software Engineering', 'Product'],
+      requiredSubjects: ['English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['figma', 'design', 'product', 'collaboration']
+    }
+  },
+  {
+    id: 45,
+    image: internship2,
+    title: 'Robinhood Financial Technology',
+    description: 'Investment platform and fintech',
+    deadline: 'May 20, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Finance Technology', 'Software Engineering', 'Business'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['robinhood', 'fintech', 'trading', 'technology']
+    }
+  },
+  {
+    id: 46,
+    image: internship3,
+    title: 'Databricks Data Engineering',
+    description: 'Big data and artificial intelligence',
+    deadline: 'June 5, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Data Science', 'Computer Science', 'Engineering'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['databricks', 'data', 'spark', 'ai']
+    }
+  },
+  {
+    id: 47,
+    image: internship1,
+    title: 'Palantir Analytics Internship',
+    description: 'Data analytics and intelligence platform',
+    deadline: 'June 20, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Data Science', 'Computer Science', 'Analytics'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.4,
+      difficultyLevel: 'very-competitive',
+      keywords: ['palantir', 'analytics', 'data', 'intelligence']
+    }
+  },
+  {
+    id: 48,
+    image: internship2,
+    title: 'Calm App Product Internship',
+    description: 'Mental health and wellness technology',
+    deadline: 'July 5, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Product Management', 'Software', 'Health Tech'],
+      requiredSubjects: ['English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['calm', 'wellness', 'product', 'health']
+    }
+  },
+  {
+    id: 49,
+    image: internship3,
+    title: 'Scale AI Data Infrastructure',
+    description: 'AI training data and infrastructure',
+    deadline: 'July 20, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Artificial Intelligence', 'Data Science', 'Engineering'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['scale', 'ai', 'data', 'infrastructure']
+    }
+  },
+  {
+    id: 50,
+    image: internship1,
+    title: 'Notion Product Engineering',
+    description: 'Productivity and knowledge management platform',
+    deadline: 'August 5, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Software Engineering', 'Product', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['notion', 'product', 'engineering', 'productivity']
     }
   }
 ];

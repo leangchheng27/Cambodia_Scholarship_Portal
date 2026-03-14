@@ -9,7 +9,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Fulbright Scholarship Program',
     description: 'Educational exchange opportunity for students and professionals',
-    deadline: 'មិថុនា ១៥, ២០២៦',
+    deadline: 'June 15, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['All Fields', 'Engineering', 'Science', 'Business', 'Social Sciences', 'Arts', 'Humanities'],
@@ -68,7 +68,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Chevening Scholarships',
     description: 'UK government scholarships for future leaders',
-    deadline: 'កក្កដា ២០, ២០២៦',
+    deadline: 'July 20, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Business Administration', 'Management', 'International Relations', 'Public Policy', 'Engineering', 'Science', 'Arts', 'Humanities'],
@@ -126,7 +126,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'DAAD Scholarships',
     description: 'German Academic Exchange Service scholarships',
-    deadline: 'សីហា ១០, ២០២៦',
+    deadline: 'August 10, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Engineering', 'Natural Sciences', 'Economics', 'Business Administration', 'Development Studies', 'Mathematics', 'Computer Science'],
@@ -185,7 +185,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Commonwealth Scholarships',
     description: 'Study opportunities in Commonwealth countries',
-    deadline: 'កញ្ញា ០៥, ២០២៦',
+    deadline: 'September 5, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Development Studies', 'Public Health', 'Education', 'Environment', 'Climate Change', 'Governance', 'Public Policy', 'Science'],
@@ -242,7 +242,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Erasmus+ Scholarships',
     description: 'European education and training opportunities',
-    deadline: 'តុលា ១២, ២០២៦',
+    deadline: 'October 12, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['All Fields', 'Engineering', 'Business', 'Education', 'Science', 'Arts', 'Social Sciences'],
@@ -257,7 +257,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'Australia Awards Scholarships',
     description: 'Scholarships to study in Australian universities',
-    deadline: 'វិច្ឆិកា ២៥, ២០២៦',
+    deadline: 'November 25, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['All Fields', 'Engineering', 'Agriculture', 'Education', 'Public Health', 'Development', 'Business', 'Science'],
@@ -272,7 +272,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Confucius Institute Scholarships',
     description: 'Opportunities to study in China',
-    deadline: 'ធ្នូ ០៨, ២០២៦',
+    deadline: 'December 8, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Chinese Language', 'Chinese Culture', 'International Relations', 'Business', 'Engineering', 'Technology'],
@@ -287,7 +287,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Canada Graduate Scholarships',
     description: 'Canadian government support for graduate studies',
-    deadline: 'មករា ១៥, ២០២៧',
+    deadline: 'January 15, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['All Fields', 'Engineering', 'Science', 'Health Sciences', 'Business', 'Social Sciences', 'Humanities'],
@@ -302,7 +302,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'Netherlands Fellowships Programme',
     description: 'Study and fellowship opportunities in the Netherlands',
-    deadline: 'កុម្ភៈ ២០, ២០២៧',
+    deadline: 'February 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Development Studies', 'Public Administration', 'Engineering', 'Agriculture', 'Water Management', 'Environmental Science'],
@@ -318,7 +318,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Japanese Government  MEXT Scholarship',
     description: 'Study in Japan with full support',
-    deadline: 'មេសា ៣០, ២០២៧',
+    deadline: 'April 30, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Science', 'Technology', 'Business', 'Social Sciences'],
@@ -345,7 +345,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Chinese Government CSC Scholarship',
     description: 'Full scholarship for study in China',
-    deadline: 'មីនា ២០, ២០២៧',
+    deadline: 'March 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Medicine', 'Business', 'Technology', 'Economics'],
@@ -372,7 +372,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'Korean Government KGSP Scholarship',
     description: 'Global Korea Scholarship program',
-    deadline: 'កុម្ភៈ ២៨, ២០២៧',
+    deadline: 'February 28, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Technology', 'Business', 'Science', 'Arts'],
@@ -399,7 +399,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Turkey Türkiye Scholarships',
     description: 'Study in Turkey with government support',
-    deadline: 'កុម្ភៈ ២០, ២០២៧',
+    deadline: 'February 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Medicine', 'Social Sciences', 'Islamic Studies', 'Business'],
@@ -426,7 +426,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Malaysia International Scholarship',
     description: 'Study in Malaysia with MIS program',
-    deadline: 'មីនា ៣១, ២០២៧',
+    deadline: 'March 31, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Science', 'Technology', 'Islamic Studies', 'Business'],
@@ -453,7 +453,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'Singapore ASEAN Scholarship',
     description: 'Study in Singapore universities',
-    deadline: 'កុម្ភៈ ១, ២០២៧',
+    deadline: 'February 1, 2027',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Engineering', 'Computer Science', 'Business', 'Medicine', 'Science'],
@@ -480,7 +480,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'ADB-Japan Scholarship Program',
     description: 'Asian Development Bank scholarship',
-    deadline: 'កក្កដា ៣១, ២០២៦',
+    deadline: 'July 31, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Economics', 'Development Studies', 'Business', 'Engineering', 'Environmental Science'],
@@ -507,7 +507,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Swedish Institute Scholarships',
     description: 'Study in Sweden with full funding',
-    deadline: 'កុម្ភៈ ៨, ២០២៧',
+    deadline: 'February 8, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Science', 'Social Sciences', 'Sustainability', 'Design'],
@@ -534,7 +534,7 @@ export const abroadScholarships = [
     image: abroad3,
     title: 'New Zealand Development Scholarships',
     description: 'NZDS for development leaders',
-    deadline: 'មីនា ២០, ២០២៧',
+    deadline: 'March 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Agriculture', 'Economics', 'Health', 'Education', 'Engineering'],
@@ -561,7 +561,7 @@ export const abroadScholarships = [
     image: abroad1,
     title: 'Taiwan ICDF Scholarship',
     description: 'Study in Taiwan for development',
-    deadline: 'មីនា ៣១, ២០២៧',
+    deadline: 'March 31, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Agriculture', 'Public Health', 'Business', 'Technology'],
@@ -588,7 +588,7 @@ export const abroadScholarships = [
     image: abroad2,
     title: 'Indian Council for Cultural Relations Scholarship',
     description: 'Study in India with ICCR',
-    deadline: 'ធ្នូ ៣១, ២០២៦',
+    deadline: 'December 31, 2026',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Engineering', 'Medicine', 'Arts', 'Science', 'Management'],
@@ -608,6 +608,456 @@ export const abroadScholarships = [
       programs: ['Engineering', 'Medicine', 'Management', 'Arts', 'Sciences'],
       benefits: ['Tuition waiver', 'Monthly stipend INR 18,000', 'Accommodation', 'Annual grant'],
       eligibility: ['GPA 2.8+', 'Age under 35', 'Good academic record', 'No other Indian scholarship']
+    }
+  },
+  {
+    id: 21,
+    image: abroad1,
+    title: 'TU Munich Excellence Scholarship',
+    description: 'Engineering excellence in Germany',
+    deadline: 'December 15, 2025',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Mathematics', 'Physics'],
+      requiredSubjects: ['Math', 'Science', 'English'],
+      minGPA: 3.6,
+      difficultyLevel: 'very-competitive',
+      keywords: ['tumanuel', 'germany', 'engineering', 'master', 'phd']
+    }
+  },
+  {
+    id: 22,
+    image: abroad2,
+    title: 'KTH Royal Institute Scholarship',
+    description: 'Swedish technical excellence',
+    deadline: 'January 20, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Technology', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.5,
+      difficultyLevel: 'very-competitive',
+      keywords: ['kth', 'sweden', 'engineering', 'technology']
+    }
+  },
+  {
+    id: 23,
+    image: abroad3,
+    title: 'Hong Kong PhD Fellowship',
+    description: 'PhD funding in Asia-Pacific region',
+    deadline: 'February 1, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Business'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.6,
+      difficultyLevel: 'very-competitive',
+      keywords: ['hongkong', 'phd', 'research', 'asia']
+    }
+  },
+  {
+    id: 24,
+    image: abroad1,
+    title: 'Sciences Po International Master',
+    description: 'French public affairs and policy',
+    deadline: 'March 15, 2026',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Public Policy', 'International Relations', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['sciencespo', 'france', 'policy', 'master', 'international']
+    }
+  },
+  {
+    id: 25,
+    image: abroad2,
+    title: 'Lund University Fellowship',
+    description: 'Nordic educational excellence',
+    deadline: 'April 20, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Humanities'],
+      requiredSubjects: ['English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['lund', 'sweden', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 26,
+    image: abroad3,
+    title: 'National Taiwan University Scholarship',
+    description: 'Taiwan higher education opportunities',
+    deadline: 'May 31, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Engineering', 'Science', 'Business'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['taiwan', 'ntu', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 27,
+    image: abroad1,
+    title: 'Trinity College Dublin Fellowship',
+    description: 'Ireland historic university opportunity',
+    deadline: 'June 15, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Humanities'],
+      requiredSubjects: ['English'],
+      minGPA: 3.4,
+      difficultyLevel: 'competitive',
+      keywords: ['trinity', 'ireland', 'dublin', 'master']
+    }
+  },
+  {
+    id: 28,
+    image: abroad2,
+    title: 'Universidad de Chile Scholarship',
+    description: 'South American higher education',
+    deadline: 'July 10, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Social Sciences'],
+      requiredSubjects: ['Spanish', 'English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['chile', 'south america', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 29,
+    image: abroad3,
+    title: 'ETH Zurich Excellence Scholarship',
+    description: 'Swiss science and technology',
+    deadline: 'August 5, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Physics', 'Computer Science'],
+      requiredSubjects: ['Math', 'Science', 'English'],
+      minGPA: 3.7,
+      difficultyLevel: 'very-competitive',
+      keywords: ['eth', 'zurich', 'switzerland', 'engineering']
+    }
+  },
+  {
+    id: 30,
+    image: abroad1,
+    title: 'University of Tokyo Fellowship',
+    description: 'Japanese academic excellence',
+    deadline: 'September 1, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Technology'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['japan', 'tokyo', 'scholarship', 'master', 'phd']
+    }
+  },
+  {
+    id: 31,
+    image: abroad2,
+    title: 'Sorbonne University Scholarship',
+    description: 'French excellence in research',
+    deadline: 'September 15, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Humanities'],
+      requiredSubjects: ['English', 'French'],
+      minGPA: 3.4,
+      difficultyLevel: 'competitive',
+      keywords: ['sorbonne', 'france', 'paris', 'scholarship']
+    }
+  },
+  {
+    id: 32,
+    image: abroad3,
+    title: 'University of Toronto Scholarship',
+    description: 'Canadian research and education',
+    deadline: 'October 10, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['toronto', 'canada', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 33,
+    image: abroad1,
+    title: 'Seoul National University Fellowship',
+    description: 'South Korea premier university',
+    deadline: 'October 25, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['seoul', 'korea', 'snu', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 34,
+    image: abroad2,
+    title: 'UC Berkeley Global Access Program',
+    description: 'American research university excellence',
+    deadline: 'November 20, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.6,
+      difficultyLevel: 'very-competitive',
+      keywords: ['berkeley', 'usa', 'research', 'master', 'phd']
+    }
+  },
+  {
+    id: 35,
+    image: abroad3,
+    title: 'Nanyang Technological University',
+    description: 'Singapore STEM excellence',
+    deadline: 'December 1, 2026',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Technology', 'Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.4,
+      difficultyLevel: 'competitive',
+      keywords: ['ntu', 'singapore', 'engineering', 'technology']
+    }
+  },
+  {
+    id: 36,
+    image: abroad1,
+    title: 'University of Melbourne Scholarship',
+    description: 'Australian research excellence',
+    deadline: 'December 15, 2026',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['melbourne', 'australia', 'scholarship', 'research']
+    }
+  },
+  {
+    id: 37,
+    image: abroad2,
+    title: 'University of Tokyo Monbukagakusho',
+    description: 'Japanese government scholarship for masters',
+    deadline: 'January 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Social Sciences'],
+      requiredSubjects: ['English', 'Japanese'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['japan', 'monbukagakusho', 'government', 'scholarship']
+    }
+  },
+  {
+    id: 38,
+    image: abroad3,
+    title: 'University of São Paulo International',
+    description: 'Brazilian higher education opportunity',
+    deadline: 'February 5, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Social Sciences'],
+      requiredSubjects: ['Portuguese', 'English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['brazil', 'sao paulo', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 39,
+    image: abroad1,
+    title: 'Copenhagen Business School',
+    description: 'Nordic business excellence',
+    deadline: 'March 1, 2027',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Business', 'Economics', 'Management'],
+      requiredSubjects: ['English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['copenhagen', 'denmark', 'business', 'scholarship']
+    }
+  },
+  {
+    id: 40,
+    image: abroad2,
+    title: 'Tsinghua University Scholarship',
+    description: 'Chinese premier university',
+    deadline: 'March 20, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Business'],
+      requiredSubjects: ['Chinese', 'English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['tsinghua', 'china', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 41,
+    image: abroad3,
+    title: 'University of Barcelona Fellowship',
+    description: 'Spanish higher education opportunity',
+    deadline: 'April 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Humanities', 'Social Sciences'],
+      requiredSubjects: ['Spanish', 'English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['barcelona', 'spain', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 42,
+    image: abroad1,
+    title: 'Waseda University International',
+    description: 'Japanese private university excellence',
+    deadline: 'May 1, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Science', 'Engineering', 'Humanities'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['waseda', 'japan', 'scholarship', 'master']
+    }
+  },
+  {
+    id: 43,
+    image: abroad2,
+    title: 'University of Amsterdam Fellowship',
+    description: 'Dutch research excellence',
+    deadline: 'May 25, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Research'],
+      requiredSubjects: ['English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['amsterdam', 'netherlands', 'scholarship', 'research']
+    }
+  },
+  {
+    id: 44,
+    image: abroad3,
+    title: 'Peking University Scholarship',
+    description: 'Chinese humanities and social sciences',
+    deadline: 'June 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Humanities', 'Social Sciences', 'Business'],
+      requiredSubjects: ['Chinese', 'English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['peking', 'beijing', 'china', 'scholarship']
+    }
+  },
+  {
+    id: 45,
+    image: abroad1,
+    title: 'University of Tokyo Engineering',
+    description: 'Advanced engineering in Japan',
+    deadline: 'July 5, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Technology', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['tokyo', 'engineering', 'japan', 'technology']
+    }
+  },
+  {
+    id: 46,
+    image: abroad2,
+    title: 'Stanford Scholar in Asia',
+    description: 'American innovation leadership',
+    deadline: 'July 30, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Computer Science'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.7,
+      difficultyLevel: 'very-competitive',
+      keywords: ['stanford', 'usa', 'scholar', 'asia']
+    }
+  },
+  {
+    id: 47,
+    image: abroad3,
+    title: 'University of Manchester Fellowship',
+    description: 'British research excellence',
+    deadline: 'August 20, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Research'],
+      requiredSubjects: ['English'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['manchester', 'uk', 'scholarship', 'research']
+    }
+  },
+  {
+    id: 48,
+    image: abroad1,
+    title: 'KAIST International Fellowship',
+    description: 'Korean advanced science technology',
+    deadline: 'September 10, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.4,
+      difficultyLevel: 'competitive',
+      keywords: ['kaist', 'korea', 'science', 'technology']
+    }
+  },
+  {
+    id: 49,
+    image: abroad2,
+    title: 'University of Tokyo Graduate',
+    description: 'Japanese graduate science programs',
+    deadline: 'October 5, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Science', 'Engineering', 'Research'],
+      requiredSubjects: ['English'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['tokyo', 'graduate', 'japan', 'science']
+    }
+  },
+  {
+    id: 50,
+    image: abroad3,
+    title: 'MIT Global Engineering Leadership',
+    description: 'American engineering excellence',
+    deadline: 'November 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Science', 'Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.8,
+      difficultyLevel: 'very-competitive',
+      keywords: ['mit', 'usa', 'engineering', 'leadership']
     }
   }
 ];

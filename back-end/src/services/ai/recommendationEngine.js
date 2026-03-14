@@ -106,8 +106,29 @@ function generateMatchReasons(userProfile, scholarship) {
  * @returns {Array} - Sorted array of scholarships with match scores
  */
 function getScholarshipRecommendations(userProfile, scholarships, limit = 10) {
-  // Calculate match score for each scholarship
-  const scoredScholarships = scholarships.map(scholarship => ({
+  // STAGE 1: Filter by hard eligibility requirements (MUST MEET)
+  const userGPA = parseFloat(calculateGPA(userProfile.grades));
+  const eligibleScholarships = scholarships.filter(scholarship => {
+    // Check GPA requirement (hard constraint)
+    if (scholarship.aiMetadata?.minGPA) {
+      if (userGPA < scholarship.aiMetadata.minGPA) {
+        return false; // User doesn't meet GPA requirement - EXCLUDE
+      }
+    }
+    
+    // Check student type eligibility
+    if (scholarship.aiMetadata?.studentTypes) {
+      if (!scholarship.aiMetadata.studentTypes.includes(userProfile.studentType) && 
+          !scholarship.aiMetadata.studentTypes.includes('both')) {
+        return false; // Wrong student type - EXCLUDE
+      }
+    }
+    
+    return true; // Meets all hard constraints
+  });
+  
+  // STAGE 2: Score eligible scholarships only
+  const scoredScholarships = eligibleScholarships.map(scholarship => ({
     ...scholarship,
     matchScore: calculateMatchScore(userProfile, scholarship),
     matchReasons: generateMatchReasons(userProfile, scholarship)

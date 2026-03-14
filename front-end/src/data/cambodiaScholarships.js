@@ -10,9 +10,9 @@ export const cambodiaScholarships = [
   {
     id: 1,
     image: cambodia1,
-    title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមសិក្សា',
-    description: 'អាហារូបករណ៍សម្រាប់សិស្សានុសិស្សកម្រិតថ្នាក់វិទ្យាល័យ',
-    deadline: 'មិថុនា ១៥, ២០២៦',
+    title: 'Techo Digital Talent Scholarship (Secondary School)',
+    description: 'Scholarship for secondary school students in digital and IT fields',
+    deadline: 'June 15, 2026',
     // AI Metadata for recommendation engine
     aiMetadata: {
       studentTypes: ['science'], // 'science', 'society', or 'both'
@@ -74,9 +74,9 @@ export const cambodiaScholarships = [
   {
     id: 2,
     image: cambodia2,
-    title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមស្រេច',
-    description: 'កម្មវិធីសិក្សា HOPE យុវវ័យរបស់ CanTech',
-    deadline: 'កក្កដា ២០, ២០២៦',
+    title: 'HOPE Youth Scholarship (CanTech)',
+    description: 'HOPE Youth scholarship program by CanTech Education Foundation',
+    deadline: 'July 20, 2026',
     // AI Metadata for recommendation engine
     aiMetadata: {
       studentTypes: ['both'], // Suitable for both science and society students
@@ -87,8 +87,8 @@ export const cambodiaScholarships = [
       keywords: ['secondary education', 'high school', 'general studies', 'academic support']
     },
     details: {
-      title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមស្រេច',
-      subtitle: 'កម្មវិធីសិក្សា HOPE យុវវ័យរបស់ CanTech',
+      title: 'Scholarship for Secondary School Students',
+      subtitle: 'HOPE Youth program by CanTech',
       fundedBy: 'CanTech Education Foundation',
       fieldsOfStudy: 'Secondary Education Support',
       courseDuration: '1-2 Years',
@@ -125,9 +125,9 @@ export const cambodiaScholarships = [
   {
     id: 3,
     image: cambodia3,
-    title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា 100%ត្រឹមត្រូវ ទ្រទ្រង់លើទំនុកចិត្ត៣២',
-    description: 'កម្មវិធីជំនួយសិក្សាពេញលេញ',
-    deadline: 'សីហា ១០, ២០២៦',
+    title: '100% Full Undergraduate Scholarship Program',
+    description: 'Comprehensive full scholarship support program for outstanding students',
+    deadline: 'August 10, 2026',
     // AI Metadata for recommendation engine
     aiMetadata: {
       studentTypes: ['both'],
@@ -138,8 +138,8 @@ export const cambodiaScholarships = [
       keywords: ['undergraduate', 'full scholarship', 'all majors', 'comprehensive support', 'leadership']
     },
     details: {
-      title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា 100%',
-      subtitle: 'កម្មវិធីជំនួយសិក្សាពេញលេញ',
+      title: '100% Full Undergraduate Scholarship',
+      subtitle: 'Comprehensive full scholarship program',
       fundedBy: 'Private Education Foundation',
       fieldsOfStudy: 'All undergraduate programs',
       courseDuration: '4 Years',
@@ -180,10 +180,10 @@ export const cambodiaScholarships = [
     image: cambodia4,
     title: 'Opportunities from OUR COMMUNITY ORGANIZATION',
     description: 'Scholarships from OUR COMMUNITY ORGANIZATION',
-    deadline: 'កញ្ញា ០៥, ២០២៦',
+    deadline: 'September 5, 2026',
     details: {
       title: 'OUR COMMUNITY ORGANIZATION Scholarship',
-      subtitle: 'Community-Based Educational Support',
+        subtitle: 'Community-Based Educational Support',
       fundedBy: 'Our Community Organization',
       fieldsOfStudy: 'Various fields of study',
       courseDuration: 'Varies by program',
@@ -221,12 +221,12 @@ export const cambodiaScholarships = [
   {
     id: 5,
     image: cambodia5,
-    title: 'អាហារូបករណ៍សម្រាប់សិស្ស ១០០% នៅវិទ្យាល័យជាតិអន្ដរជាតិ',
-    description: 'កម្មវិធីជំនួយ ១០០% សំរាប់សិស្សខ្លាំងៗ',
-    deadline: 'តុលា ១២, ២០២៦',
+    title: '100% Scholarship for International High School Students',
+    description: 'Full scholarship program for high-achieving students at international schools',
+    deadline: 'October 12, 2026',
     details: {
-      title: 'អាហារូបករណ៍សម្រាប់សិស្ស ១០០% នៅវិទ្យាល័យជាតិអន្ដរជាតិ',
-      subtitle: 'កម្មវិធីជំនួយ ១០០% សំរាប់សិស្សខ្លាំងៗ',
+      title: '100% Scholarship for International High School Students',
+      subtitle: 'Full scholarship program for high-achieving international students',
       fundedBy: 'International School Foundation',
       fieldsOfStudy: 'International curriculum programs',
       courseDuration: '3-4 Years',
@@ -264,12 +264,12 @@ export const cambodiaScholarships = [
   {
     id: 6,
     image: cambodia6,
-    title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា 900% តែកំពុងការពារពីក្រោយ',
-    description: 'កម្មវិធីជំនួយសិក្សាពេញលេញ',
-    deadline: 'វិច្ឆិកា ២៥, ២០២៦',
+    title: 'National Full Scholarship Program',
+    description: 'Government and private partnership full scholarship program',
+    deadline: 'November 25, 2026',
     details: {
-      title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា 900%',
-      subtitle: 'កម្មវិធីជំនួយសិក្សាពេញលេញ',
+      title: 'National Full Scholarship Program',
+      subtitle: 'Government and private partnership full scholarship program',
       fundedBy: 'Government and Private Partnership',
       fieldsOfStudy: 'Priority fields for national development',
       courseDuration: '4 Years',
@@ -307,11 +307,11 @@ export const cambodiaScholarships = [
   {
     id: 7,
     image: cambodia1,
-    title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមសិក្សា',
-    description: 'អាហារូបករណ៍សម្រាប់សិស្សានុសិស្សកម្រិតថ្នាក់វិទ្យាល័យ',
-    deadline: 'ធ្នូ ០៨, ២០២៦',
+    title: 'Secondary School Scholarship (Ministry Support)',
+    description: 'Scholarship support program for secondary school students',
+    deadline: 'December 8, 2026',
     details: {
-      title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមសិក្សា',
+      title: 'Secondary School Scholarship',
       subtitle: 'Support for Secondary Education Students',
       fundedBy: 'Ministry of Education',
       fieldsOfStudy: 'Secondary Education',
@@ -350,11 +350,11 @@ export const cambodiaScholarships = [
   {
     id: 8,
     image: cambodia2,
-    title: 'អាហារូបករណ៍មូលនិធិជាតិសម្រាប់ការអប់រំ',
-    description: 'កម្មវិធីជំនួយសិស្សក្រីក្រ',
-    deadline: 'មករា ១៥, ២០២៧',
+    title: 'National Education Fund Scholarship',
+    description: 'Need-based scholarship program from the National Education Fund',
+    deadline: 'January 15, 2027',
     details: {
-      title: 'អាហារូបករណ៍មូលនិធិជាតិសម្រាប់ការអប់រំ',
+      title: 'National Education Fund Scholarship',
       subtitle: 'National Education Fund Scholarship',
       fundedBy: 'National Education Fund',
       fieldsOfStudy: 'All fields of study',
@@ -393,11 +393,11 @@ export const cambodiaScholarships = [
   {
     id: 9,
     image: cambodia3,
-    title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា',
-    description: 'កម្មវិធីជំនួយឧត្តមសិក្សា',
-    deadline: 'កុម្ភៈ ២០, ២០២៧',
+    title: 'Higher Education Scholarship Program',
+    description: 'Scholarship program for university-level studies',
+    deadline: 'February 20, 2027',
     details: {
-      title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា',
+      title: 'Higher Education Scholarship',
       subtitle: 'Higher Education Scholarship Program',
       fundedBy: 'Higher Education Council',
       fieldsOfStudy: 'University level programs',
@@ -439,7 +439,7 @@ export const cambodiaScholarships = [
     image: cambodia1,
     title: 'Engineering Excellence Scholarship',
     description: 'Full scholarship for engineering students',
-    deadline: 'ធ្នូ ១, ២០២៦',
+    deadline: 'December 1, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering'],
@@ -466,7 +466,7 @@ export const cambodiaScholarships = [
     image: cambodia2,
     title: 'Medical Sciences Scholarship',
     description: 'Future doctors and nurses program',
-    deadline: 'វិច្ឆិកា ១៥, ២០២៦',
+    deadline: 'November 15, 2026',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Medicine', 'Nursing', 'Pharmacy', 'Health Sciences'],
@@ -493,7 +493,7 @@ export const cambodiaScholarships = [
     image: cambodia3,
     title: 'Business Administration Scholarship',
     description: 'Future business leaders program',
-    deadline: 'មករា ២០, ២០២៧',
+    deadline: 'January 20, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Business Administration', 'Management', 'Accounting', 'Finance'],
@@ -520,7 +520,7 @@ export const cambodiaScholarships = [
     image: cambodia4,
     title: 'Tourism & Hospitality Scholarship',
     description: 'Tourism industry leaders',
-    deadline: 'កុម្ភៈ ២៨, ២០២៧',
+    deadline: 'February 28, 2027',
     aiMetadata: {
       studentTypes: ['society'],
       fieldCategories: ['Tourism', 'Hotel Management', 'Hospitality', 'Event Management'],
@@ -547,7 +547,7 @@ export const cambodiaScholarships = [
     image: cambodia5,
     title: 'Agriculture & Environment Scholarship',
     description: 'Sustainable agriculture program',
-    deadline: 'មីនា ៣១, ២០២៧',
+    deadline: 'March 31, 2027',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Agriculture', 'Environmental Science', 'Forestry', 'Agribusiness'],
@@ -574,7 +574,7 @@ export const cambodiaScholarships = [
     image: cambodia6,
     title: 'Law & Legal Studies Scholarship',
     description: 'Future lawyers and judges',
-    deadline: 'មេសា ១៥, ២០២៧',
+    deadline: 'April 15, 2027',
     aiMetadata: {
       studentTypes: ['society'],
       fieldCategories: ['Law', 'Legal Studies', 'Political Science', 'International Relations'],
@@ -601,7 +601,7 @@ export const cambodiaScholarships = [
     image: cambodia1,
     title: 'Architecture & Design Scholarship',
     description: 'Creative design professionals',
-    deadline: 'ឧសភា ១០, ២០២៧',
+    deadline: 'May 10, 2027',
     aiMetadata: {
       studentTypes: ['science'],
       fieldCategories: ['Architecture', 'Interior Design', 'Urban Planning', 'Landscape Architecture'],
@@ -628,7 +628,7 @@ export const cambodiaScholarships = [
     image: cambodia2,
     title: 'Education & Teaching Scholarship',
     description: 'Train future teachers',
-    deadline: 'មិថុនា ៥, ២០២៧',
+    deadline: 'June 5, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Education', 'Teaching', 'Educational Psychology', 'Curriculum Development'],
@@ -655,7 +655,7 @@ export const cambodiaScholarships = [
     image: cambodia3,
     title: 'Economics & Finance Scholarship',
     description: 'Economic development specialists',
-    deadline: 'កក្កដា ២២, ២០២៧',
+    deadline: 'July 22, 2027',
     aiMetadata: {
       studentTypes: ['both'],
       fieldCategories: ['Economics', 'Finance', 'Banking', 'Business Analytics'],
@@ -682,7 +682,7 @@ export const cambodiaScholarships = [
     image: cambodia4,
     title: 'Journalism & Media Scholarship',
     description: 'Media and communication professionals',
-    deadline: 'សីហា ៨, ២០២៧',
+    deadline: 'August 8, 2027',
     aiMetadata: {
       studentTypes: ['society'],
       fieldCategories: ['Journalism', 'Media Studies', 'Communication', 'Broadcasting'],
@@ -709,7 +709,7 @@ export const cambodiaScholarships = [
     image: cambodia5,
     title: 'Psychology & Social Work Scholarship',
     description: 'Mental health and social services',
-    deadline: 'កញ្ញា ១៥, ២០២៧',
+    deadline: 'September 15, 2027',
     aiMetadata: {
       studentTypes: ['society'],
       fieldCategories: ['Psychology', 'Social Work', 'Counseling', 'Sociology'],
@@ -730,14 +730,464 @@ export const cambodiaScholarships = [
       benefits: ['Full tuition', 'Clinical training', 'Certification support'],
       eligibility: ['Empathy & compassion', 'GPA 2.8+', 'Communication skills']
     }
+  },
+  {
+    id: 21,
+    image: cambodia1,
+    title: 'Agricultural Innovation Scholarship',
+    description: 'For students advancing sustainable farming practices',
+    deadline: 'August 1, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Agriculture', 'Environmental Science', 'Agronomy'],
+      requiredSubjects: ['Science', 'Math'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['agriculture', 'farming', 'sustainability', 'environment']
+    }
+  },
+  {
+    id: 22,
+    image: cambodia2,
+    title: 'Tourism & Hospitality Excellence',
+    description: 'For students pursuing hospitality and tourism management',
+    deadline: 'September 5, 2027',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Tourism Management', 'Business Administration', 'Hospitality'],
+      requiredSubjects: ['English'],
+      minGPA: 2.7,
+      difficultyLevel: 'moderate',
+      keywords: ['tourism', 'hospitality', 'business', 'management']
+    }
+  },
+  {
+    id: 23,
+    image: cambodia3,
+    title: 'Textile & Fashion Design Scholarship',
+    description: 'Supporting traditional and modern fashion studies',
+    deadline: 'October 10, 2027',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Fashion Design', 'Textile Arts', 'Business'],
+      requiredSubjects: ['Art', 'English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['fashion', 'textile', 'design', 'arts', 'traditional']
+    }
+  },
+  {
+    id: 24,
+    image: cambodia4,
+    title: 'Infrastructure Development Scholarship',
+    description: 'Civil engineering for national development',
+    deadline: 'November 15, 2027',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Civil Engineering', 'Infrastructure', 'Construction'],
+      requiredSubjects: ['Math', 'Physics', 'Science'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['engineering', 'infrastructure', 'construction', 'development']
+    }
+  },
+  {
+    id: 25,
+    image: cambodia5,
+    title: 'Social Entrepreneurship Program',
+    description: 'For students creating social enterprises',
+    deadline: 'December 1, 2027',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Business', 'Social Sciences', 'Entrepreneurship'],
+      requiredSubjects: ['English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['entrepreneurship', 'social', 'business', 'innovation']
+    }
+  },
+  {
+    id: 26,
+    image: cambodia6,
+    title: 'Water Resources Management',
+    description: 'Environmental science for water sustainability',
+    deadline: 'January 20, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Environmental Science', 'Water Management', 'Engineering'],
+      requiredSubjects: ['Science', 'Math'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['water', 'environment', 'sustainability', 'resource management']
+    }
+  },
+  {
+    id: 27,
+    image: cambodia1,
+    title: 'Human Rights & Justice Studies',
+    description: 'For law and human rights advocates',
+    deadline: 'February 28, 2028',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Law', 'Social Sciences', 'Human Rights'],
+      requiredSubjects: ['English'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['law', 'justice', 'human rights', 'social']
+    }
+  },
+  {
+    id: 28,
+    image: cambodia2,
+    title: 'Renewable Energy Technology',
+    description: 'Solar and alternative energy engineering',
+    deadline: 'March 30, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Engineering', 'Energy Science', 'Technology'],
+      requiredSubjects: ['Physics', 'Math', 'Science'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['energy', 'renewable', 'solar', 'technology', 'engineering']
+    }
+  },
+  {
+    id: 29,
+    image: cambodia3,
+    title: 'Cultural Heritage Protection',
+    description: 'Preserving Cambodia\'s historical treasures',
+    deadline: 'April 15, 2028',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['History', 'Cultural Studies', 'Archaeology'],
+      requiredSubjects: ['English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['heritage', 'culture', 'history', 'preservation', 'archaeology']
+    }
+  },
+  {
+    id: 30,
+    image: cambodia4,
+    title: 'Urban Development & Planning',
+    description: 'City planning and sustainable development',
+    deadline: 'May 10, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Urban Planning', 'Architecture', 'Engineering'],
+      requiredSubjects: ['Math', 'Science'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['urban', 'planning', 'development', 'sustainability', 'architecture']
+    }
+  },
+  {
+    id: 31,
+    image: cambodia5,
+    title: 'Microfinance & Community Development',
+    description: 'Financial services for poverty alleviation',
+    deadline: 'June 5, 2028',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Finance', 'Economics', 'Development'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['finance', 'microfinance', 'development', 'economics']
+    }
+  },
+  {
+    id: 32,
+    image: cambodia6,
+    title: 'Biotechnology Research Excellence',
+    description: 'Advanced life sciences research',
+    deadline: 'July 8, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Biotechnology', 'Biology', 'Research'],
+      requiredSubjects: ['Science', 'Chemistry', 'Biology'],
+      minGPA: 3.4,
+      difficultyLevel: 'very-competitive',
+      keywords: ['biotechnology', 'research', 'biology', 'science']
+    }
+  },
+  {
+    id: 33,
+    image: cambodia1,
+    title: 'Community Health Worker Program',
+    description: 'Public health service to rural communities',
+    deadline: 'August 12, 2028',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Public Health', 'Medicine', 'Social Services'],
+      requiredSubjects: ['Science', 'English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['health', 'community', 'public health', 'service']
+    }
+  },
+  {
+    id: 34,
+    image: cambodia2,
+    title: 'Software Development Bootcamp',
+    description: 'IT skills for digital transformation',
+    deadline: 'September 20, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Information Technology', 'Software Engineering'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['software', 'programming', 'technology', 'digital', 'coding']
+    }
+  },
+  {
+    id: 35,
+    image: cambodia3,
+    title: 'Journalism & Media Studies',
+    description: 'Digital and investigative journalism',
+    deadline: 'October 3, 2028',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Journalism', 'Communication', 'Media'],
+      requiredSubjects: ['English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['journalism', 'media', 'communication', 'writing']
+    }
+  },
+  {
+    id: 36,
+    image: cambodia4,
+    title: 'Electrical Power Systems',
+    description: 'National electricity infrastructure development',
+    deadline: 'November 8, 2028',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Electrical Engineering', 'Energy', 'Infrastructure'],
+      requiredSubjects: ['Physics', 'Math', 'Science'],
+      minGPA: 3.2,
+      difficultyLevel: 'competitive',
+      keywords: ['electrical', 'power', 'engineering', 'energy']
+    }
+  },
+  {
+    id: 37,
+    image: cambodia5,
+    title: 'NGO Management & Leadership',
+    description: 'Nonprofit organization management',
+    deadline: 'December 10, 2028',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Management', 'Business', 'Social Sciences'],
+      requiredSubjects: ['English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['ngo', 'management', 'leadership', 'nonprofit']
+    }
+  },
+  {
+    id: 38,
+    image: cambodia6,
+    title: 'Marine Science & Fisheries',
+    description: 'Sustainable fisheries management',
+    deadline: 'January 5, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Marine Science', 'Biology', 'Environmental Science'],
+      requiredSubjects: ['Science', 'Biology'],
+      minGPA: 3.0,
+      difficultyLevel: 'competitive',
+      keywords: ['marine', 'fisheries', 'ocean', 'science', 'sustainability']
+    }
+  },
+  {
+    id: 39,
+    image: cambodia1,
+    title: 'Sports Management & Development',
+    description: 'Athletic excellence and sports administration',
+    deadline: 'February 12, 2029',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Sports Management', 'Physical Education', 'Business'],
+      requiredSubjects: ['English'],
+      minGPA: 2.7,
+      difficultyLevel: 'moderate',
+      keywords: ['sports', 'management', 'athletic', 'physical education']
+    }
+  },
+  {
+    id: 40,
+    image: cambodia2,
+    title: 'Mechanical Engineering Excellence',
+    description: 'Advanced mechanical design and manufacturing',
+    deadline: 'March 15, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Mechanical Engineering', 'Manufacturing', 'Engineering'],
+      requiredSubjects: ['Physics', 'Math', 'Science'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['mechanical', 'engineering', 'design', 'manufacturing']
+    }
+  },
+  {
+    id: 41,
+    image: cambodia3,
+    title: 'Art & Cultural Management',
+    description: 'Arts administration and cultural leadership',
+    deadline: 'April 5, 2029',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Arts', 'Cultural Studies', 'Management'],
+      requiredSubjects: ['English', 'Art'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['arts', 'culture', 'management', 'creativity']
+    }
+  },
+  {
+    id: 42,
+    image: cambodia4,
+    title: 'Database Management Systems',
+    description: 'Data science and database administration',
+    deadline: 'May 20, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Computer Science', 'Data Science', 'Information Technology'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 3.1,
+      difficultyLevel: 'competitive',
+      keywords: ['database', 'data science', 'programming', 'technology']
+    }
+  },
+  {
+    id: 43,
+    image: cambodia5,
+    title: 'Gender Equality & Social Justice',
+    description: 'Advancing women\'s rights and equality',
+    deadline: 'June 10, 2029',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Social Sciences', 'Gender Studies', 'Law'],
+      requiredSubjects: ['English'],
+      minGPA: 2.9,
+      difficultyLevel: 'moderate',
+      keywords: ['gender', 'equality', 'social justice', 'rights']
+    }
+  },
+  {
+    id: 44,
+    image: cambodia6,
+    title: 'Food Science & Nutrition',
+    description: 'Nutritional science and food technology',
+    deadline: 'July 18, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Food Science', 'Nutrition', 'Biology'],
+      requiredSubjects: ['Science', 'Chemistry'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['food', 'nutrition', 'science', 'health', 'technology']
+    }
+  },
+  {
+    id: 45,
+    image: cambodia1,
+    title: 'Disaster Risk Reduction',
+    description: 'Climate adaptation and emergency management',
+    deadline: 'August 25, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Environmental Science', 'Engineering', 'Public Administration'],
+      requiredSubjects: ['Science', 'Math'],
+      minGPA: 3.0,
+      difficultyLevel: 'moderate',
+      keywords: ['disaster', 'climate', 'environment', 'risk management']
+    }
+  },
+  {
+    id: 46,
+    image: cambodia2,
+    title: 'Museum & Archive Studies',
+    description: 'Heritage preservation and curation',
+    deadline: 'September 30, 2029',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['History', 'Cultural Studies', 'Management'],
+      requiredSubjects: ['English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['museum', 'archive', 'heritage', 'curation', 'history']
+    }
+  },
+  {
+    id: 47,
+    image: cambodia3,
+    title: 'Pharmaceutical Sciences',
+    description: 'Drug development and pharmacy',
+    deadline: 'October 20, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Pharmacy', 'Chemistry', 'Medicine'],
+      requiredSubjects: ['Science', 'Chemistry', 'Biology'],
+      minGPA: 3.3,
+      difficultyLevel: 'competitive',
+      keywords: ['pharmacy', 'pharmaceutical', 'medicine', 'chemistry']
+    }
+  },
+  {
+    id: 48,
+    image: cambodia4,
+    title: 'Cooperative Business Development',
+    description: 'Cooperative enterprise and community business',
+    deadline: 'November 5, 2029',
+    aiMetadata: {
+      studentTypes: ['society'],
+      fieldCategories: ['Business', 'Economics', 'Social Sciences'],
+      requiredSubjects: ['Math', 'English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['cooperative', 'business', 'enterprise', 'community']
+    }
+  },
+  {
+    id: 49,
+    image: cambodia5,
+    title: 'Molecular Biology Research',
+    description: 'Cutting-edge biological research',
+    deadline: 'December 12, 2029',
+    aiMetadata: {
+      studentTypes: ['science'],
+      fieldCategories: ['Biology', 'Biotechnology', 'Research'],
+      requiredSubjects: ['Science', 'Biology', 'Chemistry'],
+      minGPA: 3.5,
+      difficultyLevel: 'very-competitive',
+      keywords: ['molecular', 'biology', 'research', 'science']
+    }
+  },
+  {
+    id: 50,
+    image: cambodia6,
+    title: 'Child Development & Care',
+    description: 'Early childhood education and development',
+    deadline: 'January 25, 2030',
+    aiMetadata: {
+      studentTypes: ['both'],
+      fieldCategories: ['Education', 'Social Sciences', 'Psychology'],
+      requiredSubjects: ['English'],
+      minGPA: 2.8,
+      difficultyLevel: 'moderate',
+      keywords: ['child', 'development', 'education', 'care', 'psychology']
+    }
   }
 ];
 
 // Related scholarships for detail pages
 export const relatedScholarships = [
-  { id: 2, image: cambodia2, title: 'អាហារូបករណ៍សម្រាប់កម្រិតថ្នាក់វិទ្យាល័យមធ្យមសិក្សា' },
-  { id: 3, image: cambodia3, title: 'អាហារូបករណ៍សិក្សាថ្នាក់ឧត្តមសិក្សា 900%' },
-  { id: 1, image: cambodia1, title: 'កម្មវិធីសិក្សា HOPE យុវវ័យ' }
+  { id: 2, image: cambodia2, title: 'HOPE Youth Scholarship (CanTech)' },
+  { id: 3, image: cambodia3, title: '100% Full Undergraduate Scholarship Program' },
+  { id: 1, image: cambodia1, title: 'Techo Digital Talent Scholarship (Secondary School)' }
 ];
 
 // Helper function to get scholarship by ID

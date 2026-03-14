@@ -177,8 +177,11 @@ const AIRecommendations = ({ userProfile }) => {
       </div>
 
       <div className="recommendations-grid">
-        {filteredRecommendations.map((scholarship) => (
-          <div key={scholarship.id} className="recommendation-card">
+        {filteredRecommendations.map((scholarship) => {
+          const recommendationKey = `${scholarship.category || 'unknown'}-${scholarship.id}`;
+
+          return (
+          <div key={recommendationKey} className="recommendation-card">
             <div className="card-image-container">
               <img 
                 src={scholarship.image} 
@@ -215,7 +218,7 @@ const AIRecommendations = ({ userProfile }) => {
               </div>
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );

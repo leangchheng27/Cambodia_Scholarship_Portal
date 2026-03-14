@@ -34,7 +34,7 @@ export const analyzeProfile = async (studentType, grades) => {
 export const getScholarshipRecommendations = async (
   userProfile,
   scholarships,
-  useAI = false,
+  useAI = true,
   limit = 10
 ) => {
   try {

@@ -8,6 +8,7 @@ import errorHandler from './src/middlewares/errorHandler.js';
 import userRoutes from './src/routes/user/userRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
 import { adminRouter as adminRoutes, initAdminRoutes } from './src/routes/admin/adminRoutes.js';
+import { feedbackRouter as feedbackRoutes } from './src/routes/feedback/feedbackRoutes.js';
 import recommendationRoutes from './src/routes/recommendationRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
@@ -90,6 +91,7 @@ app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/recommendations', recommendationRoutes);
+app.use('/feedback', feedbackRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

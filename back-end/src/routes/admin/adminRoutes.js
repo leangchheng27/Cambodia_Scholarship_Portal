@@ -518,4 +518,119 @@ router.delete('/internships/:id', authenticateAdmin, async (req, res) => {
     }
 });
 
+// ============================================
+// AI ANALYTICS & INSIGHTS ROUTES
+// ============================================
+
+/**
+ * GET /admin/ai-analytics
+ * Get comprehensive AI analytics data for visualization
+ * Returns data about recommendation patterns, feedback distribution, etc.
+ */
+router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
+    try {
+        // Import UserFeedback model dynamically to avoid circular imports
+        const UserFeedback = (await import('../../models/feedback/UserFeedback.js')).default;
+        const { Op } = await import('sequelize');
+
+        // Get feedback statistics
+        const totalFeedback = await UserFeedback.count();
+        const feedbackByAction = await UserFeedback.findAll({
+            attributes: [
+                'action',
+                ['count(*)', 'count']
+            ],
+            group: 'action',
+            raw: true,
+        });
+
+        // Get popularity data (top scholarships)
+        const topScholarships = await UserFeedback.findAll({
+            attributes: [
+                'scholarshipId',
+                ['count(*)', 'interactions'],
+                ['sum(score)', 'popularity']
+            ],
+            group: 'scholarshipId',
+            order: [[UserFeedback.sequelize.literal('sum(score)'), 'DESC']],
+            limit: 10,
+            raw: true,
+        });
+
+        // Get feedback trends over time (last 7 days by action)
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const feedbackTrends = await UserFeedback.findAll({
+            attributes: [
+                [UserFeedback.sequelize.fn('DATE', UserFeedback.sequelize.col('createdAt')), 'date'],
+                'action',
+                [UserFeedback.sequelize.fn('COUNT', '*'), 'count']
+            ],
+            where: {
+                createdAt: { [Op.gte]: sevenDaysAgo }
+            },
+            group: ['DATE(createdAt)', 'action'],
+            order: [[UserFeedback.sequelize.literal('DATE(createdAt)'), 'ASC']],
+            raw: true,
+        });
+
+        // Get score distribution analysis
+        const scoreDistribution = await UserFeedback.findAll({
+            attributes: [
+                'score',
+                [UserFeedback.sequelize.fn('COUNT', '*'), 'count']
+            ],
+            group: 'score',
+            raw: true,
+        });
+
+        // Get scholarship type breakdown
+        const scholarshipTypeBreakdown = await UserFeedback.findAll({
+            attributes: [
+                'scholarshipType',
+                [UserFeedback.sequelize.fn('COUNT', '*'), 'count'],
+                [UserFeedback.sequelize.fn('AVG', UserFeedback.sequelize.col('score')), 'avgScore']
+            ],
+            group: 'scholarshipType',
+            raw: true,
+        });
+
+        // Calculate AI performance metrics
+        const recommendationQuality = {
+            totalRecommendations: totalFeedback,
+            avgScore: await UserFeedback.findAll({
+                attributes: [[UserFeedback.sequelize.fn('AVG', UserFeedback.sequelize.col('score')), 'average']],
+                raw: true,
+            }).then(r => r[0]?.average || 0),
+            engagementRate: (feedbackByAction.find(f => f.action === 'click')?.count || 0) / Math.max(totalFeedback, 1),
+            saveRate: (feedbackByAction.find(f => f.action === 'save')?.count || 0) / Math.max(totalFeedback, 1),
+        };
+
+        res.json({
+            success: true,
+            data: {
+                totalFeedback,
+                feedbackByAction: feedbackByAction.reduce((acc, f) => {
+                    acc[f.action] = f.count;
+                    return acc;
+                }, {}),
+                topScholarships,
+                feedbackTrends,
+                scoreDistribution: scoreDistribution.reduce((acc, s) => {
+                    acc[s.score] = s.count;
+                    return acc;
+                }, {}),
+                scholarshipTypeBreakdown,
+                recommendationQuality,
+            }
+        });
+    } catch (err) {
+        console.error('Error fetching AI analytics:', err);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch AI analytics',
+            details: err.message 
+        });
+    }
+});
+
 export { router as adminRouter, initAdminRoutes };

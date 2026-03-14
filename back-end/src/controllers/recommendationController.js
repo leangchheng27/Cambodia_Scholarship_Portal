@@ -19,6 +19,7 @@ import {
 } from '../services/ai/recommendationEngine.js';
 import { 
   getAIRecommendations,
+  getAIRecommendationsWithFeedback,
   precomputeScholarshipEmbeddings
 } from '../services/ai/huggingface.js';
 
@@ -42,10 +43,10 @@ const analyzeProfile = async (req, res) => {
     }
 
     const validation = validateProfile({ studentType, grades });
-    if (!validation.valid) {
+    if (!validation.isValid) {
       return res.status(400).json({ 
         success: false,
-        error: validation.error 
+        error: `Missing or invalid fields: ${validation.missingFields.join(', ')}` 
       });
     }
 
@@ -83,7 +84,7 @@ const analyzeProfile = async (req, res) => {
  */
 const getRecommendations = async (req, res) => {
   try {
-    const { userProfile, scholarships, useAI = false, limit = 10 } = req.body;
+    const { userProfile, scholarships, useAI = true, limit = 10 } = req.body;
 
     // Validate input
     if (!userProfile || !scholarships) {
@@ -94,10 +95,10 @@ const getRecommendations = async (req, res) => {
     }
 
     const validation = validateProfile(userProfile);
-    if (!validation.valid) {
+    if (!validation.isValid) {
       return res.status(400).json({ 
         success: false,
-        error: validation.error 
+        error: `Missing or invalid fields: ${validation.missingFields.join(', ')}` 
       });
     }
 
@@ -109,8 +110,13 @@ const getRecommendations = async (req, res) => {
     let recommendations;
 
     if (useAI) {
-      // Use AI-powered matching with HuggingFace embeddings
-      recommendations = await getAIRecommendations(userProfile, scholarships, limit);
+      // Fetch popularity map from the feedback table and blend with AI scores.
+      // popularityMap is optional – if not provided by client, pass {} so the
+      // AI score alone drives ranking.
+      const popularityMap = req.body.popularityMap || {};
+      recommendations = await getAIRecommendationsWithFeedback(
+        userProfile, scholarships, limit, popularityMap
+      );
     } else {
       // Use rule-based matching
       recommendations = getScholarshipRecommendations(userProfile, scholarships, limit);
