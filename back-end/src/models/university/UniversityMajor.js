@@ -22,4 +22,8 @@ const UniversityMajor = sequelize.define('UniversityMajor', {
   timestamps: false,
 });
 
+// Define association
+UniversityMajor.belongsTo(University, { foreignKey: 'university_id' });
+University.hasMany(UniversityMajor, { foreignKey: 'university_id' });
+
 export default UniversityMajor;

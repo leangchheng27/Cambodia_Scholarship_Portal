@@ -6,6 +6,9 @@ import passport from 'passport';
 import config from './src/config/index.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import userRoutes from './src/routes/user/userRoutes.js';
+import internshipRoutes from './src/routes/internship/internshipRoutes.js';
+import scholarshipRoutes from './src/routes/scholarship/scholarshipRoutes.js';
+import universityRoutes from './src/routes/university/universityRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
 import { adminRouter as adminRoutes, initAdminRoutes } from './src/routes/admin/adminRoutes.js';
 import { feedbackRouter as feedbackRoutes } from './src/routes/feedback/feedbackRoutes.js';
@@ -88,6 +91,9 @@ initAdminRoutes(AuthUser);
 
 // Routes
 app.use('/users', userRoutes);
+app.use('/internships', internshipRoutes);
+app.use('/scholarships', scholarshipRoutes);
+app.use('/universities', universityRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/recommendations', recommendationRoutes);

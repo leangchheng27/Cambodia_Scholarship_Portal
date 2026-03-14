@@ -8,7 +8,14 @@ const internshipController = {
   // Get all internships
   async getAll(req, res) {
     try {
-      const internships = await Internship.findAll();
+      const internships = await Internship.findAll({
+        include: [
+          InternshipBenefit,
+          InternshipDeadline,
+          InternshipEligibility,
+          InternshipFieldOfStudy
+        ]
+      });
       res.json(internships);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -18,7 +25,14 @@ const internshipController = {
   // Get internship by ID
   async getById(req, res) {
     try {
-      const internship = await Internship.findByPk(req.params.id);
+      const internship = await Internship.findByPk(req.params.id, {
+        include: [
+          InternshipBenefit,
+          InternshipDeadline,
+          InternshipEligibility,
+          InternshipFieldOfStudy
+        ]
+      });
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       res.json(internship);
     } catch (error) {

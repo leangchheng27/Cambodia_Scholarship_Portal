@@ -17,4 +17,8 @@ const InternshipBenefit = sequelize.define('InternshipBenefit', {
   timestamps: false,
 });
 
+// Define association
+InternshipBenefit.belongsTo(Internship, { foreignKey: 'internship_id' });
+Internship.hasMany(InternshipBenefit, { foreignKey: 'internship_id' });
+
 export default InternshipBenefit;

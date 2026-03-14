@@ -18,4 +18,8 @@ const ScholarshipDeadline = sequelize.define('ScholarshipDeadline', {
   timestamps: false,
 });
 
+// Define association
+ScholarshipDeadline.belongsTo(Scholarship, { foreignKey: 'scholarship_id' });
+Scholarship.hasMany(ScholarshipDeadline, { foreignKey: 'scholarship_id' });
+
 export default ScholarshipDeadline;

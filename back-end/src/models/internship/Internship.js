@@ -16,4 +16,5 @@ const Internship = sequelize.define('Internship', {
   timestamps: false,
 });
 
+// Associations will be defined in related models
 export default Internship;

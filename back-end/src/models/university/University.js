@@ -15,4 +15,5 @@ const University = sequelize.define('University', {
   timestamps: false,
 });
 
+// Associations will be defined in related models
 export default University;
