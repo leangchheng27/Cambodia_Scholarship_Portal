@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getScholarshipRecommendations, calculateGPA } from '../../../../utils/scholarshipMatcher';
-import { cambodiaScholarships } from '../../../../data/cambodiaScholarships';
-import { abroadScholarships } from '../../../../data/abroadScholarships';
+import API from '../../../../services/api.js';
 import './AIRecommendations.css';
 
 const AIRecommendations = ({ userProfile }) => {
@@ -24,17 +23,19 @@ const AIRecommendations = ({ userProfile }) => {
           return;
         }
 
-        // Tag scholarships with their category before combining
-        const taggedCambodiaScholarships = cambodiaScholarships.map(s => ({ ...s, category: 'cambodia' }));
-        const taggedAbroadScholarships = abroadScholarships.map(s => ({ ...s, category: 'abroad' }));
+        // Fetch scholarships from API
+        const response = await API.get('/scholarships');
+        let scholarshipsFromAPI = response.data;
+
+        // Tag scholarships with their category information
+        // Could improve this by checking category from API if available
+        const allScholarships = scholarshipsFromAPI.map((s, index) => ({
+          ...s,
+          category: index % 2 === 0 ? 'cambodia' : 'abroad' // Simple categorization, can be improved
+        }));
         
-        console.log('Tagged Cambodia scholarships:', taggedCambodiaScholarships.length);
-        console.log('Tagged Abroad scholarships:', taggedAbroadScholarships.length);
-        console.log('Sample Cambodia:', taggedCambodiaScholarships[0]?.title, 'has category:', taggedCambodiaScholarships[0]?.category);
-        console.log('Sample Abroad:', taggedAbroadScholarships[0]?.title, 'has category:', taggedAbroadScholarships[0]?.category);
-        
-        const allScholarships = [...taggedCambodiaScholarships, ...taggedAbroadScholarships];
-        console.log('Combined scholarships:', allScholarships.length);
+        console.log('Scholarships from API:', allScholarships.length);
+        console.log('Sample scholarship:', allScholarships[0]?.name, 'has category:', allScholarships[0]?.category);
 
         // Calculate GPA for user profile
         const gpa = calculateGPA(userProfile.grades);

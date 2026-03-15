@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../../layouts/Header/header.jsx";
 import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
-import { abroadScholarships } from "../../../data/abroadScholarships.js";
+import API from "../../../services/api.js";
 import "./AbroadScholarshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
 import banner2 from "../../../assets/banner/p2.jpg";
@@ -13,112 +13,158 @@ import banner4 from "../../../assets/banner/p4.png";
 import banner5 from "../../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
+const SCHOLARSHIP_CACHE_TTL_MS = 30 * 1000;
+const scholarshipCache = new Map();
 
 const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits"];
 
 const renderBenefits = (benefits) => {
-  if (!benefits || benefits.length === 0) return <p>Information coming soon.</p>;
-  return (
-    <ul>
-      {benefits.map((benefit, index) => {
-        if (typeof benefit === 'string') {
-          return <li key={index}>{benefit}</li>;
-        } else if (benefit.title && benefit.items) {
-          return (
-            <li key={index}>
-              {benefit.title}
-              <ul>
-                {benefit.items.map((item, i) => <li key={i}>{item}</li>)}
-              </ul>
-            </li>
-          );
-        }
-        return null;
-      })}
-    </ul>
-  );
+  if (!benefits || (Array.isArray(benefits) && benefits.length === 0)) return <p>Information coming soon.</p>;
+  
+  if (Array.isArray(benefits)) {
+    return (
+      <ul>
+        {benefits.map((benefit, index) => {
+          if (typeof benefit === 'string') {
+            return <li key={index}>{benefit}</li>;
+          } else if (benefit.benefit) {
+            return <li key={index}>{benefit.benefit}</li>;
+          } else if (benefit.title && benefit.items) {
+            return (
+              <li key={index}>
+                {benefit.title}
+                <ul>
+                  {benefit.items.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </li>
+            );
+          }
+          return null;
+        })}
+      </ul>
+    );
+  }
+  return <p>Information coming soon.</p>;
 };
 
-const renderOverview = (details) => {
+const renderOverview = (scholarship) => {
   return (
     <div className="sdet-content">
-      {details.fundedBy && (
+      {scholarship.description && (
+        <>
+          <h3>Description</h3>
+          <p>{scholarship.description}</p>
+        </>
+      )}
+      {scholarship.funded_by && (
         <>
           <h3>Funded By</h3>
-          <p>{details.fundedBy}</p>
+          <p>{scholarship.funded_by}</p>
         </>
       )}
-      {details.fieldsOfStudy && (
-        <>
-          <h3>Fields of Study</h3>
-          <p>{details.fieldsOfStudy}</p>
-        </>
-      )}
-      {details.courseDuration && (
+      {scholarship.course_duration && (
         <>
           <h3>Course Duration</h3>
-          <p>{details.courseDuration}</p>
+          <p>{scholarship.course_duration}</p>
         </>
       )}
-      {details.deadlines && details.deadlines.length > 0 && (
-        <>
-          <h3>Application Deadlines</h3>
-          <ul>
-            {details.deadlines.map((dl, i) => (
-              <li key={i}><strong>{dl.institute}:</strong> {dl.date}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {details.registrationLinks && (
+      {scholarship.registration_link && (
         <>
           <h3>Registration</h3>
-          {details.registrationLinks.website && <p><strong>Website:</strong> {details.registrationLinks.website}</p>}
-          {details.registrationLinks.telegram && <p><strong>Telegram:</strong> {details.registrationLinks.telegram}</p>}
-        </>
-      )}
-      {details.overseasInfo && (
-        <>
-          <h3>Overseas Information</h3>
-          {details.overseasInfo.telegram && <p><strong>Telegram:</strong> {details.overseasInfo.telegram}</p>}
-          {details.overseasInfo.facebook && <p><strong>Facebook:</strong> {details.overseasInfo.facebook}</p>}
+          <p><a href={scholarship.registration_link} target="_blank" rel="noopener noreferrer">{scholarship.registration_link}</a></p>
         </>
       )}
     </div>
   );
 };
 
-const renderEligibility = (eligibility) => {
-  if (!eligibility || eligibility.length === 0) return <p>Information coming soon.</p>;
+const renderEligibility = (eligibilities) => {
+  if (!eligibilities || eligibilities.length === 0) return <p>Information coming soon.</p>;
   return (
     <ul>
-      {eligibility.map((item, index) => <li key={index}>{item}</li>)}
+      {eligibilities.map((item, index) => {
+        const text = item.eligibility || item;
+        return <li key={index}>{text}</li>;
+      })}
     </ul>
   );
 };
 
-const renderPrograms = (programs) => {
-  if (!programs || programs.length === 0) return <p>Information coming soon.</p>;
+const renderPrograms = (fieldOfStudies) => {
+  if (!fieldOfStudies || fieldOfStudies.length === 0) return <p>Information coming soon.</p>;
   return (
     <ul>
-      {programs.map((program, index) => <li key={index}>{program}</li>)}
+      {fieldOfStudies.map((field, index) => {
+        const text = field.field_name || field;
+        return <li key={index}>{text}</li>;
+      })}
     </ul>
   );
 };
 
 const AbroadScholarshipDetailPage = () => {
   const { id } = useParams();
-  const scholarshipData = abroadScholarships.find((s) => s.id === parseInt(id));
+  const [scholarship, setScholarship] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  if (!scholarshipData) return <div>Scholarship not found</div>;
-  
-  const details = scholarshipData.details || {};
+  useEffect(() => {
+    const fetchScholarship = async () => {
+      try {
+        setLoading(true);
+        const cached = scholarshipCache.get(id);
+        const now = Date.now();
+
+        if (cached && now - cached.timestamp < SCHOLARSHIP_CACHE_TTL_MS) {
+          setScholarship(cached.data);
+          setError(null);
+          return;
+        }
+
+        const response = await API.get(`/scholarships/${id}`);
+        scholarshipCache.set(id, { data: response.data, timestamp: now });
+        setScholarship(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching scholarship:', err);
+        setError('Failed to load scholarship details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchScholarship();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="sdet-content"><p>Loading scholarship details...</p></div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !scholarship) {
+    return (
+      <div>
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="sdet-content"><p>{error || 'Scholarship not found'}</p></div>
+        <Footer />
+      </div>
+    );
+  }
 
   const content = {
-    "Overview": <div className="sdet-content">{renderOverview(details)}</div>,
-    "Eligibility": <div className="sdet-content">{renderEligibility(details.eligibility)}</div>,
-    "Applicable Programs": <div className="sdet-content">{renderPrograms(details.programs)}</div>,
-    "Benefits": <div className="sdet-content">{renderBenefits(details.benefits)}</div>,
+    "Overview": <div className="sdet-content">{renderOverview(scholarship)}</div>,
+    "Eligibility": <div className="sdet-content">{renderEligibility(scholarship.ScholarshipEligibilities || [])}</div>,
+    "Applicable Programs": <div className="sdet-content">{renderPrograms(scholarship.ScholarshipFieldOfStudies || [])}</div>,
+    "Benefits": <div className="sdet-content">{renderBenefits(scholarship.ScholarshipBenefits || [])}</div>,
   };
 
   return (
@@ -127,8 +173,7 @@ const AbroadScholarshipDetailPage = () => {
       <div className="sdet-hero">
         <HeroBanner slides={bannerSlides} />
         <div className="sdet-hero-overlay">
-          <p className="sdet-hero-title">{details.title}</p>
-          {details.subtitle && <p className="sdet-hero-subtitle">{details.subtitle}</p>}
+          <p className="sdet-hero-title">{scholarship.name}</p>
         </div>
       </div>
       <TabbedSection tabs={tabs} content={content} showSectionHeader />

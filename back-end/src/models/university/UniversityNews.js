@@ -20,8 +20,4 @@ const UniversityNews = sequelize.define('UniversityNews', {
   timestamps: false,
 });
 
-// Define association
-UniversityNews.belongsTo(University, { foreignKey: 'university_id' });
-University.hasMany(UniversityNews, { foreignKey: 'university_id' });
-
 export default UniversityNews;

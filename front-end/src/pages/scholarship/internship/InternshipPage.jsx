@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
+import API from '../../../services/api.js';
 import './InternshipPage.css';
-import { internshipScholarships } from '../../../data/internshipScholarships.js';
 
 // Import banner images
 import banner1 from '../../../assets/banner/p1.png';
@@ -16,19 +16,66 @@ import banner5 from '../../../assets/banner/p5.png';
 
 export default function InternshipPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [internships, setInternships] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        setLoading(true);
+        const response = await API.get('/internships');
+        setInternships(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching internships:', err);
+        setError('Failed to load internships');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInternships();
+  }, []);
+  
   const itemsPerPage = 12;
-  const totalPages = Math.ceil(internshipScholarships.length / itemsPerPage);
+  const totalPages = Math.ceil(internships.length / itemsPerPage);
   
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentInternships = internshipScholarships.slice(startIndex, endIndex);
+  const currentInternships = internships.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (loading) {
+    return (
+      <div className="internship-list-page">
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="page-header">
+          <p>Loading internships...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="internship-list-page">
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="page-header">
+          <p className="error">{error}</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="internship-list-page">

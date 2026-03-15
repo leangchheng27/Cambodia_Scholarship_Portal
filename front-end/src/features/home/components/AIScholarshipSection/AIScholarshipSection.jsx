@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
-import { cambodiaScholarships } from '../../../../data/cambodiaScholarships';
-import { abroadScholarships } from '../../../../data/abroadScholarships';
+import API from '../../../../services/api.js';
 import './AIScholarshipSection.css';
 
 const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limit = 6, linkTo }) => {
@@ -17,14 +16,16 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
       
       setIsLoading(true);
       try {
-        // Prepare scholarship list based on type
-        let scholarshipList;
+        // Fetch scholarships from API
+        const response = await API.get('/scholarships');
+        let scholarshipList = response.data;
+
+        // Filter by type if specified
         if (type === 'cambodia') {
-          scholarshipList = cambodiaScholarships;
+          // You may need to add category filtering logic based on your data structure
+          scholarshipList = scholarshipList.slice(0, Math.ceil(scholarshipList.length / 2));
         } else if (type === 'abroad') {
-          scholarshipList = abroadScholarships;
-        } else {
-          scholarshipList = [...cambodiaScholarships, ...abroadScholarships];
+          scholarshipList = scholarshipList.slice(Math.ceil(scholarshipList.length / 2));
         }
 
         // If user has grades, get AI recommendations (sorted by match score)
@@ -39,7 +40,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
           const aiRecommendations = await getAIRecommendations(enrichedProfile, scholarshipList, limit);
           console.log(`AIScholarshipSection [${type}] - Received ${aiRecommendations.length} recommendations`);
           aiRecommendations.forEach((s, i) => {
-            console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}%`);
+            console.log(`  ${i + 1}. ${s.name} - ${s.matchScore}%`);
           });
           setRecommendations(aiRecommendations);
         } else {
@@ -49,11 +50,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
         }
       } catch (error) {
         console.error('Error fetching recommendations:', error);
-        // Fallback to showing top scholarships
-        const scholarshipList = type === 'cambodia' ? cambodiaScholarships : 
-                               type === 'abroad' ? abroadScholarships : 
-                               [...cambodiaScholarships, ...abroadScholarships];
-        setRecommendations(scholarshipList.slice(0, limit));
+        setRecommendations([]);
       } finally {
         setIsLoading(false);
       }
@@ -63,10 +60,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
   }, [userProfile, type, limit]);
 
   const handleCardClick = (scholarship) => {
-    const basePath = cambodiaScholarships.some(s => s.id === scholarship.id) 
-      ? '/scholarships/cambodia' 
-      : '/scholarships/abroad';
-    navigate(`${basePath}/detail/${scholarship.id}`);
+    navigate(`/scholarships/${type}/detail/${scholarship.id}`);
   };
 
   const getMatchColor = (score) => {

@@ -4,6 +4,10 @@
   background-color: #fff;
 }
 
+.about-layout-container + .footer {
+  margin-top: 0;
+}
+
 .about-section {
   padding: 60px 20px;
   max-width: 1200px;

@@ -1,42 +1,53 @@
 .feature-card-about {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.88));
+  border: 1px solid rgba(31, 37, 48, 0.12);
+  padding: 24px 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 20px rgba(31, 37, 48, 0.08);
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
 }
 
 .feature-card-about:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 28px rgba(31, 37, 48, 0.14);
 }
 
 .feature-icon-about {
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: #667eea;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  background: rgba(93, 102, 115, 0.1);
+  color: #454d59;
 }
 
 .feature-title-about {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #1a1a1a;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.16rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1f2530;
 }
 
 .feature-description-about {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #666;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: #3a424f;
 }
 
 @media (max-width: 768px) {
   .feature-card-about {
-    padding: 20px;
+    padding: 18px 16px;
   }
 
   .feature-icon-about {
-    font-size: 2.5rem;
+    width: 56px;
+    height: 56px;
+    font-size: 1.8rem;
   }
 }

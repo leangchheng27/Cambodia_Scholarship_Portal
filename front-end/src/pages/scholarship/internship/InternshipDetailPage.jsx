@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../../layouts/Header/header.jsx";
 import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
-import { internshipScholarships } from "../../../data/internshipScholarships.js";
+import API from "../../../services/api.js";
 import "./InternshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
 import banner2 from "../../../assets/banner/p2.jpg";
@@ -17,108 +17,142 @@ const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
 const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits"];
 
 const renderBenefits = (benefits) => {
-  if (!benefits || benefits.length === 0) return <p>Information coming soon.</p>;
-  return (
-    <ul>
-      {benefits.map((benefit, index) => {
-        if (typeof benefit === 'string') {
-          return <li key={index}>{benefit}</li>;
-        } else if (benefit.title && benefit.items) {
-          return (
-            <li key={index}>
-              {benefit.title}
-              <ul>
-                {benefit.items.map((item, i) => <li key={i}>{item}</li>)}
-              </ul>
-            </li>
-          );
-        }
-        return null;
-      })}
-    </ul>
-  );
+  if (!benefits || (Array.isArray(benefits) && benefits.length === 0)) return <p>Information coming soon.</p>;
+  
+  if (Array.isArray(benefits)) {
+    return (
+      <ul>
+        {benefits.map((benefit, index) => {
+          if (typeof benefit === 'string') {
+            return <li key={index}>{benefit}</li>;
+          } else if (benefit.benefit) {
+            return <li key={index}>{benefit.benefit}</li>;
+          } else if (benefit.title && benefit.items) {
+            return (
+              <li key={index}>
+                {benefit.title}
+                <ul>
+                  {benefit.items.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </li>
+            );
+          }
+          return null;
+        })}
+      </ul>
+    );
+  }
+  return <p>Information coming soon.</p>;
 };
 
-const renderOverview = (details) => {
+const renderOverview = (internship) => {
   return (
     <div className="sdet-content">
-      {details.fundedBy && (
+      {internship.description && (
         <>
-          <h3>Funded By</h3>
-          <p>{details.fundedBy}</p>
+          <h3>Description</h3>
+          <p>{internship.description}</p>
         </>
       )}
-      {details.fieldsOfStudy && (
+      {internship.company && (
         <>
-          <h3>Fields of Study</h3>
-          <p>{details.fieldsOfStudy}</p>
+          <h3>Company</h3>
+          <p>{internship.company}</p>
         </>
       )}
-      {details.courseDuration && (
+      {internship.duration && (
         <>
           <h3>Duration</h3>
-          <p>{details.courseDuration}</p>
+          <p>{internship.duration}</p>
         </>
       )}
-      {details.deadlines && details.deadlines.length > 0 && (
-        <>
-          <h3>Application Deadlines</h3>
-          <ul>
-            {details.deadlines.map((dl, i) => (
-              <li key={i}><strong>{dl.institute}:</strong> {dl.date}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {details.registrationLinks && (
+      {internship.registration_link && (
         <>
           <h3>Registration</h3>
-          {details.registrationLinks.website && <p><strong>Website:</strong> {details.registrationLinks.website}</p>}
-          {details.registrationLinks.telegram && <p><strong>Telegram:</strong> {details.registrationLinks.telegram}</p>}
-        </>
-      )}
-      {details.overseasInfo && (
-        <>
-          <h3>Overseas Information</h3>
-          {details.overseasInfo.telegram && <p><strong>Telegram:</strong> {details.overseasInfo.telegram}</p>}
-          {details.overseasInfo.facebook && <p><strong>Facebook:</strong> {details.overseasInfo.facebook}</p>}
+          <p><a href={internship.registration_link} target="_blank" rel="noopener noreferrer">{internship.registration_link}</a></p>
         </>
       )}
     </div>
   );
 };
 
-const renderEligibility = (eligibility) => {
-  if (!eligibility || eligibility.length === 0) return <p>Information coming soon.</p>;
+const renderEligibility = (eligibilities) => {
+  if (!eligibilities || eligibilities.length === 0) return <p>Information coming soon.</p>;
   return (
     <ul>
-      {eligibility.map((item, index) => <li key={index}>{item}</li>)}
+      {eligibilities.map((item, index) => {
+        const text = item.eligibility || item;
+        return <li key={index}>{text}</li>;
+      })}
     </ul>
   );
 };
 
-const renderPrograms = (programs) => {
-  if (!programs || programs.length === 0) return <p>Information coming soon.</p>;
+const renderPrograms = (fieldOfStudies) => {
+  if (!fieldOfStudies || fieldOfStudies.length === 0) return <p>Information coming soon.</p>;
   return (
     <ul>
-      {programs.map((program, index) => <li key={index}>{program}</li>)}
+      {fieldOfStudies.map((field, index) => {
+        const text = field.field_name || field;
+        return <li key={index}>{text}</li>;
+      })}
     </ul>
   );
 };
 
 const InternshipDetailPage = () => {
   const { id } = useParams();
-  const scholarshipData = internshipScholarships.find((s) => s.id === parseInt(id));
+  const [internship, setInternship] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  if (!scholarshipData) return <div>Internship not found</div>;
-  
-  const details = scholarshipData.details || {};
+  useEffect(() => {
+    const fetchInternship = async () => {
+      try {
+        setLoading(true);
+        const response = await API.get(`/internships/${id}`);
+        setInternship(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching internship:', err);
+        setError('Failed to load internship details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchInternship();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="sdet-content"><p>Loading internship details...</p></div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !internship) {
+    return (
+      <div>
+        <Header />
+        <HeroBanner slides={bannerSlides} />
+        <div className="sdet-content"><p>{error || 'Internship not found'}</p></div>
+        <Footer />
+      </div>
+    );
+  }
 
   const content = {
-    "Overview": <div className="sdet-content">{renderOverview(details)}</div>,
-    "Eligibility": <div className="sdet-content">{renderEligibility(details.eligibility)}</div>,
-    "Applicable Programs": <div className="sdet-content">{renderPrograms(details.programs)}</div>,
-    "Benefits": <div className="sdet-content">{renderBenefits(details.benefits)}</div>,
+    "Overview": <div className="sdet-content">{renderOverview(internship)}</div>,
+    "Eligibility": <div className="sdet-content">{renderEligibility(internship.InternshipEligibilities || [])}</div>,
+    "Applicable Programs": <div className="sdet-content">{renderPrograms(internship.InternshipFieldOfStudies || [])}</div>,
+    "Benefits": <div className="sdet-content">{renderBenefits(internship.InternshipBenefits || [])}</div>,
   };
 
   return (
@@ -127,8 +161,7 @@ const InternshipDetailPage = () => {
       <div className="sdet-hero">
         <HeroBanner slides={bannerSlides} />
         <div className="sdet-hero-overlay">
-          <p className="sdet-hero-title">{details.title}</p>
-          {details.subtitle && <p className="sdet-hero-subtitle">{details.subtitle}</p>}
+          <p className="sdet-hero-title">{internship.name}</p>
         </div>
       </div>
       <TabbedSection tabs={tabs} content={content} showSectionHeader />

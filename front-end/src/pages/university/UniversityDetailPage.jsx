@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../layouts/Header/header.jsx";
 import Footer from "../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../components/ui/TabbedSection/TabbedSection.jsx";
-import { universities } from "../../data/universities";
+import API from "../../services/api.js";
 import "./UniversityDetailPage.css";
 import banner1 from "../../assets/banner/p1.png";
 import banner2 from "../../assets/banner/p2.jpg";
@@ -39,8 +39,85 @@ const renderLines = (lines) => {
 
 const UniversityDetailPage = () => {
   const { id } = useParams();
-  const university = universities.find((u) => u.id === parseInt(id)) || universities[0];
-  const det = university.details || {};
+  const [university, setUniversity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const renderStatePage = (message, type = 'loading') => (
+    <div>
+      <Header />
+      <div className="udet-hero">
+        <HeroBanner slides={bannerSlides} />
+        <div className="udet-hero-overlay">
+          <p className="udet-hero-name-en">University Details</p>
+        </div>
+      </div>
+      <div className="udet-state-container">
+        <div className={`udet-state-message ${type}`}>{message}</div>
+      </div>
+      <Footer />
+    </div>
+  );
+
+  useEffect(() => {
+    const fetchUniversity = async () => {
+      try {
+        setLoading(true);
+        const response = await API.get(`/universities/${id}`);
+        setUniversity(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching university:', err);
+        setError('Failed to load university details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchUniversity();
+    }
+  }, [id]);
+
+  if (loading) return renderStatePage('Loading university details...', 'loading');
+  if (error) return renderStatePage(error, 'error');
+  if (!university) return renderStatePage('University not found', 'error');
+
+  // Format majors
+  const majorsContent = university.UniversityMajors && university.UniversityMajors.length > 0
+    ? university.UniversityMajors.map(major => `${major.name}${major.degree_level ? ` (${major.degree_level})` : major.specialization ? ` - ${major.specialization}` : ''}`)
+    : ["Information coming soon."];
+
+  // Format application guide
+  const appGuideContent = university.UniversityApplicationGuideSteps && university.UniversityApplicationGuideSteps.length > 0
+    ? university.UniversityApplicationGuideSteps
+        .sort((a, b) => a.step_number - b.step_number)
+        .map(step => `Step ${step.step_number}: ${step.title || ''}\n${step.description || ''}`)
+    : ["Information coming soon."];
+
+  // Format tuition fees
+  const tuitionContent = university.UniversityTuitionFees && university.UniversityTuitionFees.length > 0
+    ? university.UniversityTuitionFees.map(fee => `${fee.student_type || 'Tuition'}: ${fee.amount ? `$${fee.amount}` : 'N/A'}${fee.note ? ` - ${fee.note}` : ''}`)
+    : ["Information coming soon."];
+
+  // Format campus
+  const campusContent = university.UniversityCampuses && university.UniversityCampuses.length > 0
+    ? university.UniversityCampuses.map(campus => `${campus.name || 'Campus'}${campus.description ? ` - ${campus.description}` : ''}`)
+    : ["Information coming soon."];
+
+  // Format news/achievements for others section
+  const othersContent = university.UniversityNews && university.UniversityNews.length > 0
+    ? university.UniversityNews.map(news => news.title || "News")
+    : ["Information coming soon."];
+
+  const det = {
+    generalInfo: [university.description || "Information coming soon."],
+    majors: majorsContent,
+    applicationGuide: appGuideContent,
+    tuitionFees: tuitionContent,
+    campus: campusContent,
+    others: othersContent,
+  };
 
   const content = {
     "General Information": <div className="udet-content">{renderLines(det.generalInfo)}</div>,
@@ -57,7 +134,6 @@ const UniversityDetailPage = () => {
       <div className="udet-hero">
         <HeroBanner slides={bannerSlides} />
         <div className="udet-hero-overlay">
-          {university.nameKh && <p className="udet-hero-name-kh">{university.nameKh}</p>}
           <p className="udet-hero-name-en">{university.name}</p>
         </div>
       </div>

@@ -20,8 +20,4 @@ const UniversityStudentAchievement = sequelize.define('UniversityStudentAchievem
   timestamps: false,
 });
 
-// Define association
-UniversityStudentAchievement.belongsTo(University, { foreignKey: 'university_id' });
-University.hasMany(UniversityStudentAchievement, { foreignKey: 'university_id' });
-
 export default UniversityStudentAchievement;

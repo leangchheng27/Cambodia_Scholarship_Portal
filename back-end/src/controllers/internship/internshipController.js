@@ -1,21 +1,10 @@
 import Internship from '../../models/internship/Internship.js';
-import InternshipFieldOfStudy from '../../models/internship/InternshipFieldOfStudy.js';
-import InternshipBenefit from '../../models/internship/InternshipBenefit.js';
-import InternshipEligibility from '../../models/internship/InternshipEligibility.js';
-import InternshipDeadline from '../../models/internship/InternshipDeadline.js';
 
 const internshipController = {
   // Get all internships
   async getAll(req, res) {
     try {
-      const internships = await Internship.findAll({
-        include: [
-          InternshipBenefit,
-          InternshipDeadline,
-          InternshipEligibility,
-          InternshipFieldOfStudy
-        ]
-      });
+      const internships = await Internship.findAll();
       res.json(internships);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -25,14 +14,7 @@ const internshipController = {
   // Get internship by ID
   async getById(req, res) {
     try {
-      const internship = await Internship.findByPk(req.params.id, {
-        include: [
-          InternshipBenefit,
-          InternshipDeadline,
-          InternshipEligibility,
-          InternshipFieldOfStudy
-        ]
-      });
+      const internship = await Internship.findByPk(req.params.id);
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       res.json(internship);
     } catch (error) {

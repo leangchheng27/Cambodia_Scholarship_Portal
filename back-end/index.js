@@ -15,6 +15,7 @@ import { feedbackRouter as feedbackRoutes } from './src/routes/feedback/feedback
 import recommendationRoutes from './src/routes/recommendationRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
+import { initializeModels } from './src/models/index.js';
 
 const AuthUser = AuthUserModel(sequelize);
 import { createGoogleStrategy } from './src/strategies/auth/googleStrategy.js';
@@ -42,6 +43,18 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Lightweight request timing to identify slow endpoints quickly
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    if (duration >= 300) {
+      console.log(`[SLOW] ${req.method} ${req.originalUrl} - ${duration}ms`);
+    }
+  });
+  next();
+});
 
 // CORS configuration
 app.use(cors({
@@ -88,6 +101,9 @@ passport.deserializeUser(async (id, done) => {
 // Initialize auth routes with AuthUser model
 initAuthRoutes(AuthUser);
 initAdminRoutes(AuthUser);
+
+// Initialize all model associations
+initializeModels();
 
 // Routes
 app.use('/users', userRoutes);

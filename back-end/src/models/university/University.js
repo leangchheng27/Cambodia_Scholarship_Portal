@@ -6,9 +6,28 @@ const University = sequelize.define('University', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  title: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('name');
+    },
+  },
   description: DataTypes.TEXT,
   location: DataTypes.STRING,
-  image_url: DataTypes.STRING(512),
+  poster_image_url: DataTypes.STRING(512),
+  slider_image_url: DataTypes.STRING(512),
+  image_url: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('poster_image_url');
+    },
+  },
+  image: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('poster_image_url');
+    },
+  },
   website: DataTypes.STRING,
 }, {
   tableName: 'university',

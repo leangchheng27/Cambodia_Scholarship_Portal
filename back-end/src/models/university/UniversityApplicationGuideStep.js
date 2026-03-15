@@ -22,8 +22,4 @@ const UniversityApplicationGuideStep = sequelize.define('UniversityApplicationGu
   timestamps: false,
 });
 
-// Define association
-UniversityApplicationGuideStep.belongsTo(University, { foreignKey: 'university_id' });
-University.hasMany(UniversityApplicationGuideStep, { foreignKey: 'university_id' });
-
 export default UniversityApplicationGuideStep;

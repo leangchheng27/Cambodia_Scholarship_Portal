@@ -6,11 +6,30 @@ const Internship = sequelize.define('Internship', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  title: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('name');
+    },
+  },
   description: DataTypes.TEXT,
   company: DataTypes.STRING,
   duration: DataTypes.STRING(100),
   registration_link: DataTypes.STRING(512),
-  image_url: DataTypes.STRING(512),
+  poster_image_url: DataTypes.STRING(512),
+  slider_image_url: DataTypes.STRING(512),
+  image_url: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('poster_image_url');
+    },
+  },
+  image: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('poster_image_url');
+    },
+  },
 }, {
   tableName: 'internship',
   timestamps: false,

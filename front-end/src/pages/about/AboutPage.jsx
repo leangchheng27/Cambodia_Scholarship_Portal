@@ -11,6 +11,29 @@ export default function AboutPage() {
     <>
       <Header />
       <AboutLayout>
+        <div className="about-page">
+        <section className="about-hero">
+          <p className="about-hero-eyebrow">Cambodia Scholarship Portal</p>
+          <h1>Helping Students Reach Global Opportunities</h1>
+          <p className="about-hero-subtitle">
+            We simplify discovery, comparison, and application preparation for scholarships and internships.
+          </p>
+          <div className="about-hero-stats">
+            <div className="about-stat">
+              <h3>1 Platform</h3>
+              <p>Scholarships, internships, and universities in one place</p>
+            </div>
+            <div className="about-stat">
+              <h3>Verified Info</h3>
+              <p>Clear deadlines, requirements, and trusted listings</p>
+            </div>
+            <div className="about-stat">
+              <h3>Student Focused</h3>
+              <p>Built around real student application journeys</p>
+            </div>
+          </div>
+        </section>
+
         {/* Who We Are Section */}
         <section className="about-section who-we-are">
           <h2>WHO WE ARE</h2>
@@ -90,6 +113,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+        </div>
       </AboutLayout>
       <Footer />
     </>

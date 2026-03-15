@@ -509,9 +509,15 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="image_url" 
-                                        placeholder="Image URL"
-                                        defaultValue={currentItem?.image_url || ''}
+                                        name="poster_image_url" 
+                                        placeholder="Poster Image URL"
+                                        defaultValue={currentItem?.poster_image_url || currentItem?.image_url || ''}
+                                    />
+                                    <input 
+                                        type="url" 
+                                        name="slider_image_url" 
+                                        placeholder="Slider Image URL"
+                                        defaultValue={currentItem?.slider_image_url || ''}
                                     />
                                 </>
                             )}
@@ -550,9 +556,15 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="image_url" 
-                                        placeholder="Image URL"
-                                        defaultValue={currentItem?.image_url || ''}
+                                        name="poster_image_url" 
+                                        placeholder="Poster Image URL"
+                                        defaultValue={currentItem?.poster_image_url || currentItem?.image_url || ''}
+                                    />
+                                    <input 
+                                        type="url" 
+                                        name="slider_image_url" 
+                                        placeholder="Slider Image URL"
+                                        defaultValue={currentItem?.slider_image_url || ''}
                                     />
                                 </>
                             )}
@@ -591,9 +603,15 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="image_url" 
-                                        placeholder="Image URL"
-                                        defaultValue={currentItem?.image_url || ''}
+                                        name="poster_image_url" 
+                                        placeholder="Poster Image URL"
+                                        defaultValue={currentItem?.poster_image_url || currentItem?.image_url || ''}
+                                    />
+                                    <input 
+                                        type="url" 
+                                        name="slider_image_url" 
+                                        placeholder="Slider Image URL"
+                                        defaultValue={currentItem?.slider_image_url || ''}
                                     />
                                 </>
                             )}
