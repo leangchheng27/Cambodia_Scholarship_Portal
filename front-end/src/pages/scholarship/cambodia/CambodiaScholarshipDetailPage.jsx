@@ -14,7 +14,7 @@ import banner5 from "../../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
 
-const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits"];
+const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits", "Original Link"];
 
 const renderBenefits = (benefits) => {
   if (!benefits || (Array.isArray(benefits) && benefits.length === 0)) return <p>Information coming soon.</p>;
@@ -67,13 +67,19 @@ const renderOverview = (scholarship) => {
           <p>{scholarship.course_duration}</p>
         </>
       )}
-      {scholarship.registration_link && (
-        <>
-          <h3>Registration</h3>
-          <p><a href={scholarship.registration_link} target="_blank" rel="noopener noreferrer">{scholarship.registration_link}</a></p>
-        </>
-      )}
     </div>
+  );
+};
+
+const renderOriginalLink = (scholarship) => {
+  const originalLink = scholarship.original_link || scholarship.registration_link;
+
+  if (!originalLink) return <p>Information coming soon.</p>;
+
+  return (
+    <p>
+      <a href={originalLink} target="_blank" rel="noopener noreferrer">{originalLink}</a>
+    </p>
   );
 };
 
@@ -154,6 +160,7 @@ const CambodiaScholarshipDetailPage = () => {
     "Eligibility": <div className="sdet-content">{renderEligibility(scholarship.ScholarshipEligibilities || [])}</div>,
     "Applicable Programs": <div className="sdet-content">{renderPrograms(scholarship.ScholarshipFieldOfStudies || [])}</div>,
     "Benefits": <div className="sdet-content">{renderBenefits(scholarship.ScholarshipBenefits || [])}</div>,
+    "Original Link": <div className="sdet-content">{renderOriginalLink(scholarship)}</div>,
   };
 
   return (

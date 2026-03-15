@@ -213,7 +213,9 @@ router.get('/universities/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/universities', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
+        const resolvedPoster = poster_image_url ?? image_url;
+        const resolvedOriginalLink = original_link ?? website;
         
         if (!name) {
             return res.status(400).json({ error: 'University name is required' });
@@ -223,7 +225,9 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
             name,
             description,
             location,
-            image_url,
+            poster_image_url: resolvedPoster,
+            slider_image_url,
+            original_link: resolvedOriginalLink,
             website,
         });
 
@@ -242,7 +246,7 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
  */
 router.put('/universities/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
         const university = await University.findByPk(req.params.id);
         
         if (!university) {
@@ -252,7 +256,11 @@ router.put('/universities/:id', authenticateAdmin, async (req, res) => {
         if (name !== undefined) university.name = name;
         if (description !== undefined) university.description = description;
         if (location !== undefined) university.location = location;
-        if (image_url !== undefined) university.image_url = image_url;
+        if (poster_image_url !== undefined || image_url !== undefined) {
+            university.poster_image_url = poster_image_url ?? image_url;
+        }
+        if (slider_image_url !== undefined) university.slider_image_url = slider_image_url;
+        if (original_link !== undefined) university.original_link = original_link;
         if (website !== undefined) university.website = website;
 
         await university.save();
@@ -327,7 +335,9 @@ router.get('/scholarships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url } = req.body;
+        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const resolvedPoster = poster_image_url ?? image_url;
+        const resolvedOriginalLink = original_link ?? registration_link;
         
         if (!name) {
             return res.status(400).json({ error: 'Scholarship name is required' });
@@ -339,7 +349,9 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
             funded_by,
             course_duration,
             registration_link,
-            image_url,
+            original_link: resolvedOriginalLink,
+            poster_image_url: resolvedPoster,
+            slider_image_url,
         });
 
         res.status(201).json({ 
@@ -357,7 +369,7 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
  */
 router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url } = req.body;
+        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
         const scholarship = await Scholarship.findByPk(req.params.id);
         
         if (!scholarship) {
@@ -369,7 +381,11 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
         if (funded_by !== undefined) scholarship.funded_by = funded_by;
         if (course_duration !== undefined) scholarship.course_duration = course_duration;
         if (registration_link !== undefined) scholarship.registration_link = registration_link;
-        if (image_url !== undefined) scholarship.image_url = image_url;
+        if (original_link !== undefined) scholarship.original_link = original_link;
+        if (poster_image_url !== undefined || image_url !== undefined) {
+            scholarship.poster_image_url = poster_image_url ?? image_url;
+        }
+        if (slider_image_url !== undefined) scholarship.slider_image_url = slider_image_url;
 
         await scholarship.save();
         
@@ -443,7 +459,9 @@ router.get('/internships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url } = req.body;
+        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const resolvedPoster = poster_image_url ?? image_url;
+        const resolvedOriginalLink = original_link ?? registration_link;
         
         if (!name) {
             return res.status(400).json({ error: 'Internship name is required' });
@@ -455,7 +473,9 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             company,
             duration,
             registration_link,
-            image_url,
+            original_link: resolvedOriginalLink,
+            poster_image_url: resolvedPoster,
+            slider_image_url,
         });
 
         res.status(201).json({ 
@@ -473,7 +493,7 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
  */
 router.put('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url } = req.body;
+        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
         const internship = await Internship.findByPk(req.params.id);
         
         if (!internship) {
@@ -485,7 +505,11 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
         if (company !== undefined) internship.company = company;
         if (duration !== undefined) internship.duration = duration;
         if (registration_link !== undefined) internship.registration_link = registration_link;
-        if (image_url !== undefined) internship.image_url = image_url;
+        if (original_link !== undefined) internship.original_link = original_link;
+        if (poster_image_url !== undefined || image_url !== undefined) {
+            internship.poster_image_url = poster_image_url ?? image_url;
+        }
+        if (slider_image_url !== undefined) internship.slider_image_url = slider_image_url;
 
         await internship.save();
         

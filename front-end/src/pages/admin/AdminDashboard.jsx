@@ -342,7 +342,7 @@ const AdminDashboard = () => {
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Location</th>
-                                    <th>Website</th>
+                                    <th>Original Link</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -352,7 +352,7 @@ const AdminDashboard = () => {
                                         <td>{university.id}</td>
                                         <td>{university.name}</td>
                                         <td>{university.location || 'N/A'}</td>
-                                        <td>{university.website || 'N/A'}</td>
+                                        <td>{university.original_link || university.website || 'N/A'}</td>
                                         <td>
                                             <button 
                                                 onClick={() => handleCreateOrEdit('edit', university)}
@@ -503,9 +503,9 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="website" 
-                                        placeholder="Website URL"
-                                        defaultValue={currentItem?.website || ''}
+                                        name="original_link" 
+                                        placeholder="Original Link"
+                                        defaultValue={currentItem?.original_link || currentItem?.website || ''}
                                     />
                                     <input 
                                         type="url" 
@@ -550,9 +550,9 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="registration_link" 
-                                        placeholder="Registration Link"
-                                        defaultValue={currentItem?.registration_link || ''}
+                                        name="original_link" 
+                                        placeholder="Original Link"
+                                        defaultValue={currentItem?.original_link || currentItem?.registration_link || ''}
                                     />
                                     <input 
                                         type="url" 
@@ -597,9 +597,9 @@ const AdminDashboard = () => {
                                     />
                                     <input 
                                         type="url" 
-                                        name="registration_link" 
-                                        placeholder="Registration Link"
-                                        defaultValue={currentItem?.registration_link || ''}
+                                        name="original_link" 
+                                        placeholder="Original Link"
+                                        defaultValue={currentItem?.original_link || currentItem?.registration_link || ''}
                                     />
                                     <input 
                                         type="url" 

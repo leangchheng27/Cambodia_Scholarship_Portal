@@ -14,7 +14,7 @@ import banner5 from "../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
 
-const tabs = ["General Information", "Majors", "Application Guide", "Tuition Fees", "Campus", "Others"];
+const tabs = ["General Information", "Majors", "Application Guide", "Tuition Fees", "Campus", "Others", "Original Link"];
 
 const renderLines = (lines) => {
   if (!lines || lines.length === 0) return <p>Information coming soon.</p>;
@@ -35,6 +35,18 @@ const renderLines = (lines) => {
     result.push(<ul key="ul-end">{bulletGroup.map((b, j) => <li key={j}>{b}</li>)}</ul>);
   }
   return result;
+};
+
+const renderOriginalLink = (university) => {
+  const originalLink = university.original_link || university.website;
+
+  if (!originalLink) return <p>Information coming soon.</p>;
+
+  return (
+    <p>
+      <a href={originalLink} target="_blank" rel="noopener noreferrer">{originalLink}</a>
+    </p>
+  );
 };
 
 const UniversityDetailPage = () => {
@@ -126,6 +138,7 @@ const UniversityDetailPage = () => {
     "Tuition Fees": <div className="udet-content">{renderLines(det.tuitionFees)}</div>,
     "Campus": <div className="udet-content">{renderLines(det.campus)}</div>,
     "Others": <div className="udet-content">{renderLines(det.others)}</div>,
+    "Original Link": <div className="udet-content">{renderOriginalLink(university)}</div>,
   };
 
   return (

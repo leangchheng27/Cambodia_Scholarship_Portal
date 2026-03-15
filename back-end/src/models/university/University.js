@@ -28,7 +28,13 @@ const University = sequelize.define('University', {
       return this.getDataValue('poster_image_url');
     },
   },
-  website: DataTypes.STRING,
+  website: {
+    type: DataTypes.STRING,
+    get() {
+      return this.getDataValue('website') || this.getDataValue('original_link');
+    },
+  },
+  original_link: DataTypes.STRING(512),
 }, {
   tableName: 'university',
   timestamps: false,

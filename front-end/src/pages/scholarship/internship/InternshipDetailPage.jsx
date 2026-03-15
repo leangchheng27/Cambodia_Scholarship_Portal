@@ -14,7 +14,7 @@ import banner5 from "../../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
 
-const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits"];
+const tabs = ["Overview", "Eligibility", "Applicable Programs", "Benefits", "Original Link"];
 
 const renderBenefits = (benefits) => {
   if (!benefits || (Array.isArray(benefits) && benefits.length === 0)) return <p>Information coming soon.</p>;
@@ -66,13 +66,19 @@ const renderOverview = (internship) => {
           <p>{internship.duration}</p>
         </>
       )}
-      {internship.registration_link && (
-        <>
-          <h3>Registration</h3>
-          <p><a href={internship.registration_link} target="_blank" rel="noopener noreferrer">{internship.registration_link}</a></p>
-        </>
-      )}
     </div>
+  );
+};
+
+const renderOriginalLink = (internship) => {
+  const originalLink = internship.original_link || internship.registration_link;
+
+  if (!originalLink) return <p>Information coming soon.</p>;
+
+  return (
+    <p>
+      <a href={originalLink} target="_blank" rel="noopener noreferrer">{originalLink}</a>
+    </p>
   );
 };
 
@@ -153,6 +159,7 @@ const InternshipDetailPage = () => {
     "Eligibility": <div className="sdet-content">{renderEligibility(internship.InternshipEligibilities || [])}</div>,
     "Applicable Programs": <div className="sdet-content">{renderPrograms(internship.InternshipFieldOfStudies || [])}</div>,
     "Benefits": <div className="sdet-content">{renderBenefits(internship.InternshipBenefits || [])}</div>,
+    "Original Link": <div className="sdet-content">{renderOriginalLink(internship)}</div>,
   };
 
   return (

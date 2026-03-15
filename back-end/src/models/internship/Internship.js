@@ -15,7 +15,13 @@ const Internship = sequelize.define('Internship', {
   description: DataTypes.TEXT,
   company: DataTypes.STRING,
   duration: DataTypes.STRING(100),
-  registration_link: DataTypes.STRING(512),
+  registration_link: {
+    type: DataTypes.STRING(512),
+    get() {
+      return this.getDataValue('registration_link') || this.getDataValue('original_link');
+    },
+  },
+  original_link: DataTypes.STRING(512),
   poster_image_url: DataTypes.STRING(512),
   slider_image_url: DataTypes.STRING(512),
   image_url: {
