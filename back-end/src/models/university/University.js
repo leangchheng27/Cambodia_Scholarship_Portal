@@ -1,6 +1,21 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../../db/database.js';
 
+const DEMO_POSTER_URL = 'https://csp-media.sgp1.cdn.digitaloceanspaces.com/universities/posters/demo-pic.png';
+
+const resolveImageUrl = (url) => {
+  if (!url) {
+    return DEMO_POSTER_URL;
+  }
+
+  const normalized = String(url).trim();
+  if (!/^https?:\/\//i.test(normalized)) {
+    return DEMO_POSTER_URL;
+  }
+
+  return normalized;
+};
+
 const University = sequelize.define('University', {
   name: {
     type: DataTypes.STRING,
@@ -14,27 +29,42 @@ const University = sequelize.define('University', {
   },
   description: DataTypes.TEXT,
   location: DataTypes.STRING,
-  poster_image_url: DataTypes.STRING(512),
-  slider_image_url: DataTypes.STRING(512),
-  image_url: {
+  image_url: DataTypes.STRING(512),
+  poster_image_url: {
     type: DataTypes.VIRTUAL,
     get() {
-      return this.getDataValue('poster_image_url');
+      return resolveImageUrl(this.getDataValue('image_url'));
+    },
+    set(value) {
+      this.setDataValue('image_url', value);
+    },
+  },
+  slider_image_url: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return resolveImageUrl(this.getDataValue('image_url'));
+    },
+    set(value) {
+      // Keep request compatibility even when the DB does not have slider_image_url.
+      this.setDataValue('image_url', value);
     },
   },
   image: {
     type: DataTypes.VIRTUAL,
     get() {
-      return this.getDataValue('poster_image_url');
+      return resolveImageUrl(this.getDataValue('image_url'));
     },
   },
-  website: {
-    type: DataTypes.STRING,
+  website: DataTypes.STRING(512),
+  original_link: {
+    type: DataTypes.VIRTUAL,
     get() {
-      return this.getDataValue('website') || this.getDataValue('original_link');
+      return this.getDataValue('website');
+    },
+    set(value) {
+      this.setDataValue('website', value);
     },
   },
-  original_link: DataTypes.STRING(512),
 }, {
   tableName: 'university',
   timestamps: false,
