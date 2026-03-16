@@ -98,8 +98,8 @@ export default function Header()  {
                 <div className="top-bar-container">
                     <div className="top-links">
                         <Link to="/home">Home</Link>
+                        <Link to="/services">Services</Link>
                         <Link to="/contact">Contact</Link>
-                        <Link to="/support">Support</Link>
                     </div>
                     <div className="language-selector">
                         <span>🌐 KHMER</span>
@@ -114,6 +114,7 @@ export default function Header()  {
                     <div className="nav-actions-group">
                         <nav className="nav-menu">
                             <Link to="/about">About</Link>
+                            <Link to="/services">Services</Link>
                             <div className="dropdown" tabIndex={0}>
                                 {/* Clickable toggle for both mouse and keyboard */}
                                 <span

@@ -8,7 +8,12 @@ import API from '../../../services/api';
  */
 export async function login({ email, password }) {
   try {
+    console.log('🔐 Attempting login to:', 'http://localhost:3000/auth/login');
+    console.log('📧 Email:', email);
+    
     const response = await API.post('/auth/login', { email, password });
+    console.log('✅ Login response:', response.data);
+    
     const { token, user } = response.data;
     
     // Store token in localStorage
@@ -16,6 +21,10 @@ export async function login({ email, password }) {
     
     return { token, user };
   } catch (error) {
+    console.error('❌ Login error:', error);
+    console.error('❌ Error response:', error.response?.data);
+    console.error('❌ Error status:', error.response?.status);
+    
     const message = error.response?.data?.error || 'Login failed';
     throw new Error(message);
   }

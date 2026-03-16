@@ -18,18 +18,6 @@ const Footer = () => {
 
           {/* Features Section */}
           <div className="features-section">
-            <div className="features-header">
-              <h3 className="features-title">Features</h3>
-              <div className="features-search">
-                <input type="text" placeholder="" readOnly />
-                <span className="search-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                  </svg>
-                </span>
-              </div>
-            </div>
             <div className="features-grid">
               <div className="feature-item">
                 <div className="feature-icon">
@@ -85,7 +73,8 @@ const Footer = () => {
           <div className="footer-links">
             <h4>Quick Link</h4>
             <ul>
-              <li><a href="/">Home</a></li>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/services">Services</a></li>
               <li><a href="/about">About</a></li>
               <li><a href="/contact">Contact</a></li>
               <li><a href="/university">University</a></li>
@@ -114,7 +103,7 @@ const Footer = () => {
           {/* Contact */}
           <div className="footer-contact">
             <h4>Contact</h4>
-            <p>Cell: +855 XX XXX XXX</p>
+            <p>Cell: +855 12 345 678</p>
             <p>Email: info@cambodiascholarship.edu.kh</p>
           </div>
 

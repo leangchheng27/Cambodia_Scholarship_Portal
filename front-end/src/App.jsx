@@ -18,6 +18,7 @@ import { useAuth } from "./context/AuthContext.jsx";
 import UniversityPage from "./pages/university/UniversityPage.jsx";
 import UniversityDetailPage from "./pages/university/UniversityDetailPage.jsx";
 import { isProfileCompleted } from "./utils/profileHelpers.js";
+import ServicePage from "./pages/service/ServicePage.jsx";
 
 // Redirect component for old routes
 const ScholarshipRedirect = ({ basePath }) => {
@@ -104,6 +105,7 @@ const App = () => {
           <Route path="/university" element={<UniversityPage />} />
           <Route path="/universities/:id" element={<UniversityDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/services" element={<ServicePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route
             path="/profile"

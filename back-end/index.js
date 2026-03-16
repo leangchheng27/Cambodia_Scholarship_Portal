@@ -58,7 +58,23 @@ app.use((req, res, next) => {
 
 // CORS configuration
 app.use(cors({
-  origin: config.FRONTEND_URL || 'http://localhost:5173',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost on any port during development
+    if (origin.match(/^http:\/\/localhost:\d+$/)) {
+      return callback(null, true);
+    }
+    
+    // Allow the configured frontend URL
+    if (origin === config.FRONTEND_URL) {
+      return callback(null, true);
+    }
+    
+    // Block other origins
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 
