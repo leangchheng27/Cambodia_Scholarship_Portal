@@ -24,7 +24,7 @@ const services = [
   {
     id: 'cv-check',
     title: 'Internship CV Review',
-    price: '$12 / review',
+    price: '$5 / review',
     description:
       'Get a detailed CV check tailored for internship applications, with practical edits recruiters care about.',
     includes: ['Line-by-line CV comments', 'Format + language polishing', 'Final score with improvement tips'],
