@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
 import { Link } from 'react-router-dom';
@@ -46,7 +47,56 @@ const processSteps = [
   },
 ];
 
+const paymentMethods = [
+  {
+    id: 'visa',
+    label: 'Visa Card',
+    note: 'For local or international debit and credit cards.',
+  },
+  {
+    id: 'aba',
+    label: 'ABA Bank / ABA PAY',
+    note: 'Pay via ABA transfer or scan ABA PAY QR in KHR or USD.',
+  },
+];
+
 export default function ServicePage() {
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const selectedServiceInfo = services.find((service) => service.id === selectedService) ?? null;
+  const selectedPaymentInfo = paymentMethods.find((method) => method.id === selectedPayment) ?? paymentMethods[0];
+
+  const contactLink = selectedServiceInfo
+    ? `/contact?service=${encodeURIComponent(selectedServiceInfo.title)}&payment=${encodeURIComponent(selectedPaymentInfo.label)}`
+    : '/contact';
+
+  const openPaymentModal = (serviceId) => {
+    setSelectedService(serviceId);
+    setIsPaymentModalOpen(true);
+  };
+
+  const closePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isPaymentModalOpen) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        closePaymentModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isPaymentModalOpen]);
+
   return (
     <div className="service-page">
       <Header />
@@ -94,9 +144,13 @@ export default function ServicePage() {
                   ))}
                 </ul>
 
-                <Link to="/contact" className="service-btn service-btn-primary service-card-btn">
+                <button
+                  type="button"
+                  onClick={() => openPaymentModal(service.id)}
+                  className="service-btn service-btn-primary service-card-btn"
+                >
                   Book This Service
-                </Link>
+                </button>
               </article>
             ))}
           </div>
@@ -119,6 +173,60 @@ export default function ServicePage() {
           </div>
         </section>
       </main>
+
+      {isPaymentModalOpen && selectedServiceInfo && (
+        <div className="payment-modal-overlay" role="presentation" onClick={closePaymentModal}>
+          <section
+            className="payment-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="payment-modal-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="payment-modal-close"
+              onClick={closePaymentModal}
+              aria-label="Close payment modal"
+            >
+              x
+            </button>
+
+            <h2 id="payment-modal-title">Choose Payment Method</h2>
+            <p className="payment-modal-subtitle">
+              {selectedServiceInfo.title} · {selectedServiceInfo.price}
+            </p>
+
+            <div className="payment-method-grid">
+              {paymentMethods.map((method) => (
+                <label
+                  key={method.id}
+                  className={`payment-method-card ${selectedPayment === method.id ? 'payment-method-card-active' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="payment-method"
+                    value={method.id}
+                    checked={selectedPayment === method.id}
+                    onChange={() => setSelectedPayment(method.id)}
+                  />
+                  <span className="payment-method-title">{method.label}</span>
+                  <span className="payment-method-note">{method.note}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="payment-summary">
+              <p>
+                <strong>Payment Method:</strong> {selectedPaymentInfo.label}
+              </p>
+              <Link to={contactLink} className="service-btn service-btn-primary" onClick={closePaymentModal}>
+                Continue To Booking
+              </Link>
+            </div>
+          </section>
+        </div>
+      )}
 
       <Footer />
     </div>
