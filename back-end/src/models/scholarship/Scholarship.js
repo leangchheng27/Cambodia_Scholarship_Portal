@@ -9,7 +9,7 @@ const resolveImageUrl = (url) => {
   }
 
   const normalized = String(url).trim();
-  if (!/^https?:\/\//i.test(normalized)) {
+  if (!/^\https?:\/\//i.test(normalized)) {
     return DEMO_POSTER_URL;
   }
 
@@ -28,6 +28,11 @@ const Scholarship = sequelize.define('Scholarship', {
     },
   },
   description: DataTypes.TEXT,
+  type: {
+    type: DataTypes.ENUM('cambodia', 'abroad', 'internship'),
+    defaultValue: 'cambodia',
+    allowNull: false,
+  },
   funded_by: DataTypes.STRING,
   course_duration: DataTypes.STRING(100),
   registration_link: DataTypes.STRING(512),
@@ -66,6 +71,8 @@ const Scholarship = sequelize.define('Scholarship', {
       return resolveImageUrl(this.getDataValue('image_url'));
     },
   },
+  details: DataTypes.JSON,
+  ai_metadata: DataTypes.JSON,
 }, {
   tableName: 'scholarship',
   timestamps: false,

@@ -26,7 +26,9 @@ export default function CambodiaScholarshipPage() {
       try {
         setLoading(true);
         const response = await API.get('/scholarships');
-        setScholarships(response.data);
+        // Filter scholarships to only show cambodia type
+        const cambodiaScholarships = response.data.filter(s => s.type === 'cambodia' || !s.type);
+        setScholarships(cambodiaScholarships);
         setError(null);
       } catch (err) {
         console.error('Error fetching scholarships:', err);

@@ -26,7 +26,9 @@ export default function AbroadScholarshipPage() {
       try {
         setLoading(true);
         const response = await API.get('/scholarships');
-        setScholarships(response.data);
+        // Filter scholarships to only show abroad type
+        const abroadScholarships = response.data.filter(s => s.type === 'abroad');
+        setScholarships(abroadScholarships);
         setError(null);
       } catch (err) {
         console.error('Error fetching scholarships:', err);

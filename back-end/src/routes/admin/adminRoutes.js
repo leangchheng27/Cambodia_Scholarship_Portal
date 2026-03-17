@@ -4,6 +4,7 @@ import { authenticateAdmin } from '../../middlewares/auth/adminMiddleware.js';
 import University from '../../models/university/University.js';
 import Scholarship from '../../models/scholarship/Scholarship.js';
 import Internship from '../../models/internship/Internship.js';
+import { Op } from 'sequelize';
 
 const router = express.Router();
 
@@ -31,8 +32,10 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         const unverifiedUsers = await AuthUser.count({ where: { isVerified: false, role: 'user' } });
         
         const totalUniversities = await University.count();
-        const totalScholarships = await Scholarship.count();
-        const totalInternships = await Internship.count();
+        const totalScholarships = await Scholarship.count({ 
+            where: { type: { [Op.in]: ['cambodia', 'abroad'] } } 
+        });
+        const totalInternships = await Scholarship.count({ where: { type: 'internship' } });
 
         res.json({
             stats: {
@@ -178,14 +181,18 @@ router.get('/profile', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/universities
- * Get all universities
+ * Get all universities sorted by ID ascending
  */
 router.get('/universities', authenticateAdmin, async (req, res) => {
     try {
         const universities = await University.findAll({
-            order: [['id', 'DESC']],
+            order: [['id', 'ASC']],
+            raw: true,
         });
-        res.json({ universities });
+        
+        res.json({ 
+            universities
+        });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch universities', details: err.message });
     }
@@ -300,14 +307,20 @@ router.delete('/universities/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/scholarships
- * Get all scholarships
+ * Get all scholarships sorted by ID ascending
  */
 router.get('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const scholarships = await Scholarship.findAll({
-            order: [['id', 'DESC']],
+        const [cambodia, abroad] = await Promise.all([
+            Scholarship.findAll({ where: { type: 'cambodia' }, order: [['id', 'ASC']], raw: true }),
+            Scholarship.findAll({ where: { type: 'abroad' }, order: [['id', 'ASC']], raw: true }),
+        ]);
+        
+        res.json({ 
+            scholarships: cambodia,
+            cambodia,
+            abroad,
         });
-        res.json({ scholarships });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch scholarships', details: err.message });
     }
@@ -335,7 +348,7 @@ router.get('/scholarships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url, type } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
         
@@ -352,6 +365,7 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
             original_link: resolvedOriginalLink,
             poster_image_url: resolvedPoster,
             slider_image_url,
+            type: type || 'cambodia',
         });
 
         res.status(201).json({ 
@@ -369,7 +383,7 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
  */
 router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url, type } = req.body;
         const scholarship = await Scholarship.findByPk(req.params.id);
         
         if (!scholarship) {
@@ -382,6 +396,7 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
         if (course_duration !== undefined) scholarship.course_duration = course_duration;
         if (registration_link !== undefined) scholarship.registration_link = registration_link;
         if (original_link !== undefined) scholarship.original_link = original_link;
+        if (type !== undefined) scholarship.type = type;
         if (poster_image_url !== undefined || image_url !== undefined) {
             scholarship.poster_image_url = poster_image_url ?? image_url;
         }
@@ -424,13 +439,16 @@ router.delete('/scholarships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/internships
- * Get all internships
+ * Get all internships sorted by ID ascending
  */
 router.get('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const internships = await Internship.findAll({
-            order: [['id', 'DESC']],
+        const internships = await Scholarship.findAll({
+            where: { type: 'internship' },
+            order: [['id', 'ASC']],
+            raw: true,
         });
+        
         res.json({ internships });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch internships', details: err.message });
@@ -439,11 +457,11 @@ router.get('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/internships/:id
- * Get single internship
+ * Get single internship (from Scholarship table with type='internship')
  */
 router.get('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Internship.findByPk(req.params.id);
+        const internship = await Scholarship.findByPk(req.params.id);
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
         }
@@ -455,7 +473,7 @@ router.get('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * POST /admin/internships
- * Create new internship
+ * Create new internship (as Scholarship with type='internship')
  */
 router.post('/internships', authenticateAdmin, async (req, res) => {
     try {
@@ -467,15 +485,16 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Internship name is required' });
         }
 
-        const internship = await Internship.create({
+        const internship = await Scholarship.create({
             name,
             description,
-            company,
-            duration,
+            funded_by: company,
+            course_duration: duration,
             registration_link,
             original_link: resolvedOriginalLink,
             poster_image_url: resolvedPoster,
             slider_image_url,
+            type: 'internship',
         });
 
         res.status(201).json({ 
@@ -489,12 +508,12 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * PUT /admin/internships/:id
- * Update internship
+ * Update internship (as Scholarship with type='internship')
  */
 router.put('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
         const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
-        const internship = await Internship.findByPk(req.params.id);
+        const internship = await Scholarship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
@@ -502,8 +521,8 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
         if (name !== undefined) internship.name = name;
         if (description !== undefined) internship.description = description;
-        if (company !== undefined) internship.company = company;
-        if (duration !== undefined) internship.duration = duration;
+        if (company !== undefined) internship.funded_by = company;
+        if (duration !== undefined) internship.course_duration = duration;
         if (registration_link !== undefined) internship.registration_link = registration_link;
         if (original_link !== undefined) internship.original_link = original_link;
         if (poster_image_url !== undefined || image_url !== undefined) {
@@ -524,11 +543,11 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * DELETE /admin/internships/:id
- * Delete internship
+ * Delete internship (from Scholarship table)
  */
 router.delete('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Internship.findByPk(req.params.id);
+        const internship = await Scholarship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });

@@ -1,0 +1,29 @@
+// Pure data export without image imports
+export const scholarshipsData = {
+  cambodia: [
+    // Add all cambodia scholarships here
+    // This is a simplified version - in production you'd extract all 50
+    {
+      id: 1,
+      title: 'Techo Digital Talent Scholarship',
+      description: 'Tech scholarship for digitally talented students',
+      deadline: '2027-06-30'
+    }
+  ],
+  abroad: [
+    {
+      id: 1,
+      title: 'Fulbright Scholarship Program',
+      description: 'US educational exchange',
+      deadline: '2026-06-15'
+    }
+  ],
+  internship: [
+    {
+      id: 1,
+      title: 'FPT Software Internship',
+      description: 'IT internship opportunity',
+      deadline: '2027-01-31'
+    }
+  ]
+};

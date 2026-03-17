@@ -1,20 +1,22 @@
-import Internship from '../../models/internship/Internship.js';
+import Scholarship from '../../models/scholarship/Scholarship.js';
 
 const internshipController = {
-  // Get all internships
+  // Get all internships (from Scholarship table with type='internship')
   async getAll(req, res) {
     try {
-      const internships = await Internship.findAll();
+      const internships = await Scholarship.findAll({
+        where: { type: 'internship' }
+      });
       res.json(internships);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
 
-  // Get internship by ID
+  // Get internship by ID (from Scholarship table)
   async getById(req, res) {
     try {
-      const internship = await Internship.findByPk(req.params.id);
+      const internship = await Scholarship.findByPk(req.params.id);
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       res.json(internship);
     } catch (error) {
@@ -22,10 +24,13 @@ const internshipController = {
     }
   },
 
-  // Create internship
+  // Create internship (as Scholarship with type='internship')
   async create(req, res) {
     try {
-      const internship = await Internship.create(req.body);
+      const internship = await Scholarship.create({
+        ...req.body,
+        type: 'internship'
+      });
       res.status(201).json(internship);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -35,7 +40,7 @@ const internshipController = {
   // Update internship
   async update(req, res) {
     try {
-      const internship = await Internship.findByPk(req.params.id);
+      const internship = await Scholarship.findByPk(req.params.id);
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       await internship.update(req.body);
       res.json(internship);
@@ -47,7 +52,7 @@ const internshipController = {
   // Delete internship
   async delete(req, res) {
     try {
-      const internship = await Internship.findByPk(req.params.id);
+      const internship = await Scholarship.findByPk(req.params.id);
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       await internship.destroy();
       res.json({ message: 'Internship deleted' });

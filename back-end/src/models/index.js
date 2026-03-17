@@ -6,6 +6,12 @@ import UniversityCampus from './university/UniversityCampus.js';
 import UniversityNews from './university/UniversityNews.js';
 import UniversityStudentAchievement from './university/UniversityStudentAchievement.js';
 
+import Scholarship from './scholarship/Scholarship.js';
+import ScholarshipBenefit from './scholarship/ScholarshipBenefit.js';
+import ScholarshipDeadline from './scholarship/ScholarshipDeadline.js';
+import ScholarshipEligibility from './scholarship/ScholarshipEligibility.js';
+import ScholarshipFieldOfStudy from './scholarship/ScholarshipFieldOfStudy.js';
+
 // Initialize all associations
 const initializeModels = () => {
   // University associations
@@ -32,5 +38,10 @@ export {
   UniversityCampus,
   UniversityNews,
   UniversityStudentAchievement,
+  Scholarship,
+  ScholarshipBenefit,
+  ScholarshipDeadline,
+  ScholarshipEligibility,
+  ScholarshipFieldOfStudy,
   initializeModels,
 };

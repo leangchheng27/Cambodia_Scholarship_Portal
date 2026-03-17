@@ -9,17 +9,48 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
     const [universities, setUniversities] = useState([]);
-    const [scholarships, setScholarships] = useState([]);
+    const [cambodiaScholarships, setCambodiaScholarships] = useState([]);
+    const [abroadScholarships, setAbroadScholarships] = useState([]);
+    const [scholarshipType, setScholarshipType] = useState('cambodia');
     const [internships, setInternships] = useState([]);
-    const [activeTab, setActiveTab] = useState('users'); // users, universities, scholarships, internships, ai-analytics
+    const [activeTab, setActiveTab] = useState('users');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState(''); // create or edit
+    const [modalType, setModalType] = useState('');
     const [currentItem, setCurrentItem] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1); // Pagination for users
-    const USERS_PER_PAGE = 15;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [universityPage, setUniversityPage] = useState(1);
+    const [scholarshipPage, setScholarshipPage] = useState(1);
+    const [internshipPage, setInternshipPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
     const navigate = useNavigate();
+
+    const makePagination = (page, setPage, total) => {
+        const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+        if (totalPages <= 1) return null;
+        return (
+            <div className="pagination-controls">
+                {page > 1 && (
+                    <button onClick={() => setPage(1)} className="pagination-btn">First</button>
+                )}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(n => n <= 2 || n > totalPages - 2 || Math.abs(n - page) <= 1)
+                    .reduce((acc, n, idx, arr) => {
+                        if (idx > 0 && arr[idx - 1] !== n - 1)
+                            acc.push(<span key={`e-${n}`} className="pagination-ellipsis">...</span>);
+                        acc.push(
+                            <button key={n} onClick={() => setPage(n)}
+                                className={`pagination-btn ${page === n ? 'active' : ''}`}>{n}</button>
+                        );
+                        return acc;
+                    }, [])}
+                {page < totalPages && (
+                    <button onClick={() => setPage(totalPages)} className="pagination-btn">Last</button>
+                )}
+            </div>
+        );
+    };
 
     const fetchDashboardData = async () => {
         try {
@@ -46,9 +77,14 @@ const AdminDashboard = () => {
 
             setStats(statsRes.data.stats);
             setUsers(usersRes.data.users);
-            setUniversities(universitiesRes.data.universities);
-            setScholarships(scholarshipsRes.data.scholarships);
-            setInternships(internshipsRes.data.internships);
+            setUniversities(universitiesRes.data.universities || []);
+            setCambodiaScholarships(scholarshipsRes.data.cambodia || []);
+            setAbroadScholarships(scholarshipsRes.data.abroad || []);
+            setInternships(internshipsRes.data.internships || []);
+            console.log('universities:', universitiesRes.data.universities?.length);
+            console.log('cambodia:', scholarshipsRes.data.cambodia?.length);
+            console.log('abroad:', scholarshipsRes.data.abroad?.length);
+            console.log('internships:', internshipsRes.data.internships?.length);
             setLoading(false);
         } catch (err) {
             console.error('Error fetching dashboard data:', err);
@@ -67,6 +103,10 @@ const AdminDashboard = () => {
         fetchDashboardData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Reset pages when switching tabs or scholarship type
+    useEffect(() => { setUniversityPage(1); setScholarshipPage(1); setInternshipPage(1); }, [activeTab]);
+    useEffect(() => { setScholarshipPage(1); }, [scholarshipType]);
 
     const handleDeleteUser = async (userId) => {
         if (!window.confirm('Are you sure you want to delete this user?')) {
@@ -236,14 +276,14 @@ const AdminDashboard = () => {
                             </thead>
                             <tbody>
                                 {users
-                                    .sort((a, b) => a.id - b.id) // Sort by ID lowest to highest
+                                    .sort((a, b) => a.id - b.id)
                                     .slice(
-                                        (currentPage - 1) * USERS_PER_PAGE,
-                                        currentPage * USERS_PER_PAGE
+                                        (currentPage - 1) * ITEMS_PER_PAGE,
+                                        currentPage * ITEMS_PER_PAGE
                                     )
-                                    .map(user => (
+                                    .map((user, idx) => (
                                         <tr key={user.id}>
-                                            <td>{user.id}</td>
+                                            <td>{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
                                             <td>{user.email}</td>
                                             <td>{user.name || 'N/A'}</td>
                                             <td>
@@ -273,57 +313,7 @@ const AdminDashboard = () => {
                         </table>
                     </div>
                     
-                    {/* Pagination Controls */}
-                    <div className="pagination-controls">
-                        {currentPage > 1 && (
-                            <button 
-                                onClick={() => setCurrentPage(1)}
-                                className="pagination-btn"
-                            >
-                                ← First
-                            </button>
-                        )}
-                        
-                        {Array.from({ length: Math.ceil(users.length / USERS_PER_PAGE) }, (_, i) => i + 1)
-                            .filter(pageNum => {
-                                // Show first 2 pages, last 2 pages, current page, and neighboring pages
-                                const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
-                                return (
-                                    pageNum <= 2 ||
-                                    pageNum > totalPages - 2 ||
-                                    Math.abs(pageNum - currentPage) <= 1
-                                );
-                            })
-                            .reduce((acc, pageNum, idx, arr) => {
-                                // Add ellipsis between page ranges
-                                if (idx > 0 && arr[idx - 1] !== pageNum - 1) {
-                                    acc.push(
-                                        <span key={`ellipsis-${pageNum}`} className="pagination-ellipsis">
-                                            ...
-                                        </span>
-                                    );
-                                }
-                                acc.push(
-                                    <button
-                                        key={pageNum}
-                                        onClick={() => setCurrentPage(pageNum)}
-                                        className={`pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
-                                    >
-                                        {pageNum}
-                                    </button>
-                                );
-                                return acc;
-                            }, [])}
-                        
-                        {currentPage < Math.ceil(users.length / USERS_PER_PAGE) && (
-                            <button 
-                                onClick={() => setCurrentPage(Math.ceil(users.length / USERS_PER_PAGE))}
-                                className="pagination-btn"
-                            >
-                                Last →
-                            </button>
-                        )}
-                    </div>
+                    {makePagination(currentPage, setCurrentPage, users.length)}
                 </div>
             )}
 
@@ -347,31 +337,34 @@ const AdminDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {universities.map(university => (
-                                    <tr key={university.id}>
-                                        <td>{university.id}</td>
-                                        <td>{university.name}</td>
-                                        <td>{university.location || 'N/A'}</td>
-                                        <td>{university.original_link || university.website || 'N/A'}</td>
-                                        <td>
-                                            <button 
-                                                onClick={() => handleCreateOrEdit('edit', university)}
-                                                className="edit-btn"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete('universities', university.id)}
-                                                className="delete-btn"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {universities
+                                    .slice((universityPage - 1) * ITEMS_PER_PAGE, universityPage * ITEMS_PER_PAGE)
+                                    .map((university, idx) => (
+                                        <tr key={university.id}>
+                                            <td>{(universityPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
+                                            <td>{university.name}</td>
+                                            <td>{university.location || 'N/A'}</td>
+                                            <td>{university.original_link || university.website || 'N/A'}</td>
+                                            <td>
+                                                <button 
+                                                    onClick={() => handleCreateOrEdit('edit', university)}
+                                                    className="edit-btn"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete('universities', university.id)}
+                                                    className="delete-btn"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
+                    {makePagination(universityPage, setUniversityPage, universities.length)}
                 </div>
             )}
 
@@ -383,43 +376,63 @@ const AdminDashboard = () => {
                             + Add Scholarship
                         </button>
                     </div>
+                    <div className="scholarship-tabs">
+                        <button 
+                            className={`tab-btn ${scholarshipType === 'cambodia' ? 'active' : ''}`}
+                            onClick={() => setScholarshipType('cambodia')}
+                        >
+                            Cambodia ({cambodiaScholarships.length})
+                        </button>
+                        <button 
+                            className={`tab-btn ${scholarshipType === 'abroad' ? 'active' : ''}`}
+                            onClick={() => setScholarshipType('abroad')}
+                        >
+                            Abroad ({abroadScholarships.length})
+                        </button>
+                    </div>
                     <div className="table-container">
                         <table className="content-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>Type</th>
                                     <th>Funded By</th>
                                     <th>Duration</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {scholarships.map(scholarship => (
-                                    <tr key={scholarship.id}>
-                                        <td>{scholarship.id}</td>
-                                        <td>{scholarship.name}</td>
-                                        <td>{scholarship.funded_by || 'N/A'}</td>
-                                        <td>{scholarship.course_duration || 'N/A'}</td>
-                                        <td>
-                                            <button 
-                                                onClick={() => handleCreateOrEdit('edit', scholarship)}
-                                                className="edit-btn"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete('scholarships', scholarship.id)}
-                                                className="delete-btn"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {(scholarshipType === 'cambodia' ? cambodiaScholarships : abroadScholarships)
+                                    .slice((scholarshipPage - 1) * ITEMS_PER_PAGE, scholarshipPage * ITEMS_PER_PAGE)
+                                    .map((scholarship, idx) => (
+                                        <tr key={scholarship.id}>
+                                            <td>{(scholarshipPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
+                                            <td>{scholarship.name}</td>
+                                            <td><span className="type-badge">{scholarship.type}</span></td>
+                                            <td>{scholarship.funded_by || 'N/A'}</td>
+                                            <td>{scholarship.course_duration || 'N/A'}</td>
+                                            <td>
+                                                <button 
+                                                    onClick={() => handleCreateOrEdit('edit', scholarship)}
+                                                    className="edit-btn"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete('scholarships', scholarship.id)}
+                                                    className="delete-btn"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
+                    {makePagination(scholarshipPage, setScholarshipPage,
+                        (scholarshipType === 'cambodia' ? cambodiaScholarships : abroadScholarships).length)}
                 </div>
             )}
 
@@ -443,31 +456,34 @@ const AdminDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {internships.map(internship => (
-                                    <tr key={internship.id}>
-                                        <td>{internship.id}</td>
-                                        <td>{internship.name}</td>
-                                        <td>{internship.company || 'N/A'}</td>
-                                        <td>{internship.duration || 'N/A'}</td>
-                                        <td>
-                                            <button 
-                                                onClick={() => handleCreateOrEdit('edit', internship)}
-                                                className="edit-btn"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete('internships', internship.id)}
-                                                className="delete-btn"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {internships
+                                    .slice((internshipPage - 1) * ITEMS_PER_PAGE, internshipPage * ITEMS_PER_PAGE)
+                                    .map((internship, idx) => (
+                                        <tr key={internship.id}>
+                                            <td>{(internshipPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
+                                            <td>{internship.name}</td>
+                                            <td>{internship.funded_by || 'N/A'}</td>
+                                            <td>{internship.course_duration || 'N/A'}</td>
+                                            <td>
+                                                <button 
+                                                    onClick={() => handleCreateOrEdit('edit', internship)}
+                                                    className="edit-btn"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete('internships', internship.id)}
+                                                    className="delete-btn"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
+                    {makePagination(internshipPage, setInternshipPage, internships.length)}
                 </div>
             )}
 
@@ -530,6 +546,14 @@ const AdminDashboard = () => {
                                         defaultValue={currentItem?.name || ''}
                                         required 
                                     />
+                                    <select 
+                                        name="type" 
+                                        defaultValue={currentItem?.type || 'cambodia'}
+                                        required
+                                    >
+                                        <option value="cambodia">Cambodia</option>
+                                        <option value="abroad">Abroad</option>
+                                    </select>
                                     <textarea 
                                         name="description" 
                                         placeholder="Description"
