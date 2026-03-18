@@ -13,15 +13,15 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
 
-  // Default user data if not logged in
+  // Keep profile fields empty by default; do not synthesize a guest account.
   const defaultUser = {
-    name: 'Guest User',
+    name: '',
     email: '',
     phone: '',
-    nationality: 'Cambodian',
-    interests: [''],
-    skills: [''],
-    profileType: 'student',
+    nationality: '',
+    interests: [],
+    skills: [],
+    profileType: '',
     avatar: null,
   };
 
@@ -30,9 +30,7 @@ const ProfilePage = () => {
   
   // Ensure name is not null - use email prefix if needed
   if (!userData.name && userData.email) {
-    userData.name = userData.email.split('@')[0] || 'User';
-  } else if (!userData.name) {
-    userData.name = 'User';
+    userData.name = userData.email.split('@')[0] || '';
   }
   
   // Debug log to see what user data we have

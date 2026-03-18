@@ -2,27 +2,75 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
+const decodeJwtPayload = (token) => {
+  try {
+    if (!token || typeof token !== 'string') return null;
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const decoded = atob(padded);
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+};
+
+const isTokenValid = (token) => {
+  const payload = decodeJwtPayload(token);
+  if (!payload) return false;
+  if (!payload.exp) return true;
+  const nowInSeconds = Math.floor(Date.now() / 1000);
+  return payload.exp > nowInSeconds;
+};
+
+const clearStoredAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('profile');
+};
+
 // Synchronously parse Google OAuth token from URL before first render
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken = urlParams.get('token');
 if (urlToken) {
-  localStorage.setItem('token', urlToken);
-  try {
-    const payload = JSON.parse(atob(urlToken.split('.')[1]));
-    localStorage.setItem('user', JSON.stringify({ id: payload.id, email: payload.email }));
-  } catch (e) {}
+  if (isTokenValid(urlToken)) {
+    localStorage.setItem('token', urlToken);
+    try {
+      const payload = decodeJwtPayload(urlToken);
+      if (payload?.id || payload?.email) {
+        localStorage.setItem('user', JSON.stringify({ id: payload.id, email: payload.email }));
+      }
+    } catch (e) {}
+  } else {
+    clearStoredAuth();
+  }
   window.history.replaceState({}, document.title, window.location.pathname);
 }
 
 export const AuthProvider = ({ children }) => {
+  const savedToken = localStorage.getItem('token');
+  const hasValidToken = isTokenValid(savedToken);
+
+  if (!hasValidToken && savedToken) {
+    clearStoredAuth();
+  }
+
   // Initialize state from localStorage
   const [user, setUser] = useState(() => {
+    if (!hasValidToken) return null;
     const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    if (!savedUser) return null;
+    try {
+      return JSON.parse(savedUser);
+    } catch {
+      return null;
+    }
   });
   
   const [token, setToken] = useState(() => {
-    return localStorage.getItem('token') || null;
+    return hasValidToken ? localStorage.getItem('token') || null : null;
   });
   
   const [profile, setProfile] = useState(() => {

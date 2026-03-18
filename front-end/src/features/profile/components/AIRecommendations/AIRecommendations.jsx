@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getScholarshipRecommendations, calculateGPA } from '../../../../utils/scholarshipMatcher';
 import { getScholarships } from '../../../../api/scholarshipApi';
+import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import './AIRecommendations.css';
 
 const AIRecommendations = ({ userProfile }) => {
@@ -101,7 +102,7 @@ const AIRecommendations = ({ userProfile }) => {
         </div>
         <div className="loading-state">
           <div className="loading-spinner"></div>
-          <p>Analyzing your profile and finding best matches...</p>
+          <LoadingText text="Analyzing your profile and finding best matches..." />
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 // src/features/auth/hooks/useSignup.js
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { registerSendOTP, verifyOTP, setPassword, login } from '../services/authApi';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -20,6 +20,13 @@ export function useSignup() {
   
   const { login: loginContext } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectPath = (() => {
+    const searchParams = new URLSearchParams(location.search);
+    const redirect = searchParams.get('redirect');
+    return redirect && redirect.startsWith('/') ? redirect : null;
+  })();
 
   // Step 1: Send OTP to email
   const handleSendOTP = async (userEmail) => {
@@ -74,8 +81,7 @@ export function useSignup() {
       loginContext({ ...user, token });
       
       setMessage('Registration successful!');
-      // New users should complete profile setup
-      navigate('/profile-setup');
+      navigate(redirectPath || '/profile-setup');
       return true;
     } catch (err) {
       setError(err.message);

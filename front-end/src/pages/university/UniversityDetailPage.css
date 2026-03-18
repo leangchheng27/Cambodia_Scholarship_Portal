@@ -1,3 +1,7 @@
+.university-detail-page {
+  background: #e5e7eb;
+}
+
 .udet-hero {
   position: relative;
   width: 100%;
@@ -9,7 +13,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  background: rgba(17, 24, 39, 0.72);
   padding: 150px 60px 40px;
   z-index: 10;
 }
@@ -36,6 +40,7 @@
 .udet-content p {
   margin: 0 0 16px 0;
   line-height: 1.75;
+  color: #4b5563;
 }
 
 .udet-content ul {
@@ -46,6 +51,16 @@
 .udet-content li {
   margin-bottom: 8px;
   line-height: 1.75;
+  color: #4b5563;
+}
+
+.udet-content a {
+  color: #374151;
+  font-weight: 600;
+}
+
+.udet-content a:hover {
+  color: #1f2937;
 }
 
 .udet-state-container {
@@ -57,6 +72,10 @@
   justify-content: center;
   padding: 48px;
   background: #fff;
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 18px 36px rgba(31, 41, 55, 0.1);
 }
 
 .udet-state-message {
@@ -71,6 +90,40 @@
 
 .udet-state-message.error {
   color: #b91c1c;
+}
+
+.university-detail-page .tab-section-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.12);
+}
+
+.university-detail-page .tab-section-header h2 {
+  color: #1f2937;
+}
+
+.university-detail-page .tabbed-section-container {
+  background: #ffffff;
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 18px 36px rgba(31, 41, 55, 0.1);
+  margin-bottom: 40px;
+}
+
+.university-detail-page .tab-navigation {
+  border-right: 1px solid rgba(31, 41, 55, 0.12);
+}
+
+.university-detail-page .tab {
+  color: #6b7280;
+}
+
+.university-detail-page .tab.active {
+  color: #1f2937;
+}
+
+.university-detail-page .tab:hover:not(.active) {
+  color: #374151;
 }
 
 @media (max-width: 768px) {

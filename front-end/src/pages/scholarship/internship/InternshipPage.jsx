@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import { getInternships } from '../../../api/internshipApi.js';
+import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
 
 // Import banner images
@@ -57,7 +57,7 @@ export default function InternshipPage() {
         <Header />
         <HeroBanner slides={bannerSlides} />
         <div className="page-header">
-          <p>Loading internships...</p>
+          <LoadingText text="Loading internships..." />
         </div>
         <Footer />
       </div>
@@ -80,19 +80,53 @@ export default function InternshipPage() {
   return (
     <div className="internship-list-page">
       <Header />
-      
-      <HeroBanner slides={bannerSlides} />
 
-      {/* Page Header */}
-      <div className="page-header">
-        <h1 className="page-title">Internship Opportunities</h1>
-        <p className="page-subtitle">
-          Find internship programs and opportunities with approaching deadlines.
-        </p>
+      <div className="resource-hero-banner-wrap">
+        <HeroBanner slides={bannerSlides} />
+        <div className="resource-hero-banner-overlay">
+          <div className="resource-shell">
+            <section className="resource-hero resource-hero-on-banner">
+              <h1 className="resource-hero-title">Internship opportunities presented like a premium SaaS catalog.</h1>
+              <p className="resource-hero-description">
+                Move from poster browsing to deep opportunity details with a faster, cleaner decision flow built for students and career starters.
+              </p>
+              <div className="resource-hero-actions">
+                <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
+                <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
 
+      <div className="resource-shell">
+        <section id="resource-features" className="resource-section">
+          <h2 className="resource-section-title">Built around your real internship flow</h2>
+          <p className="resource-section-description">This page stays aligned with your current app behavior: browse posters, open details, and review key information quickly.</p>
+          <div className="resource-feature-grid">
+            <article className="resource-feature-card">
+              <h3>Poster-first browsing</h3>
+              <p>Scan internship posters in a clean grid, then open the full detail page for the opportunity you want.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Structured detail tabs</h3>
+              <p>Review Overview, Eligibility, Applicable Programs, Benefits, and Original Link in one organized detail layout.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Simple page navigation</h3>
+              <p>Use pagination to move through internships and keep the browsing experience fast when listings grow.</p>
+            </article>
+          </div>
+        </section>
+
       {/* Internship Grid */}
-      <div className="scholarship-list-container">
+      <div id="resource-posters" className="scholarship-list-container resource-posters">
+        <div className="resource-poster-head">
+          <div>
+            <h2 className="resource-poster-title">Internship posters</h2>
+            <p className="resource-poster-subtitle">Select any poster to open the detailed internship page.</p>
+          </div>
+        </div>
         <div className="scholarship-grid">
           {currentInternships.map((internship) => (
             <ScholarshipCard
@@ -149,6 +183,7 @@ export default function InternshipPage() {
             </button>
           )}
         </div>
+      </div>
       </div>
 
       <Footer />

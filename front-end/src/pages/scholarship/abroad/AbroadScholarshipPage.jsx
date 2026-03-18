@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import { getScholarships } from '../../../api/scholarshipApi.js';
+import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './AbroadScholarshipPage.css';
 
 // Import banner images
@@ -59,7 +59,7 @@ export default function AbroadScholarshipPage() {
         <Header />
         <HeroBanner slides={bannerSlides} />
         <div className="page-header">
-          <p>Loading scholarships...</p>
+          <LoadingText text="Loading scholarships..." />
         </div>
         <Footer />
       </div>
@@ -86,15 +86,54 @@ export default function AbroadScholarshipPage() {
       <HeroBanner slides={bannerSlides} />
 
       {/* Page Header */}
-      <div className="page-header">
-        <h1 className="page-title">International Scholarship</h1>
-        <p className="page-subtitle">
-          Explore scholarship opportunities abroad with approaching deadlines.
-        </p>
-      </div>
+      <div className="resource-shell">
+        <section className="resource-hero">
+          <p className="resource-hero-eyebrow">Premium Scholarship Hub</p>
+          <h1 className="resource-hero-title">International scholarships curated in a premium catalog experience.</h1>
+          <p className="resource-hero-description">
+            Browse global scholarship posters, compare options quickly, and jump into detailed requirements with one consistent flow.
+          </p>
+          <div className="resource-hero-actions">
+            <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
+            <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+          </div>
+        </section>
+
+        <nav className="resource-sticky-nav" aria-label="Abroad scholarship sections">
+          <ul>
+            <li><a href="#resource-features">Feature Grid</a></li>
+            <li><a href="#resource-posters">Posters</a></li>
+          </ul>
+        </nav>
+
+        <section id="resource-features" className="resource-section">
+          <h2 className="resource-section-title">Global opportunities, local clarity</h2>
+          <p className="resource-section-description">The design is premium, but the core flow remains poster first and details second for speed.</p>
+          <div className="resource-feature-grid">
+            <article className="resource-feature-card">
+              <h3>Visual-first filtering</h3>
+              <p>Spot high-fit international opportunities from posters before reading the full brief.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Decision-ready detail pages</h3>
+              <p>Tabs keep eligibility, programs, benefits, and source links organized for fast reviews.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Premium workflow velocity</h3>
+              <p>Use a cleaner hierarchy to prioritize better scholarship options in less time.</p>
+            </article>
+          </div>
+        </section>
 
       {/* Scholarship Grid */}
-      <div className="scholarship-list-container">
+      <div id="resource-posters" className="scholarship-list-container resource-posters">
+        <div className="resource-poster-head">
+          <div>
+            <h2 className="resource-poster-title">International scholarship posters</h2>
+            <p className="resource-poster-subtitle">Open any poster to review complete scholarship details.</p>
+          </div>
+          <span className="resource-chip">Poster -> Details</span>
+        </div>
         <div className="scholarship-grid">
           {currentScholarships.map((scholarship) => (
             <ScholarshipCard
@@ -151,6 +190,7 @@ export default function AbroadScholarshipPage() {
             </button>
           )}
         </div>
+      </div>
       </div>
 
       <Footer />

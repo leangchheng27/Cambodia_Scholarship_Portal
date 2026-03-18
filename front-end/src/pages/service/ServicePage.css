@@ -1,19 +1,16 @@
 :root {
-  --service-bg: #fffef6;
+  --service-bg: #eef2f7;
   --service-ink: #11243f;
   --service-subtle: #4d5c72;
-  --service-brand: #57b0c7;
-  --service-brand-dark: #2FA6C4;
-  --service-soft: #a8d8e4;
+  --service-brand: #4b5563;
+  --service-brand-dark: #1f2937;
+  --service-soft: #d1d5db;
   --service-card: #ffffff;
-  --service-border: #2FA6C4;
+  --service-border: #9ca3af;
 }
 
 .service-page {
-  background:
-    radial-gradient(circle at 12% 8%, rgba(255, 181, 114, 0.28), transparent 35%),
-    radial-gradient(circle at 90% 24%, rgba(217, 230, 255, 0.42), transparent 40%),
-    var(--service-bg);
+  background: linear-gradient(180deg, #f9fafb 0%, #eef2f7 52%, #e5e7eb 100%);
   color: var(--service-ink);
   min-height: 100vh;
   padding-top: 210px;
@@ -29,16 +26,16 @@
   text-align: center;
   padding: 2.8rem 1.5rem;
   border-radius: 24px;
-  background: linear-gradient(130deg, #fff6e7 0%, #fff 52%, #eef4ff 100%);
+  background: linear-gradient(130deg, #ffffff 0%, #f9fafb 52%, #eef2f7 100%);
   border: 1px solid var(--service-border);
-  box-shadow: 0 24px 50px rgba(15, 28, 55, 0.08);
+  box-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
 }
 
 .service-eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.11em;
   font-weight: 700;
-  color: #2FA6C4;
+  color: #374151;
   margin-bottom: 0.85rem;
 }
 
@@ -81,19 +78,19 @@
 }
 
 .service-btn-primary {
-  background: var(--service-brand);
+  background: linear-gradient(135deg, #4b5563, #374151 56%, #1f2937);
   color: #fff;
-  box-shadow: 0 8px 20px rgba(46, 157, 213, 0.28);
+  box-shadow: 0 12px 24px rgba(31, 41, 55, 0.22);
 }
 
 .service-btn-primary:hover {
-  background: var(--service-brand-dark);
+  background: linear-gradient(135deg, #6b7280, #4b5563 56%, #374151);
 }
 
 .service-btn-ghost {
-  background: #fff;
-  color: var(--service-ink);
-  border-color: #d6dde8;
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+  color: #374151;
+  border-color: rgba(31, 41, 55, 0.15);
 }
 
 .service-main {
@@ -132,14 +129,14 @@
 .service-card {
   position: relative;
   background: var(--service-card);
-  border: 1px solid #e7e9ee;
+  border: 1px solid rgba(31, 41, 55, 0.12);
   border-radius: 20px;
   padding: 1.2rem;
-  box-shadow: 0 12px 28px rgba(17, 36, 63, 0.08);
+  box-shadow: 0 12px 28px rgba(31, 41, 55, 0.1);
 }
 
 .service-card-featured {
-  border-color: var(--service-brand);
+  border-color: #4b5563;
   transform: translateY(-2px);
 }
 
@@ -150,7 +147,7 @@
   letter-spacing: 0.08em;
   font-weight: 700;
   color: #fff;
-  background: var(--service-brand);
+  background: #4b5563;
   border-radius: 999px;
   padding: 0.28rem 0.6rem;
   margin-bottom: 0.7rem;
@@ -163,7 +160,7 @@
 
 .service-price {
   font-size: 1.2rem;
-  color: var(--service-brand-dark);
+  color: #1f2937;
   margin: 0.45rem 0 0.3rem;
   font-weight: 700;
 }
@@ -199,8 +196,8 @@
 }
 
 .process-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  border: 1px solid #2FA6C4;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid #9ca3af;
   border-radius: 16px;
   padding: 1rem;
 }
@@ -209,7 +206,7 @@
   display: inline-block;
   margin-bottom: 0.5rem;
   font-weight: 700;
-  color: var(--service-brand-dark);
+  color: #374151;
   font-size: 0.9rem;
 }
 

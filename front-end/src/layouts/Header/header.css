@@ -9,7 +9,8 @@
   z-index: 1000;
   overflow: visible;
   background: transparent;
-  min-height: 250px;
+  min-height: 168px;
+  pointer-events: none;
 }
 
 .header::after {
@@ -18,8 +19,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 250px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 35%);
+  height: 150px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.24) 0%, rgba(0, 0, 0, 0) 26%);
   pointer-events: none;
   z-index: 1;
 }
@@ -39,6 +40,7 @@
 .top-bar {
   position: relative;
   z-index: 2;
+  pointer-events: auto;
 }
 
 .top-bar-container {
@@ -82,6 +84,7 @@
 .logo-container {
   position: relative;
   z-index: 2;
+  pointer-events: auto;
   max-width: 100%;
   margin: -10px auto 0;
   padding: 0 40px 2px;
@@ -112,6 +115,7 @@
 .header-container {
   position: relative;
   z-index: 2;
+  pointer-events: auto;
   max-width: 100%;
   margin: 0 auto;
   padding: 0 40px 4px;
@@ -174,6 +178,7 @@
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   padding: 8px 0;
   z-index: 20;
+  pointer-events: auto;
 }
 
 .dropdown:hover .dropdown-content,
@@ -226,6 +231,8 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+  position: relative;
+  text-decoration: none;
 }
 
 .bookmark-btn:hover,
@@ -238,4 +245,22 @@
   width: 30px;
   height: 30px;
   object-fit: contain;
+}
+
+.saved-count-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }

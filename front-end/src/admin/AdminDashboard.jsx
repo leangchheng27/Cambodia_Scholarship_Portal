@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getDashboardStats, getUsers, getAdminUniversities, getAdminScholarships, getAdminInternships, deleteUser, deleteItem, updateItem, createItem } from './adminApi';
 import AIAnalytics from './AIAnalytics';
 import cspLogo from '../assets/logo.png';
+import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -168,7 +169,11 @@ const AdminDashboard = () => {
     };
 
     if (loading) {
-        return <div className="admin-loading">Loading...</div>;
+        return (
+            <div className="admin-loading">
+                <LoadingText text="Loading dashboard data..." />
+            </div>
+        );
     }
 
     if (error) {

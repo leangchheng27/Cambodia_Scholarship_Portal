@@ -38,7 +38,7 @@ const Footer = () => {
                   </svg>
                 </div>
                 <h4>Verified Programs</h4>
-                <p>All scholarship are checked and up-to-date</p>
+                <p>All scholarships are checked and up-to-date</p>
               </div>
               <div className="feature-item">
                 <div className="feature-icon">
@@ -81,13 +81,12 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Scholarships */}
+          {/* Advertise */}
           <div className="footer-links">
-            <h4>Scholarships</h4>
+            <h4>Advertise</h4>
             <ul>
-              <li><a href="/scholarships/cambodia">Cambodia</a></li>
-              <li><a href="/scholarships/abroad">International</a></li>
-              <li><a href="/scholarships/internship">Internship</a></li>
+              <li><a href="/contact">Advertise With Us</a></li>
+              <li><a href="/contact">Sponsorship Options</a></li>
             </ul>
           </div>
 
@@ -107,7 +106,7 @@ const Footer = () => {
             <p>Email: info@cambodiascholarship.edu.kh</p>
           </div>
 
-          {/* Follow Us & Map */}
+          {/* Follow Us */}
           <div className="footer-social">
             <h4>Follow Us</h4>
             <div className="social-icons">

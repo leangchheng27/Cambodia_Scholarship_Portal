@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { getSavedUpdatedEventName, readSavedItems } from '../../utils/savedItems.js';
 import './header.css';
 import logo from '../../assets/Header/logo.png';
 import blur from '../../assets/Header/blur.png';
@@ -7,8 +9,36 @@ import saveIcon from '../../assets/Header/save.png';
 import profileIcon from '../../assets/Header/profile.png';
 
 export default function Header()  {
+    const { user, isAuthenticated } = useAuth();
+    const userId = user?.id || 'guest';
+    const [savedCount, setSavedCount] = useState(0);
     const dragRef = useRef(null);
     const isDraggingRef = useRef(false);
+    const profileHref = isAuthenticated ? '/profile' : '/login?redirect=%2Fprofile';
+
+    useEffect(() => {
+        setSavedCount(readSavedItems(userId).length);
+
+        const handleSavedUpdate = (event) => {
+            if (event?.detail?.userId && event.detail.userId !== userId) {
+                return;
+            }
+            setSavedCount(readSavedItems(userId).length);
+        };
+
+        const handleStorage = (event) => {
+            if (!event.key || !event.key.startsWith('csp_saved_items:')) return;
+            setSavedCount(readSavedItems(userId).length);
+        };
+
+        window.addEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
+        window.addEventListener('storage', handleStorage);
+
+        return () => {
+            window.removeEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
+            window.removeEventListener('storage', handleStorage);
+        };
+    }, [userId]);
 
     useEffect(() => {
         const el = dragRef.current;
@@ -132,8 +162,11 @@ export default function Header()  {
                         </nav>
 
                         <div className="header-actions">
-                            <button className="bookmark-btn"><img src={saveIcon} alt="Save" /></button>
-                            <Link to="/profile" className="profile-btn"><img src={profileIcon} alt="Profile" /></Link>
+                            <Link to="/saved" className="bookmark-btn" aria-label="Open saved list">
+                                <img src={saveIcon} alt="Save" />
+                                {savedCount > 0 && <span className="saved-count-badge">{savedCount > 99 ? '99+' : savedCount}</span>}
+                            </Link>
+                            <Link to={profileHref} className="profile-btn"><img src={profileIcon} alt="Profile" /></Link>
                         </div>
                     </div>
                 </div>
