@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getScholarshipRecommendations, calculateGPA } from '../../../../utils/scholarshipMatcher';
+import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import API from '../../../../services/api.js';
 import './AIRecommendations.css';
 
@@ -102,7 +103,7 @@ const AIRecommendations = ({ userProfile }) => {
         </div>
         <div className="loading-state">
           <div className="loading-spinner"></div>
-          <p>Analyzing your profile and finding best matches...</p>
+          <LoadingText text="Analyzing your profile and finding best matches..." />
         </div>
       </div>
     );

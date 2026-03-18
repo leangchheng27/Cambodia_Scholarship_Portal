@@ -1,6 +1,6 @@
 // src/features/auth/hooks/useLogin.js
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { login, loginWithGoogle } from '../services/authApi';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -9,6 +9,13 @@ export function useLogin() {
   const [error, setError] = useState(null);
   const { login: loginContext } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectPath = (() => {
+    const searchParams = new URLSearchParams(location.search);
+    const redirect = searchParams.get('redirect');
+    return redirect && redirect.startsWith('/') ? redirect : null;
+  })();
 
   const handleLogin = async ({ email, password }) => {
     setLoading(true);
@@ -18,6 +25,11 @@ export function useLogin() {
       
       // Update AuthContext with user data and token
       loginContext({ ...user, token });
+
+      if (redirectPath) {
+        navigate(redirectPath, { replace: true });
+        return user;
+      }
       
       console.log('Login successful:', user);
       
@@ -64,7 +76,7 @@ export function useLogin() {
   };
 
   const handleGoogleLogin = () => {
-    loginWithGoogle();
+    loginWithGoogle(redirectPath);
   };
 
   return { handleLogin, handleGoogleLogin, loading, error };

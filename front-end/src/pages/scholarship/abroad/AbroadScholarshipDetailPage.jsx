@@ -4,6 +4,7 @@ import Header from "../../../layouts/Header/header.jsx";
 import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
+import LoadingText from "../../../components/ui/LoadingText/LoadingText.jsx";
 import API from "../../../services/api.js";
 import "./AbroadScholarshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
@@ -146,10 +147,10 @@ const AbroadScholarshipDetailPage = () => {
 
   if (loading) {
     return (
-      <div>
+      <div className="abroad-scholarship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
-        <div className="sdet-content"><p>Loading scholarship details...</p></div>
+        <div className="sdet-content"><LoadingText text="Loading scholarship details..." /></div>
         <Footer />
       </div>
     );
@@ -157,7 +158,7 @@ const AbroadScholarshipDetailPage = () => {
 
   if (error || !scholarship) {
     return (
-      <div>
+      <div className="abroad-scholarship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
         <div className="sdet-content"><p>{error || 'Scholarship not found'}</p></div>
@@ -175,7 +176,7 @@ const AbroadScholarshipDetailPage = () => {
   };
 
   return (
-    <div>
+    <div className="abroad-scholarship-detail-page">
       <Header />
       <div className="sdet-hero">
         <HeroBanner slides={bannerSlides} />

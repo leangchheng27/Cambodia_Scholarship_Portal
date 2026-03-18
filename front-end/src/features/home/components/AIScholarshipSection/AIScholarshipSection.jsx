@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
+import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import API from '../../../../services/api.js';
 import './AIScholarshipSection.css';
 
@@ -90,7 +91,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
         {isLoading ? (
           <div className="scholarship-grid">
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
-              Loading recommendations...
+              <LoadingText text="Loading recommendations..." />
             </div>
           </div>
         ) : (

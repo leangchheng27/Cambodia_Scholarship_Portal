@@ -5,6 +5,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   ScatterChart, Scatter
 } from 'recharts';
+import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
 import './AIAnalytics.css';
 
 const AIAnalytics = () => {
@@ -38,7 +39,11 @@ const AIAnalytics = () => {
   };
 
   if (loading) {
-    return <div className="ai-analytics-loading">Loading AI Analytics...</div>;
+    return (
+      <div className="ai-analytics-loading">
+        <LoadingText text="Loading AI analytics..." />
+      </div>
+    );
   }
 
   if (error) {

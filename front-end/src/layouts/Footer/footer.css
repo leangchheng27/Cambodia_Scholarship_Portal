@@ -1,11 +1,25 @@
+:root {
+  --footer-bg-top: #4b5563;
+  --footer-bg-bottom: #1f2937;
+  --footer-panel: rgba(255, 255, 255, 0.03);
+  --footer-border: rgba(255, 255, 255, 0.11);
+  --footer-text: #f3f6fb;
+  --footer-muted: #b6beca;
+  --footer-accent: #e5e7eb;
+}
+
 .footer {
-  background-color: #3b3b3b;
-  color: #ffffff;
-  margin-top: 80px;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.08), transparent 34%),
+    radial-gradient(circle at 80% 85%, rgba(229, 231, 235, 0.08), transparent 30%),
+    linear-gradient(180deg, var(--footer-bg-top) 0%, var(--footer-bg-bottom) 100%);
+  color: var(--footer-text);
+  margin-top: 84px;
+  border-top: 1px solid var(--footer-border);
 }
 
 .footer-container {
-  max-width: 1400px;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
@@ -15,7 +29,7 @@
   align-items: center;
   gap: 60px;
   padding: 50px 60px;
-  background-color: #3b3b3b;
+  background: transparent;
 }
 
 /* Why Choose CSP */
@@ -25,20 +39,21 @@
 }
 
 .why-choose-title {
-  color: #2FA6C4;
+  color: var(--footer-accent);
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 16px;
+  letter-spacing: 0.01em;
 }
 
 .why-choose-text {
   font-size: 14px;
   line-height: 1.7;
-  color: #e0e0e0;
+  color: var(--footer-muted);
 }
 
 .why-choose-text .highlight {
-  color: #2FA6C4;
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -99,6 +114,10 @@
 }
 
 .feature-item {
+  padding: 16px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--footer-border);
+  background: var(--footer-panel);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -112,7 +131,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #e7edf5;
   margin-bottom: 4px;
 }
 
@@ -120,12 +139,12 @@
   font-size: 14px;
   font-weight: 600;
   margin: 0 0 4px;
-  color: #ffffff;
+  color: var(--footer-text);
 }
 
 .feature-item p {
   font-size: 12px;
-  color: #bdc3c7;
+  color: var(--footer-muted);
   line-height: 1.5;
   margin: 0;
 }
@@ -136,7 +155,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 40px;
   padding: 40px 60px 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--footer-border);
 }
 
 .footer-links h4,
@@ -145,7 +164,7 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
-  color: #ffffff;
+  color: var(--footer-text);
 }
 
 .footer-links ul {
@@ -159,19 +178,19 @@
 }
 
 .footer-links ul li a {
-  color: #bdc3c7;
+  color: var(--footer-muted);
   text-decoration: none;
   font-size: 14px;
   transition: color 0.3s ease;
 }
 
 .footer-links ul li a:hover {
-  color: #2FA6C4;
+  color: #ffffff;
 }
 
 /* Contact Section */
 .footer-contact p {
-  color: #bdc3c7;
+  color: var(--footer-muted);
   font-size: 14px;
   margin-bottom: 10px;
 }
@@ -189,12 +208,14 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  filter: grayscale(100%) brightness(0.95);
+  transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
 }
 
 .social-icons a:hover {
   transform: scale(1.1);
-  opacity: 0.8;
+  opacity: 1;
+  filter: grayscale(0%) brightness(1);
 }
 
 .social-icons svg {

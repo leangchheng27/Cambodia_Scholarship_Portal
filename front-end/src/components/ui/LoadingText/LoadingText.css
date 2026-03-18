@@ -1,0 +1,30 @@
+.app-loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.2px;
+}
+
+.app-loading-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4b5563;
+  box-shadow: 0 0 0 0 rgba(31, 41, 55, 0.35);
+  animation: app-loading-pulse 1.2s ease-out infinite;
+}
+
+@keyframes app-loading-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(31, 41, 55, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(31, 41, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 41, 55, 0);
+  }
+}

@@ -94,8 +94,11 @@ export async function getCurrentUser() {
 /**
  * Initiate Google OAuth login
  */
-export function loginWithGoogle() {
-  window.location.href = 'http://localhost:3000/auth/google';
+export function loginWithGoogle(redirectPath = null) {
+  const redirect = redirectPath && redirectPath.startsWith('/')
+    ? `?redirect=${encodeURIComponent(redirectPath)}`
+    : '';
+  window.location.href = `http://localhost:3000/auth/google${redirect}`;
 }
 
 /**

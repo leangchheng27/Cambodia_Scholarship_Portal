@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './SignupForm.css';
 import { useSignup, SIGNUP_STEPS } from '../../hooks/useSignup';
 import { loginWithGoogle } from '../../services/authApi';
@@ -10,6 +10,10 @@ const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setLocalError] = useState("");
+  const location = useLocation();
+
+  const loginTarget = location.search ? `/login${location.search}` : '/login';
+  const googleRedirect = new URLSearchParams(location.search).get('redirect');
 
   const {
     step,
@@ -58,7 +62,7 @@ const SignupForm = () => {
   };
 
   const handleGoogleSignup = () => {
-    loginWithGoogle();
+    loginWithGoogle(googleRedirect);
   };
 
   // Step 1: Email Input
@@ -93,7 +97,7 @@ const SignupForm = () => {
             {loading ? 'Sending OTP...' : 'Continue'}
           </button>
         </form>
-        <div className="footer-text">Already have an account? <Link to="/login">Sign in</Link></div>
+        <div className="footer-text">Already have an account? <Link to={loginTarget}>Sign in</Link></div>
       </div>
     );
   }

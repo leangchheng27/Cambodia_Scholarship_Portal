@@ -109,6 +109,42 @@
   animation: fadeInScale 0.5s ease;
 }
 
+.card-save-btn {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.card-save-btn.saved {
+  transform: scale(1.08);
+}
+
+.card-save-btn img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+}
+
+.card-save-btn.saved img {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+
 @keyframes fadeInScale {
   from {
     opacity: 0;

@@ -4,6 +4,7 @@ import Header from "../../layouts/Header/header.jsx";
 import Footer from "../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../components/ui/TabbedSection/TabbedSection.jsx";
+import LoadingText from "../../components/ui/LoadingText/LoadingText.jsx";
 import API from "../../services/api.js";
 import "./UniversityDetailPage.css";
 import banner1 from "../../assets/banner/p1.png";
@@ -56,7 +57,7 @@ const UniversityDetailPage = () => {
   const [error, setError] = useState(null);
 
   const renderStatePage = (message, type = 'loading') => (
-    <div>
+    <div className="university-detail-page">
       <Header />
       <div className="udet-hero">
         <HeroBanner slides={bannerSlides} />
@@ -91,7 +92,7 @@ const UniversityDetailPage = () => {
     }
   }, [id]);
 
-  if (loading) return renderStatePage('Loading university details...', 'loading');
+  if (loading) return renderStatePage(<LoadingText text="Loading university details..." />, 'loading');
   if (error) return renderStatePage(error, 'error');
   if (!university) return renderStatePage('University not found', 'error');
 
@@ -142,7 +143,7 @@ const UniversityDetailPage = () => {
   };
 
   return (
-    <div>
+    <div className="university-detail-page">
       <Header />
       <div className="udet-hero">
         <HeroBanner slides={bannerSlides} />

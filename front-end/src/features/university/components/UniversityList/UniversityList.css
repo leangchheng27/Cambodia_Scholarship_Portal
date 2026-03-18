@@ -1,6 +1,10 @@
 .university-list-container {
   margin-top: 32px;
   background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
+  overflow: hidden;
 }
 
 .university-list-table {
@@ -10,7 +14,7 @@
 }
 
 .university-list-table th {
-  background: #2bb7df;
+  background: #374151;
   color: #fff;
   font-weight: 600;
   font-size: 18px;
@@ -30,7 +34,39 @@
 }
 
 .university-list-table tr.clickable-row:hover td {
-  background: #f0f8ff;
+  background: #f3f4f6;
   cursor: pointer;
   transition: background 0.2s;
+}
+
+.university-save-btn {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.university-save-btn.saved {
+  transform: scale(1.08);
+}
+
+.university-save-btn img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  opacity: 0.88;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+}
+
+.university-save-btn.saved img {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.25));
 }

@@ -9,6 +9,13 @@ import { sendOTPEmail, sendPasswordResetEmail } from '../../utils/mailer.js';
 
 const router = express.Router();
 
+const sanitizeRedirectPath = (value) => {
+    if (!value || typeof value !== 'string') return null;
+    if (!value.startsWith('/')) return null;
+    if (value.startsWith('//')) return null;
+    return value;
+};
+
 // This will be set when initializing routes
 let AuthUser;
 
@@ -182,7 +189,14 @@ router.get('/users', authenticateToken, async (req, res) => {
  * Redirect to Google login (only if Google OAuth is configured)
  */
 if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
-    router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+    router.get('/google', (req, res, next) => {
+        const redirectPath = sanitizeRedirectPath(req.query.redirect);
+
+        passport.authenticate('google', {
+            scope: ['profile', 'email'],
+            state: redirectPath || '',
+        })(req, res, next);
+    });
 
     /**
      * GET /auth/google/callback
@@ -193,14 +207,22 @@ if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
         passport.authenticate('google', { failureRedirect: '/auth/login' }),
         (req, res) => {
             // User is authenticated, generate JWT
+            const redirectPath = sanitizeRedirectPath(req.query.state);
             const token = jwt.sign(
-                { id: req.user.id, email: req.user.email },
+                {
+                    id: req.user.id,
+                    email: req.user.email,
+                    role: req.user.role || 'user',
+                },
                 config.JWT_SECRET,
                 { expiresIn: config.JWT_EXPIRE || '1d' }
             );
 
-            // Redirect to frontend profile setup - ProtectedRoute will handle if they already have a profile
-            res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/profile-setup?token=${token}`);
+            const frontendBaseUrl = config.FRONTEND_URL || 'http://localhost:5173';
+            const targetPath = redirectPath || '/profile-setup';
+            const separator = targetPath.includes('?') ? '&' : '?';
+
+            res.redirect(`${frontendBaseUrl}${targetPath}${separator}token=${token}`);
         }
     );
 } else {

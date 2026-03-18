@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AIAnalytics from './AIAnalytics';
+import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -150,7 +151,11 @@ const AdminDashboard = () => {
     };
 
     if (loading) {
-        return <div className="admin-loading">Loading...</div>;
+        return (
+            <div className="admin-loading">
+                <LoadingText text="Loading dashboard data..." />
+            </div>
+        );
     }
 
     if (error) {
