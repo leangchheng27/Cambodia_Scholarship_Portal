@@ -5,7 +5,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   ScatterChart, Scatter
 } from 'recharts';
-import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
+import LoadingText from "../components/ui/LoadingText/LoadingText.jsx";
 import './AIAnalytics.css';
 
 const AIAnalytics = () => {

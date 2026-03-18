@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getDashboardStats, getUsers, getAdminUniversities, getAdminScholarships, getAdminInternships, deleteUser, deleteItem, updateItem, createItem } from './adminApi';
 import AIAnalytics from './AIAnalytics';
 import cspLogo from '../assets/logo.png';
-import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
+import LoadingText from "../components/ui/LoadingText/LoadingText.jsx";
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
