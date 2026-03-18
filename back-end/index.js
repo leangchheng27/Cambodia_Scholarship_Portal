@@ -12,7 +12,7 @@ import universityRoutes from './src/routes/university/universityRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
 import { adminRouter as adminRoutes, initAdminRoutes } from './src/routes/admin/adminRoutes.js';
 import { feedbackRouter as feedbackRoutes } from './src/routes/feedback/feedbackRoutes.js';
-import recommendationRoutes from './src/routes/recommendationRoutes.js';
+import recommendationRoutes from './src/ai/recommendationRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
 import { initializeModels } from './src/models/index.js';

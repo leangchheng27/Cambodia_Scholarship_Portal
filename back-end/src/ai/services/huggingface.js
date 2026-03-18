@@ -9,7 +9,7 @@ import {
   getUserProfileEmbeddingText,
   calculateMatchScore 
 } from './recommendationEngine.js';
-import { AI_CONFIG, MATCH_THRESHOLDS } from '../../config/ai/constants.js';
+import { AI_CONFIG, MATCH_THRESHOLDS } from '../config/constants.js';
 
 // Initialize Hugging Face client
 // API key should be set in environment variables

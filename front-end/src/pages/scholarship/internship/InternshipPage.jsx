@@ -4,7 +4,7 @@ import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
-import API from '../../../services/api.js';
+import { getInternships } from '../../../api/internshipApi.js';
 import './InternshipPage.css';
 
 // Import banner images
@@ -25,8 +25,8 @@ export default function InternshipPage() {
     const fetchInternships = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/internships');
-        setInternships(response.data);
+        const data = await getInternships();
+        setInternships(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching internships:', err);

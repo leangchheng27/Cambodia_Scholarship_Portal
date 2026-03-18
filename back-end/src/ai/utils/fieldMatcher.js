@@ -3,7 +3,7 @@
  * Maps student subjects to recommended fields of study
  */
 
-import { SUBJECT_FIELD_MAPPING } from '../../config/ai/constants.js';
+import { SUBJECT_FIELD_MAPPING } from '../config/constants.js';
 import { analyzeStrongSubjects } from './profileAnalyzer.js';
 
 /**

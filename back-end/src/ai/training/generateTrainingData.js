@@ -36,8 +36,8 @@ import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import sequelize from '../src/db/database.js';
-import UserFeedback from '../src/models/feedback/UserFeedback.js';
+import sequelize from '../../db/database.js';
+import UserFeedback from '../../models/feedback/UserFeedback.js';
 import { Op } from 'sequelize';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

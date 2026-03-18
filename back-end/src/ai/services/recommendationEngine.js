@@ -3,9 +3,9 @@
  * Rule-based scholarship matching algorithm
  */
 
-import { MATCH_WEIGHTS } from '../../config/ai/constants.js';
-import { calculateGPA, analyzeStrongSubjects } from '../../utils/ai/profileAnalyzer.js';
-import { getRecommendedFields, getMatchingFields } from '../../utils/ai/fieldMatcher.js';
+import { MATCH_WEIGHTS } from '../config/constants.js';
+import { calculateGPA, analyzeStrongSubjects } from '../utils/profileAnalyzer.js';
+import { getRecommendedFields, getMatchingFields } from '../utils/fieldMatcher.js';
 
 /**
  * Calculate match score between user profile and scholarship

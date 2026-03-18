@@ -7,7 +7,7 @@ import CambodiaScholarshipPage from "./pages/scholarship/cambodia/CambodiaSchola
 import CambodiaScholarshipDetailPage from "./pages/scholarship/cambodia/CambodiaScholarshipDetailPage.jsx";
 import InternshipPage from "./pages/scholarship/internship/InternshipPage.jsx";
 import InternshipDetailPage from "./pages/scholarship/internship/InternshipDetailPage.jsx";
-import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminDashboard from "./admin/AdminDashboard.jsx";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router-dom";
 import HomePage from "./pages/home/HomePage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";

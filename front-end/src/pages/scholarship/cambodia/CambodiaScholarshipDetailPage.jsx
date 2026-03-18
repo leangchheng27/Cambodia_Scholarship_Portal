@@ -4,7 +4,7 @@ import Header from "../../../layouts/Header/header.jsx";
 import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
-import API from "../../../services/api.js";
+import { getScholarshipById } from "../../../api/scholarshipApi.js";
 import "./CambodiaScholarshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
 import banner2 from "../../../assets/banner/p2.jpg";
@@ -117,8 +117,8 @@ const CambodiaScholarshipDetailPage = () => {
     const fetchScholarship = async () => {
       try {
         setLoading(true);
-        const response = await API.get(`/scholarships/${id}`);
-        setScholarship(response.data);
+        const data = await getScholarshipById(id);
+        setScholarship(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching scholarship:', err);

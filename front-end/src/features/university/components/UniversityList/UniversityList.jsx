@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './UniversityList.css';
-import API from '../../../../services/api';
+import { getUniversities } from '../../../../api/universityApi';
 
 const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   const [universities, setUniversities] = useState([]);
@@ -11,8 +11,8 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
     const fetchUniversities = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/universities');
-        setUniversities(response.data);
+        const data = await getUniversities();
+        setUniversities(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching universities:', err);

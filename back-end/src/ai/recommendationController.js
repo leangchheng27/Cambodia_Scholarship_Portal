@@ -8,20 +8,20 @@ import {
   analyzeStrongSubjects, 
   getPerformanceLevel,
   validateProfile
-} from '../utils/ai/profileAnalyzer.js';
-import { getRecommendedFields } from '../utils/ai/fieldMatcher.js';
+} from './utils/profileAnalyzer.js';
+import { getRecommendedFields } from './utils/fieldMatcher.js';
 import { 
   calculateUniversityMatchScore,
   getUniversityInternshipRecommendations 
-} from '../utils/ai/universityMatcher.js';
+} from './utils/universityMatcher.js';
 import { 
   getScholarshipRecommendations 
-} from '../services/ai/recommendationEngine.js';
+} from './services/recommendationEngine.js';
 import { 
   getAIRecommendations,
   getAIRecommendationsWithFeedback,
   precomputeScholarshipEmbeddings
-} from '../services/ai/huggingface.js';
+} from './services/huggingface.js';
 
 /**
  * Analyze user profile and return academic insights

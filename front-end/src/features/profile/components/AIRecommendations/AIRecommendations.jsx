@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getScholarshipRecommendations, calculateGPA } from '../../../../utils/scholarshipMatcher';
-import API from '../../../../services/api.js';
+import { getScholarships } from '../../../../api/scholarshipApi';
 import './AIRecommendations.css';
 
 const AIRecommendations = ({ userProfile }) => {
@@ -24,8 +24,7 @@ const AIRecommendations = ({ userProfile }) => {
         }
 
         // Fetch scholarships from API
-        const response = await API.get('/scholarships');
-        let scholarshipsFromAPI = response.data;
+        let scholarshipsFromAPI = await getScholarships();
 
         // Tag scholarships with their category information
         // Could improve this by checking category from API if available

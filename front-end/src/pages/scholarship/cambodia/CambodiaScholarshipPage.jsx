@@ -4,7 +4,7 @@ import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
-import API from '../../../services/api.js';
+import { getScholarships } from '../../../api/scholarshipApi.js';
 import './CambodiaScholarshipPage.css';
 
 // Import banner images
@@ -25,9 +25,9 @@ export default function CambodiaScholarshipPage() {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/scholarships');
+        const all = await getScholarships();
         // Filter scholarships to only show cambodia type
-        const cambodiaScholarships = response.data.filter(s => s.type === 'cambodia' || !s.type);
+        const cambodiaScholarships = all.filter(s => s.type === 'cambodia' || !s.type);
         setScholarships(cambodiaScholarships);
         setError(null);
       } catch (err) {

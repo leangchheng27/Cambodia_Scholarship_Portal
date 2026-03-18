@@ -4,7 +4,7 @@ import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
-import API from '../../../services/api.js';
+import { getScholarships } from '../../../api/scholarshipApi.js';
 import './AbroadScholarshipPage.css';
 
 // Import banner images
@@ -25,9 +25,9 @@ export default function AbroadScholarshipPage() {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/scholarships');
+        const all = await getScholarships();
         // Filter scholarships to only show abroad type
-        const abroadScholarships = response.data.filter(s => s.type === 'abroad');
+        const abroadScholarships = all.filter(s => s.type === 'abroad');
         setScholarships(abroadScholarships);
         setError(null);
       } catch (err) {

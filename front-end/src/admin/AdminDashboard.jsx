@@ -1,8 +1,8 @@
-// Admin dashboard page
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getDashboardStats, getUsers, getAdminUniversities, getAdminScholarships, getAdminInternships, deleteUser, deleteItem, updateItem, createItem } from './adminApi';
 import AIAnalytics from './AIAnalytics';
+import cspLogo from '../assets/logo.png';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -13,7 +13,7 @@ const AdminDashboard = () => {
     const [abroadScholarships, setAbroadScholarships] = useState([]);
     const [scholarshipType, setScholarshipType] = useState('cambodia');
     const [internships, setInternships] = useState([]);
-    const [activeTab, setActiveTab] = useState('users');
+    const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -60,31 +60,24 @@ const AdminDashboard = () => {
                 return;
             }
 
-            const API = axios.create({
-                baseURL: 'http://localhost:3000',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
             const [statsRes, usersRes, universitiesRes, scholarshipsRes, internshipsRes] = await Promise.all([
-                API.get('/admin/dashboard'),
-                API.get('/admin/users'),
-                API.get('/admin/universities'),
-                API.get('/admin/scholarships'),
-                API.get('/admin/internships'),
+                getDashboardStats(),
+                getUsers(),
+                getAdminUniversities(),
+                getAdminScholarships(),
+                getAdminInternships(),
             ]);
 
-            setStats(statsRes.data.stats);
-            setUsers(usersRes.data.users);
-            setUniversities(universitiesRes.data.universities || []);
-            setCambodiaScholarships(scholarshipsRes.data.cambodia || []);
-            setAbroadScholarships(scholarshipsRes.data.abroad || []);
-            setInternships(internshipsRes.data.internships || []);
-            console.log('universities:', universitiesRes.data.universities?.length);
-            console.log('cambodia:', scholarshipsRes.data.cambodia?.length);
-            console.log('abroad:', scholarshipsRes.data.abroad?.length);
-            console.log('internships:', internshipsRes.data.internships?.length);
+            setStats(statsRes.stats);
+            setUsers(usersRes.users);
+            setUniversities(universitiesRes.universities || []);
+            setCambodiaScholarships(scholarshipsRes.cambodia || []);
+            setAbroadScholarships(scholarshipsRes.abroad || []);
+            setInternships(internshipsRes.internships || []);
+            console.log('universities:', universitiesRes.universities?.length);
+            console.log('cambodia:', scholarshipsRes.cambodia?.length);
+            console.log('abroad:', scholarshipsRes.abroad?.length);
+            console.log('internships:', internshipsRes.internships?.length);
             setLoading(false);
         } catch (err) {
             console.error('Error fetching dashboard data:', err);
@@ -114,11 +107,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/admin/users/${userId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            
+            await deleteUser(userId);
             fetchDashboardData();
         } catch (err) {
             alert('Failed to delete user: ' + (err.response?.data?.error || err.message));
@@ -137,11 +126,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/admin/${type}/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            
+            await deleteItem(type, id);
             fetchDashboardData();
         } catch (err) {
             alert(`Failed to delete ${typeNames[type]}: ` + (err.response?.data?.error || err.message));
@@ -160,19 +145,12 @@ const AdminDashboard = () => {
         const data = Object.fromEntries(formData);
 
         try {
-            const token = localStorage.getItem('token');
             const endpoint = activeTab;
             
             if (currentItem) {
-                // Edit
-                await axios.put(`http://localhost:3000/admin/${endpoint}/${currentItem.id}`, data, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                await updateItem(endpoint, currentItem.id, data);
             } else {
-                // Create
-                await axios.post(`http://localhost:3000/admin/${endpoint}`, data, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                await createItem(endpoint, data);
             }
             
             setShowModal(false);
@@ -197,68 +175,85 @@ const AdminDashboard = () => {
         return <div className="admin-error">{error}</div>;
     }
 
+    const pageTitle = { dashboard: 'Dashboard', users: 'Users', universities: 'Universities', scholarships: 'Scholarships', internships: 'Internships' };
+
     return (
-        <div className="admin-dashboard">
-            <header className="admin-header">
-                <h1>Admin Dashboard</h1>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </header>
-
-            {stats && (
-                <div className="stats-grid">
-                    <div className="stat-card">
-                        <h3>Total Users</h3>
-                        <p className="stat-number">{stats.totalUsers}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Total Universities</h3>
-                        <p className="stat-number">{stats.totalUniversities}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Total Scholarships</h3>
-                        <p className="stat-number">{stats.totalScholarships}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Total Internships</h3>
-                        <p className="stat-number">{stats.totalInternships}</p>
-                    </div>
+        <div className="admin-layout">
+            {/* Sidebar */}
+            <aside className="admin-sidebar">
+                <div className="sidebar-brand">
+                    <img src={cspLogo} alt="CSP Logo" className="sidebar-logo" />
+                    <span className="sidebar-title">CSP Admin</span>
                 </div>
-            )}
 
-            <div className="tabs-container">
-                <button 
-                    className={`tab ${activeTab === 'users' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('users')}
-                >
-                    Users
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'universities' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('universities')}
-                >
-                    Universities
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'scholarships' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('scholarships')}
-                >
-                    Scholarships
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'internships' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('internships')}
-                >
-                    Internships
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'ai-analytics' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('ai-analytics')}
-                >
-                    🤖 AI Analytics
-                </button>
-            </div>
+                <nav className="sidebar-nav">
+                    <p className="nav-section-label">GENERAL</p>
+                    <button className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+                        <span className="nav-icon">📊</span> Dashboard
+                    </button>
 
-            {activeTab === 'users' && (
+                    <p className="nav-section-label">MANAGEMENT</p>
+                    <button className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+                        <span className="nav-icon">👥</span> Users
+                    </button>
+                    <button className={`nav-item ${activeTab === 'universities' ? 'active' : ''}`} onClick={() => setActiveTab('universities')}>
+                        <span className="nav-icon">🏫</span> Universities
+                    </button>
+                    <button className={`nav-item ${activeTab === 'scholarships' ? 'active' : ''}`} onClick={() => setActiveTab('scholarships')}>
+                        <span className="nav-icon">🎓</span> Scholarships
+                    </button>
+                    <button className={`nav-item ${activeTab === 'internships' ? 'active' : ''}`} onClick={() => setActiveTab('internships')}>
+                        <span className="nav-icon">💼</span> Internships
+                    </button>
+                </nav>
+
+                <div className="sidebar-footer">
+                    <button onClick={handleLogout} className="sidebar-logout-btn">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main */}
+            <div className="admin-main">
+                <header className="admin-topbar">
+                    <div className="topbar-left">
+                        <h2 className="topbar-title">{pageTitle[activeTab]}</h2>
+                    </div>
+                    <div className="topbar-right">
+                        <span className="topbar-admin-badge">Admin</span>
+                    </div>
+                </header>
+
+                <div className="admin-content">
+
+                    {/* Dashboard: stats + AI Analytics */}
+                    {activeTab === 'dashboard' && (
+                        <>
+                            {stats && (
+                                <div className="stats-grid">
+                                    <div className="stat-card">
+                                        <h3>Total Users</h3>
+                                        <p className="stat-number">{stats.totalUsers}</p>
+                                    </div>
+                                    <div className="stat-card">
+                                        <h3>Total Universities</h3>
+                                        <p className="stat-number">{stats.totalUniversities}</p>
+                                    </div>
+                                    <div className="stat-card">
+                                        <h3>Total Scholarships</h3>
+                                        <p className="stat-number">{stats.totalScholarships}</p>
+                                    </div>
+                                    <div className="stat-card">
+                                        <h3>Total Internships</h3>
+                                        <p className="stat-number">{stats.totalInternships}</p>
+                                    </div>
+                                </div>
+                            )}
+                            <AIAnalytics />
+                        </>
+                    )}
+                    {activeTab === 'users' && (
                 <div className="users-section">
                     <h2>All Users</h2>
                     <div className="table-container">
@@ -487,9 +482,8 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {activeTab === 'ai-analytics' && (
-                <AIAnalytics />
-            )}
+                </div>{/* /admin-content */}
+            </div>{/* /admin-main */}
 
             {showModal && (
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>

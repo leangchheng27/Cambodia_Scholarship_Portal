@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
-import API from '../../../../services/api.js';
+import { getScholarships } from '../../../../api/scholarshipApi';
 import './AIScholarshipSection.css';
 
 const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limit = 6, linkTo }) => {
@@ -17,8 +17,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
       setIsLoading(true);
       try {
         // Fetch scholarships from API
-        const response = await API.get('/scholarships');
-        let scholarshipList = response.data;
+        let scholarshipList = await getScholarships();
 
         // Filter by type if specified
         if (type === 'cambodia') {

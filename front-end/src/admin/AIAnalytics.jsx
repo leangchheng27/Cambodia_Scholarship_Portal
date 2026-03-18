@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getAIAnalytics } from './adminApi';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -19,13 +19,10 @@ const AIAnalytics = () => {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/admin/ai-analytics', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const result = await getAIAnalytics();
 
-      if (response.data.success) {
-        setAnalytics(response.data.data);
+      if (result.success) {
+        setAnalytics(result.data);
       } else {
         setError('Failed to load AI analytics');
       }

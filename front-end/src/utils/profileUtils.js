@@ -1,6 +1,7 @@
 /**
  * Frontend utility functions for profile calculations
  */
+import { getScholarshipRecommendations as apiGetRecommendations } from '../api/recommendationApi';
 
 /**
  * List of subjects available in the system
@@ -114,29 +115,7 @@ export async function getAIRecommendations(userProfile, scholarships, limit = 10
   
   try {
     console.log('Sending request to backend...');
-    const response = await fetch('http://localhost:3000/recommendations/scholarships', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({ 
-        userProfile,
-        scholarships,
-        useAI: true,
-        limit
-      })
-    });
-
-    console.log('Backend response status:', response.status);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Backend error response:', errorText);
-      throw new Error(`Failed to get recommendations: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await apiGetRecommendations(userProfile, scholarships, true, limit);
     console.log('Backend recommendations response:', data);
     
     if (data.success && data.data?.recommendations) {

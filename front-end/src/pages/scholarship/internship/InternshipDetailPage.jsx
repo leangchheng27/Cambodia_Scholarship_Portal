@@ -4,7 +4,7 @@ import Header from "../../../layouts/Header/header.jsx";
 import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
-import API from "../../../services/api.js";
+import { getInternshipById } from "../../../api/internshipApi.js";
 import "./InternshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
 import banner2 from "../../../assets/banner/p2.jpg";
@@ -116,8 +116,8 @@ const InternshipDetailPage = () => {
     const fetchInternship = async () => {
       try {
         setLoading(true);
-        const response = await API.get(`/internships/${id}`);
-        setInternship(response.data);
+        const data = await getInternshipById(id);
+        setInternship(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching internship:', err);

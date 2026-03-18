@@ -3,7 +3,7 @@
  * Analyzes student profiles and calculates metrics
  */
 
-import { GRADE_POINTS } from '../../config/ai/constants.js';
+import { GRADE_POINTS } from '../config/constants.js';
 
 /**
  * Analyze student's strong subjects (grades A or B)

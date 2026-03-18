@@ -4,7 +4,7 @@ import Header from "../../layouts/Header/header.jsx";
 import Footer from "../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../components/ui/TabbedSection/TabbedSection.jsx";
-import API from "../../services/api.js";
+import { getUniversityById } from "../../api/universityApi.js";
 import "./UniversityDetailPage.css";
 import banner1 from "../../assets/banner/p1.png";
 import banner2 from "../../assets/banner/p2.jpg";
@@ -75,8 +75,8 @@ const UniversityDetailPage = () => {
     const fetchUniversity = async () => {
       try {
         setLoading(true);
-        const response = await API.get(`/universities/${id}`);
-        setUniversity(response.data);
+        const data = await getUniversityById(id);
+        setUniversity(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching university:', err);
