@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { buildSavedItemKey, isSavedItem, toggleSavedItem } from '../../utils/savedItems.js';
 import saveIcon from '../../assets/Header/save.png';
+import { recordFeedback } from '../../api/feedbackApi.js';
 import './ScholarshipCard.css';
 
 const ScholarshipCard = ({ 
@@ -32,6 +33,12 @@ const ScholarshipCard = ({
   }, [itemKey, userId]);
 
   const handleCardClick = () => {
+    recordFeedback({
+      scholarshipId: scholarship.id,
+      scholarshipType: itemType,
+      action: 'click',
+      scholarshipSnapshot: { title: scholarship.title || scholarship.name, description: scholarship.description },
+    });
     navigate(`${basePath}/detail/${scholarship.id}`);
   };
 
@@ -59,6 +66,12 @@ const ScholarshipCard = ({
 
     const result = toggleSavedItem(payload, userId);
     setSaved(result.saved);
+    recordFeedback({
+      scholarshipId: scholarship.id,
+      scholarshipType: itemType,
+      action: result.saved ? 'save' : 'dismiss',
+      scholarshipSnapshot: { title: scholarship.title || scholarship.name, description: scholarship.description },
+    });
   };
 
   return (

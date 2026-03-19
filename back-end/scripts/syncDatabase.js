@@ -3,7 +3,7 @@ import 'dotenv/config';
 import sequelize from '../src/db/database.js';
 import { DataTypes } from 'sequelize';
 import AuthUserModel from '../src/models/auth/AuthUser.js';
-import '../src/models/feedback/UserFeedback.js';
+import UserFeedback from '../src/models/feedback/UserFeedback.js';
 
 const AuthUser = AuthUserModel(sequelize);
 
@@ -22,6 +22,15 @@ const syncDatabase = async () => {
         console.log('Syncing database schema...');
         const queryInterface = sequelize.getQueryInterface();
         await AuthUser.sync();
+        await UserFeedback.sync({ alter: true });
+
+        // New user profile columns
+        await ensureColumn(queryInterface, 'users', 'phone',       { type: DataTypes.STRING, allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'nationality',  { type: DataTypes.STRING, allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'studentType',  { type: DataTypes.STRING, allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'interests',    { type: DataTypes.JSON,   allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'skills',       { type: DataTypes.JSON,   allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'grades',       { type: DataTypes.JSON,   allowNull: true });
 
         await ensureColumn(queryInterface, 'scholarship', 'type', { type: DataTypes.ENUM('cambodia', 'abroad'), allowNull: false, defaultValue: 'cambodia' });
         await ensureColumn(queryInterface, 'scholarship', 'original_link', { type: DataTypes.STRING(512), allowNull: true });

@@ -81,9 +81,8 @@ const ContactPage = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
-                    placeholder="Phone Number"
+                    placeholder="Phone Number (Optional)"
                     className="form-input"
-                    required
                   />
                 </div>
 

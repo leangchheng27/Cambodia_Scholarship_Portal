@@ -4,6 +4,8 @@ import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import { getInternships } from '../../../api/internshipApi.js';
+import { useAuth } from '../../../context/AuthContext.jsx';
+import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
 
@@ -15,10 +17,12 @@ import banner4 from '../../../assets/banner/p4.png';
 import banner5 from '../../../assets/banner/p5.png';
 
 export default function InternshipPage() {
+  const { user, profile } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasRecommendationScores, setHasRecommendationScores] = useState(false);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
   useEffect(() => {
@@ -26,7 +30,24 @@ export default function InternshipPage() {
       try {
         setLoading(true);
         const data = await getInternships();
-        setInternships(data);
+
+        const effectiveProfile = { ...(user || {}), ...(profile || {}) };
+        const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
+        const hasGrades = Boolean(effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0);
+
+        if (studentType && hasGrades) {
+          const recommendations = await getAIRecommendations(
+            { ...effectiveProfile, studentType },
+            data,
+            data.length
+          );
+          setInternships(recommendations);
+          setHasRecommendationScores(true);
+        } else {
+          setInternships(data);
+          setHasRecommendationScores(false);
+        }
+
         setError(null);
       } catch (err) {
         console.error('Error fetching internships:', err);
@@ -37,7 +58,7 @@ export default function InternshipPage() {
     };
 
     fetchInternships();
-  }, []);
+  }, [user, profile]);
   
   const itemsPerPage = 12;
   const totalPages = Math.ceil(internships.length / itemsPerPage);
@@ -133,6 +154,7 @@ export default function InternshipPage() {
               key={internship.id}
               scholarship={internship}
               basePath="/scholarships/internship"
+              showMatchScore={hasRecommendationScores}
             />
           ))}
         </div>

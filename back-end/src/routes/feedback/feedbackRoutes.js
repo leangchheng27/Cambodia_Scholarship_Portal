@@ -44,6 +44,14 @@ const optionalAuth = (req, res, next) => {
   next();
 };
 
+const normalizeScholarshipType = (value) => {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (!normalized) return 'scholarship';
+  if (normalized === 'scholarship-cambodia' || normalized === 'scholarship-abroad') return 'scholarship';
+  if (normalized === 'internship' || normalized === 'university' || normalized === 'scholarship') return normalized;
+  return 'scholarship';
+};
+
 /** Convert a continuous score to a 0-1 training label */
 function scoreToLabel(score) {
   if (score >= 3) return 1.0;   // save / apply → strong positive
@@ -116,10 +124,12 @@ router.post('/', optionalAuth, async (req, res) => {
       });
     }
 
+    const normalizedScholarshipType = normalizeScholarshipType(scholarshipType);
+
     const record = await UserFeedback.create({
       userId:               req.user?.id ?? null,
       scholarshipId:        String(scholarshipId),
-      scholarshipType,
+      scholarshipType:      normalizedScholarshipType,
       action,
       score:               ACTION_SCORES[action],
       userProfile,

@@ -7,7 +7,6 @@ import CambodiaScholarshipPage from "./pages/scholarship/cambodia/CambodiaSchola
 import CambodiaScholarshipDetailPage from "./pages/scholarship/cambodia/CambodiaScholarshipDetailPage.jsx";
 import InternshipPage from "./pages/scholarship/internship/InternshipPage.jsx";
 import InternshipDetailPage from "./pages/scholarship/internship/InternshipDetailPage.jsx";
-import AdminDashboard from "./admin/AdminDashboard.jsx";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router-dom";
 import HomePage from "./pages/home/HomePage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
@@ -69,22 +68,6 @@ const ProtectedRoute = ({ children, requireProfile = true }) => {
   return children;
 };
 
-const AdminRoute = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
-  const location = useLocation();
-
-  if (!isAuthenticated) {
-    const redirectTarget = `${location.pathname}${location.search}`;
-    return <Navigate to={`/login?redirect=${encodeURIComponent(redirectTarget)}`} replace />;
-  }
-
-  if (user.role !== 'admin') {
-    return <Navigate to="/home" replace />;
-  }
-
-  return children;
-};
-
 const App = () => {
   return (
     <div className="app-shell">
@@ -101,14 +84,6 @@ const App = () => {
                 <ProfileSetupPage />
               </ProtectedRoute>
             } 
-          />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
           />
           <Route
             path="/home"

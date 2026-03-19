@@ -80,8 +80,16 @@
 }
 
 .metric-icon {
-  font-size: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 60px;
+}
+
+.metric-icon-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
 .metric-content h3 {
@@ -184,6 +192,19 @@
   font-size: 2em;
   margin: 0 0 30px 0;
   text-align: center;
+}
+
+.section-title-with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.section-title-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
 }
 
 .insights-grid {

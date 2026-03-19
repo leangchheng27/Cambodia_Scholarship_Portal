@@ -1,4 +1,10 @@
-import Scholarship from '../../models/scholarship/Scholarship.js';
+import {
+  Scholarship,
+  ScholarshipBenefit,
+  ScholarshipDeadline,
+  ScholarshipEligibility,
+  ScholarshipFieldOfStudy,
+} from '../../models/index.js';
 
 const internshipController = {
   // Get all internships (from Scholarship table with type='internship')
@@ -16,7 +22,14 @@ const internshipController = {
   // Get internship by ID (from Scholarship table)
   async getById(req, res) {
     try {
-      const internship = await Scholarship.findByPk(req.params.id);
+      const internship = await Scholarship.findByPk(req.params.id, {
+        include: [
+          { model: ScholarshipEligibility },
+          { model: ScholarshipFieldOfStudy },
+          { model: ScholarshipBenefit },
+          { model: ScholarshipDeadline },
+        ],
+      });
       if (!internship) return res.status(404).json({ error: 'Internship not found' });
       res.json(internship);
     } catch (error) {

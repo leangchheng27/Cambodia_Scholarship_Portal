@@ -4,6 +4,8 @@ import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
 import { getScholarships } from '../../../api/scholarshipApi.js';
+import { useAuth } from '../../../context/AuthContext.jsx';
+import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './CambodiaScholarshipPage.css';
 
@@ -15,10 +17,14 @@ import banner4 from '../../../assets/banner/p4.png';
 import banner5 from '../../../assets/banner/p5.png';
 
 export default function CambodiaScholarshipPage() {
+  const { user, profile } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const [scholarships, setScholarships] = useState([]);
+  const [allScholarships, setAllScholarships] = useState([]);
+  const [recommendedScholarships, setRecommendedScholarships] = useState([]);
+  const [viewMode, setViewMode] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [recommendationsAvailable, setRecommendationsAvailable] = useState(false);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
   useEffect(() => {
@@ -28,7 +34,27 @@ export default function CambodiaScholarshipPage() {
         const all = await getScholarships();
         // Filter scholarships to only show cambodia type
         const cambodiaScholarships = all.filter(s => s.type === 'cambodia' || !s.type);
-        setScholarships(cambodiaScholarships);
+        setAllScholarships(cambodiaScholarships);
+
+        const effectiveProfile = { ...(user || {}), ...(profile || {}) };
+        const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
+        const hasGrades = Boolean(effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0);
+
+        if (studentType && hasGrades) {
+          const recommendations = await getAIRecommendations(
+            { ...effectiveProfile, studentType },
+            cambodiaScholarships,
+            cambodiaScholarships.length
+          );
+          setRecommendedScholarships(recommendations);
+          setRecommendationsAvailable(true);
+          setViewMode('recommended');
+        } else {
+          setRecommendedScholarships([]);
+          setRecommendationsAvailable(false);
+          setViewMode('all');
+        }
+
         setError(null);
       } catch (err) {
         console.error('Error fetching scholarships:', err);
@@ -39,18 +65,32 @@ export default function CambodiaScholarshipPage() {
     };
 
     fetchScholarships();
-  }, []);
+  }, [user, profile]);
+
+  const displayedScholarships = viewMode === 'recommended' && recommendationsAvailable
+    ? recommendedScholarships
+    : allScholarships;
+  const hasRecommendationScores = viewMode === 'recommended' && recommendationsAvailable;
   
   const itemsPerPage = 12;
-  const totalPages = Math.ceil(scholarships.length / itemsPerPage);
+  const totalPages = Math.ceil(displayedScholarships.length / itemsPerPage);
   
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentScholarships = scholarships.slice(startIndex, endIndex);
+  const currentScholarships = displayedScholarships.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleViewModeChange = (mode) => {
+    if (mode === 'recommended' && !recommendationsAvailable) {
+      return;
+    }
+
+    setViewMode(mode);
+    setCurrentPage(1);
   };
 
   if (loading) {
@@ -132,20 +172,48 @@ export default function CambodiaScholarshipPage() {
             <h2 className="resource-poster-title">Scholarship posters</h2>
             <p className="resource-poster-subtitle">Choose a poster to open full scholarship details instantly.</p>
           </div>
-          <span className="resource-chip">Poster -> Details</span>
+          <span className="resource-chip">Poster to Details</span>
         </div>
+
+          <div className="list-mode-toggle" role="group" aria-label="Scholarship list mode">
+            <button
+              type="button"
+              className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('all')}
+            >
+              All Data ({allScholarships.length})
+            </button>
+            <button
+              type="button"
+              className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('recommended')}
+              disabled={!recommendationsAvailable}
+            >
+              Recommended ({recommendedScholarships.length})
+            </button>
+          </div>
+
+          {!recommendationsAvailable && (
+            <p className="list-mode-hint">Recommendation mode unlocks when student profile and grades are available.</p>
+          )}
+
         <div className="scholarship-grid">
           {currentScholarships.map((scholarship) => (
             <ScholarshipCard
               key={scholarship.id}
               scholarship={scholarship}
               basePath="/scholarships/cambodia"
+              showMatchScore={hasRecommendationScores}
             />
           ))}
         </div>
 
+        {!loading && currentScholarships.length === 0 && (
+          <p className="list-empty-message">No scholarships found for this view.</p>
+        )}
+
         {/* Pagination */}
-        <div className="pagination">
+        {totalPages > 1 && <div className="pagination">
           {currentPage > 1 && (
             <button 
               className="page-btn"
@@ -189,7 +257,7 @@ export default function CambodiaScholarshipPage() {
               →
             </button>
           )}
-        </div>
+        </div>}
       </div>
       </div>
 

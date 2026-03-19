@@ -72,7 +72,7 @@ export default function UniversityPage() {
               <h2 className="resource-poster-title">University directory</h2>
               <p className="resource-poster-subtitle">Select any university row to open the full details page.</p>
             </div>
-            <span className="resource-chip">Directory -> Details</span>
+            <span className="resource-chip">Directory to Details</span>
           </div>
           <h1 className="university-page-title">Universities in Cambodia</h1>
           <UniversityFilterMapLayout>

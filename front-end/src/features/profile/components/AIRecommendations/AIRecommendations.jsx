@@ -178,7 +178,7 @@ const AIRecommendations = ({ userProfile }) => {
       </div>
 
       <div className="recommendations-grid">
-        {filteredRecommendations.map((scholarship) => {
+        {filteredRecommendations.slice(0, 5).map((scholarship) => {
           const recommendationKey = `${scholarship.category || 'unknown'}-${scholarship.id}`;
 
           return (
@@ -221,6 +221,14 @@ const AIRecommendations = ({ userProfile }) => {
           </div>
         )})}
       </div>
+
+      {filteredRecommendations.length > 5 && (
+        <div className="view-more-section">
+          <Link to="/home" className="view-more-btn">
+            View More Recommendations
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

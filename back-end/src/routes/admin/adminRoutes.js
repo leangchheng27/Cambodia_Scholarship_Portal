@@ -8,6 +8,50 @@ import { Op } from 'sequelize';
 
 const router = express.Router();
 
+const parseDetailsObject = (details) => {
+    if (!details) return {};
+    if (typeof details === 'string') {
+        try {
+            return JSON.parse(details);
+        } catch {
+            return {};
+        }
+    }
+    return typeof details === 'object' ? details : {};
+};
+
+const parseListField = (value) => {
+    if (value === undefined) return undefined;
+    if (Array.isArray(value)) return value.map((entry) => String(entry).trim()).filter(Boolean);
+
+    return String(value)
+        .split(/\r?\n|,|;|\u2022/)
+        .map((entry) => entry.trim())
+        .filter(Boolean);
+};
+
+const buildDetailsPayload = (existingDetails, payload) => {
+    const details = { ...parseDetailsObject(existingDetails) };
+    let changed = false;
+
+    if (payload.eligibility !== undefined) {
+        details.eligibility = parseListField(payload.eligibility);
+        changed = true;
+    }
+
+    if (payload.applicable_programs !== undefined) {
+        details.programs = parseListField(payload.applicable_programs);
+        changed = true;
+    }
+
+    if (payload.benefits !== undefined) {
+        details.benefits = parseListField(payload.benefits);
+        changed = true;
+    }
+
+    return changed ? details : undefined;
+};
+
 // This will be set when initializing routes
 let AuthUser;
 
@@ -19,6 +63,30 @@ const initAdminRoutes = (userModel) => {
     AuthUser = userModel;
     return router;
 };
+
+/**
+ * POST /admin/users
+ * Create a new user
+ */
+router.post('/users', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, email, password, role = 'user', isVerified = true } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'email and password are required' });
+        }
+        const exists = await AuthUser.findOne({ where: { email } });
+        if (exists) {
+            return res.status(409).json({ error: 'Email already registered' });
+        }
+        const user = await AuthUser.create({ name, email, password, role, isVerified });
+        res.status(201).json({
+            message: 'User created successfully',
+            user: { id: user.id, email: user.email, name: user.name, role: user.role, isVerified: user.isVerified },
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create user', details: err.message });
+    }
+});
 
 /**
  * GET /admin/dashboard
@@ -96,7 +164,7 @@ router.get('/users/:id', authenticateAdmin, async (req, res) => {
  */
 router.put('/users/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, email, isVerified, role } = req.body;
+        const { name, email, password, isVerified, role, phone, nationality, studentType, interests, skills, grades } = req.body;
         const user = await AuthUser.findByPk(req.params.id);
         
         if (!user) {
@@ -110,19 +178,23 @@ router.put('/users/:id', authenticateAdmin, async (req, res) => {
 
         if (name !== undefined) user.name = name;
         if (email !== undefined) user.email = email;
-        if (isVerified !== undefined) user.isVerified = isVerified;
+        if (password) user.password = password; // only update if provided (model hashes it via beforeUpdate)
+        if (isVerified !== undefined) user.isVerified = isVerified === true || isVerified === 'true';
         if (role !== undefined) user.role = role;
+        if (phone !== undefined) user.phone = phone;
+        if (nationality !== undefined) user.nationality = nationality;
+        if (studentType !== undefined) user.studentType = studentType;
+        if (interests !== undefined) user.interests = interests;
+        if (skills !== undefined) user.skills = skills;
+        if (grades !== undefined) user.grades = grades;
 
         await user.save();
         
         res.json({ 
             message: 'User updated successfully',
             user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-                isVerified: user.isVerified,
+                id: user.id, email: user.email, name: user.name,
+                role: user.role, isVerified: user.isVerified,
             }
         });
     } catch (err) {
@@ -348,9 +420,24 @@ router.get('/scholarships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url, type } = req.body;
+        const {
+            name,
+            description,
+            funded_by,
+            course_duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            type,
+            eligibility,
+            applicable_programs,
+            benefits,
+        } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
+        const details = buildDetailsPayload({}, { eligibility, applicable_programs, benefits });
         
         if (!name) {
             return res.status(400).json({ error: 'Scholarship name is required' });
@@ -366,6 +453,7 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
             poster_image_url: resolvedPoster,
             slider_image_url,
             type: type || 'cambodia',
+            ...(details !== undefined ? { details } : {}),
         });
 
         res.status(201).json({ 
@@ -383,7 +471,21 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
  */
 router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url, type } = req.body;
+        const {
+            name,
+            description,
+            funded_by,
+            course_duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            type,
+            eligibility,
+            applicable_programs,
+            benefits,
+        } = req.body;
         const scholarship = await Scholarship.findByPk(req.params.id);
         
         if (!scholarship) {
@@ -401,6 +503,9 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
             scholarship.poster_image_url = poster_image_url ?? image_url;
         }
         if (slider_image_url !== undefined) scholarship.slider_image_url = slider_image_url;
+
+        const details = buildDetailsPayload(scholarship.details, { eligibility, applicable_programs, benefits });
+        if (details !== undefined) scholarship.details = details;
 
         await scholarship.save();
         
@@ -477,9 +582,23 @@ router.get('/internships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const {
+            name,
+            description,
+            company,
+            duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            eligibility,
+            applicable_programs,
+            benefits,
+        } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
+        const details = buildDetailsPayload({}, { eligibility, applicable_programs, benefits });
         
         if (!name) {
             return res.status(400).json({ error: 'Internship name is required' });
@@ -495,6 +614,7 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             poster_image_url: resolvedPoster,
             slider_image_url,
             type: 'internship',
+            ...(details !== undefined ? { details } : {}),
         });
 
         res.status(201).json({ 
@@ -512,7 +632,20 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
  */
 router.put('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const {
+            name,
+            description,
+            company,
+            duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            eligibility,
+            applicable_programs,
+            benefits,
+        } = req.body;
         const internship = await Scholarship.findByPk(req.params.id);
         
         if (!internship) {
@@ -529,6 +662,9 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
             internship.poster_image_url = poster_image_url ?? image_url;
         }
         if (slider_image_url !== undefined) internship.slider_image_url = slider_image_url;
+
+        const details = buildDetailsPayload(internship.details, { eligibility, applicable_programs, benefits });
+        if (details !== undefined) internship.details = details;
 
         await internship.save();
         
@@ -581,7 +717,7 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
         const feedbackByAction = await UserFeedback.findAll({
             attributes: [
                 'action',
-                ['count(*)', 'count']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'count']
             ],
             group: 'action',
             raw: true,
@@ -591,11 +727,11 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
         const topScholarships = await UserFeedback.findAll({
             attributes: [
                 'scholarshipId',
-                ['count(*)', 'interactions'],
-                ['sum(score)', 'popularity']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'interactions'],
+                [UserFeedback.sequelize.fn('SUM', UserFeedback.sequelize.col('score')), 'popularity']
             ],
             group: 'scholarshipId',
-            order: [[UserFeedback.sequelize.literal('sum(score)'), 'DESC']],
+            order: [[UserFeedback.sequelize.fn('SUM', UserFeedback.sequelize.col('score')), 'DESC']],
             limit: 10,
             raw: true,
         });
@@ -606,12 +742,12 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
             attributes: [
                 [UserFeedback.sequelize.fn('DATE', UserFeedback.sequelize.col('createdAt')), 'date'],
                 'action',
-                [UserFeedback.sequelize.fn('COUNT', '*'), 'count']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'count']
             ],
             where: {
                 createdAt: { [Op.gte]: sevenDaysAgo }
             },
-            group: ['DATE(createdAt)', 'action'],
+            group: [UserFeedback.sequelize.literal('DATE(createdAt)'), 'action'],
             order: [[UserFeedback.sequelize.literal('DATE(createdAt)'), 'ASC']],
             raw: true,
         });

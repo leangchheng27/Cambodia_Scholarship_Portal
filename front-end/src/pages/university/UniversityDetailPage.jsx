@@ -15,6 +15,17 @@ import banner5 from "../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
 
+const buildBannerSlides = (item) => {
+  if (!item) {
+    return bannerSlides;
+  }
+
+  const slides = [item.poster_image_url, item.slider_image_url, item.image]
+    .filter((value, index, array) => typeof value === 'string' && value.trim() && array.indexOf(value) === index);
+
+  return slides.length > 0 ? slides : bannerSlides;
+};
+
 const tabs = ["General Information", "Majors", "Application Guide", "Tuition Fees", "Campus", "Others", "Original Link"];
 
 const renderLines = (lines) => {
@@ -95,6 +106,7 @@ const UniversityDetailPage = () => {
   if (loading) return renderStatePage(<LoadingText text="Loading university details..." />, 'loading');
   if (error) return renderStatePage(error, 'error');
   if (!university) return renderStatePage('University not found', 'error');
+  const detailBannerSlides = buildBannerSlides(university);
 
   // Format majors
   const majorsContent = university.UniversityMajors && university.UniversityMajors.length > 0
@@ -146,7 +158,7 @@ const UniversityDetailPage = () => {
     <div className="university-detail-page">
       <Header />
       <div className="udet-hero">
-        <HeroBanner slides={bannerSlides} />
+        <HeroBanner slides={detailBannerSlides} />
         <div className="udet-hero-overlay">
           <p className="udet-hero-name-en">{university.name}</p>
         </div>

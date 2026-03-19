@@ -6,6 +6,34 @@
 import { SUBJECT_FIELD_MAPPING } from '../config/constants.js';
 import { analyzeStrongSubjects } from './profileAnalyzer.js';
 
+const SUBJECT_ALIASES = {
+  math: 'Math',
+  mathematics: 'Math',
+  khmer: 'Khmer Literature',
+  'khmer literature': 'Khmer Literature',
+  morality: 'Morality',
+  'moral-civics education': 'Morality',
+  'moral civics education': 'Morality',
+  'earth & environmental science': 'Earth Science',
+  'earth and environmental science': 'Earth Science',
+  physics: 'Physics',
+  chemistry: 'Chemistry',
+  biology: 'Biology',
+  history: 'History',
+  geography: 'Geography',
+  english: 'English',
+  accounting: 'Math',
+  economy: 'Math',
+  management: 'Morality',
+};
+
+const normalizeSubjectName = (subject) => {
+  const trimmed = String(subject || '').trim();
+  if (!trimmed) return '';
+
+  return SUBJECT_ALIASES[trimmed.toLowerCase()] || trimmed;
+};
+
 /**
  * Get recommended fields based on strong subject combinations
  * @param {string} studentType - 'science' or 'society'
@@ -13,7 +41,9 @@ import { analyzeStrongSubjects } from './profileAnalyzer.js';
  * @returns {string[]} - Array of recommended field names
  */
 function getRecommendedFields(studentType, grades) {
-  const strongSubjects = analyzeStrongSubjects(grades);
+  const strongSubjects = Array.from(
+    new Set(analyzeStrongSubjects(grades).map(normalizeSubjectName).filter(Boolean))
+  );
   const mapping = SUBJECT_FIELD_MAPPING[studentType] || {};
   const recommendedFields = new Set();
   

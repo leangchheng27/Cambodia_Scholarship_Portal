@@ -9,7 +9,7 @@
   flex: 1;
   max-width: 100%;
   margin: 0 auto;
-  padding: 280px 20px 40px 20px;
+  padding: 200px 20px 40px 20px;
   width: 100%;
 }
 
@@ -432,6 +432,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .profile-content {
+    padding: 150px 16px 32px 16px;
+  }
+
   .profile-header {
     flex-direction: column;
     gap: 20px;

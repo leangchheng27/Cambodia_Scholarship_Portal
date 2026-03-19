@@ -1,4 +1,10 @@
-import Scholarship from '../../models/scholarship/Scholarship.js';
+import {
+  Scholarship,
+  ScholarshipBenefit,
+  ScholarshipDeadline,
+  ScholarshipEligibility,
+  ScholarshipFieldOfStudy,
+} from '../../models/index.js';
 
 const scholarshipController = {
   // Get all scholarships
@@ -14,7 +20,14 @@ const scholarshipController = {
   // Get scholarship by ID
   async getById(req, res) {
     try {
-      const scholarship = await Scholarship.findByPk(req.params.id);
+      const scholarship = await Scholarship.findByPk(req.params.id, {
+        include: [
+          { model: ScholarshipEligibility },
+          { model: ScholarshipFieldOfStudy },
+          { model: ScholarshipBenefit },
+          { model: ScholarshipDeadline },
+        ],
+      });
       if (!scholarship) return res.status(404).json({ error: 'Scholarship not found' });
       res.json(scholarship);
     } catch (error) {

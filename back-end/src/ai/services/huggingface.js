@@ -6,8 +6,7 @@
 import { HfInference } from '@huggingface/inference';
 import { 
   getScholarshipEmbeddingText, 
-  getUserProfileEmbeddingText,
-  calculateMatchScore 
+  getUserProfileEmbeddingText
 } from './recommendationEngine.js';
 import { AI_CONFIG, MATCH_THRESHOLDS } from '../config/constants.js';
 
@@ -27,8 +26,7 @@ const embeddingsCache = {};
 async function generateEmbedding(text) {
   try {
     if (!HF_API_KEY) {
-      console.warn('Hugging Face API key not found. Using rule-based matching only.');
-      return null;
+      throw new Error('HUGGINGFACE_API_KEY is missing. AI-only mode requires a valid key.');
     }
 
     const response = await hf.featureExtraction({
@@ -162,6 +160,9 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
     // STAGE 2: Generate user profile embedding
     const userText = getUserProfileEmbeddingText(userProfile);
     const userEmbedding = await generateEmbedding(userText);
+    if (!userEmbedding) {
+      throw new Error('Failed to generate user embedding in AI-only mode.');
+    }
     
     // STAGE 3: Calculate scores for eligible scholarships only
     const scoredScholarships = await Promise.all(
@@ -206,8 +207,7 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
             matchScore = Math.min(100, Math.round(aiScore + eligibilityBonus));
           }
         } else {
-          // Fallback to rule-based if no API key
-          matchScore = calculateMatchScore(userProfile, scholarship);
+          throw new Error('Failed to generate scholarship embedding in AI-only mode.');
         }
         
         return {
@@ -227,12 +227,7 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
     
   } catch (error) {
     console.error('Error getting AI recommendations:', error);
-    // Fallback to rule-based matching only
-    return scholarships.map(scholarship => ({
-      ...scholarship,
-      matchScore: calculateMatchScore(userProfile, scholarship),
-      matchReasons: ['Based on your academic profile']
-    })).sort((a, b) => b.matchScore - a.matchScore).slice(0, limit);
+    throw error;
   }
 }
 

@@ -5,6 +5,7 @@ import Footer from "../../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../../components/ui/TabbedSection/TabbedSection.jsx";
 import { getScholarshipById } from "../../../api/scholarshipApi.js";
+import { recordFeedback } from "../../../api/feedbackApi.js";
 import LoadingText from "../../../components/ui/LoadingText/LoadingText.jsx";
 import "./AbroadScholarshipDetailPage.css";
 import banner1 from "../../../assets/banner/p1.png";
@@ -14,6 +15,16 @@ import banner4 from "../../../assets/banner/p4.png";
 import banner5 from "../../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
+const buildBannerSlides = (item) => {
+  if (!item) {
+    return bannerSlides;
+  }
+
+  const slides = [item.poster_image_url, item.slider_image_url, item.image]
+    .filter((value, index, array) => typeof value === 'string' && value.trim() && array.indexOf(value) === index);
+
+  return slides.length > 0 ? slides : bannerSlides;
+};
 const SCHOLARSHIP_CACHE_TTL_MS = 30 * 1000;
 const scholarshipCache = new Map();
 
@@ -46,6 +57,18 @@ const renderBenefits = (benefits) => {
     );
   }
   return <p>Information coming soon.</p>;
+};
+
+const normalizeToList = (value) => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === 'string') {
+    return value
+      .split(/\r?\n|,|;|\u2022/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+  return [];
 };
 
 const renderOverview = (scholarship) => {
@@ -109,6 +132,42 @@ const renderPrograms = (fieldOfStudies) => {
   );
 };
 
+const getEligibilityData = (scholarship) => {
+  if (Array.isArray(scholarship.ScholarshipEligibilities) && scholarship.ScholarshipEligibilities.length > 0) {
+    return scholarship.ScholarshipEligibilities;
+  }
+
+  const fallback = [
+    ...(normalizeToList(scholarship.details?.eligibility)),
+    ...(normalizeToList(scholarship.details?.eligibilities)),
+    ...(normalizeToList(scholarship.ai_metadata?.requiredSubjects)),
+  ];
+
+  return fallback;
+};
+
+const getProgramsData = (scholarship) => {
+  if (Array.isArray(scholarship.ScholarshipFieldOfStudies) && scholarship.ScholarshipFieldOfStudies.length > 0) {
+    return scholarship.ScholarshipFieldOfStudies;
+  }
+
+  const fallback = [
+    ...(normalizeToList(scholarship.details?.programs)),
+    ...(normalizeToList(scholarship.details?.fieldsOfStudy)),
+    ...(normalizeToList(scholarship.ai_metadata?.fieldCategories)),
+  ];
+
+  return fallback;
+};
+
+const getBenefitsData = (scholarship) => {
+  if (Array.isArray(scholarship.ScholarshipBenefits) && scholarship.ScholarshipBenefits.length > 0) {
+    return scholarship.ScholarshipBenefits;
+  }
+
+  return normalizeToList(scholarship.details?.benefits);
+};
+
 const AbroadScholarshipDetailPage = () => {
   const { id } = useParams();
   const [scholarship, setScholarship] = useState(null);
@@ -132,6 +191,12 @@ const AbroadScholarshipDetailPage = () => {
         scholarshipCache.set(id, { data, timestamp: now });
         setScholarship(data);
         setError(null);
+        recordFeedback({
+          scholarshipId: id,
+          scholarshipType: 'scholarship-abroad',
+          action: 'view',
+          scholarshipSnapshot: { title: data.name, description: data.description },
+        });
       } catch (err) {
         console.error('Error fetching scholarship:', err);
         setError('Failed to load scholarship details');
@@ -169,17 +234,18 @@ const AbroadScholarshipDetailPage = () => {
 
   const content = {
     "Overview": <div className="sdet-content">{renderOverview(scholarship)}</div>,
-    "Eligibility": <div className="sdet-content">{renderEligibility(scholarship.ScholarshipEligibilities || [])}</div>,
-    "Applicable Programs": <div className="sdet-content">{renderPrograms(scholarship.ScholarshipFieldOfStudies || [])}</div>,
-    "Benefits": <div className="sdet-content">{renderBenefits(scholarship.ScholarshipBenefits || [])}</div>,
+    "Eligibility": <div className="sdet-content">{renderEligibility(getEligibilityData(scholarship))}</div>,
+    "Applicable Programs": <div className="sdet-content">{renderPrograms(getProgramsData(scholarship))}</div>,
+    "Benefits": <div className="sdet-content">{renderBenefits(getBenefitsData(scholarship))}</div>,
     "Original Link": <div className="sdet-content">{renderOriginalLink(scholarship)}</div>,
   };
+  const detailBannerSlides = buildBannerSlides(scholarship);
 
   return (
     <div className="abroad-scholarship-detail-page">
       <Header />
       <div className="sdet-hero">
-        <HeroBanner slides={bannerSlides} />
+        <HeroBanner slides={detailBannerSlides} />
         <div className="sdet-hero-overlay">
           <p className="sdet-hero-title">{scholarship.name}</p>
         </div>

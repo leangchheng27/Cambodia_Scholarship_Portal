@@ -225,6 +225,31 @@
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
+.view-more-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.view-more-btn {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #2bb7df 0%, #1a9ac8 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(43, 183, 223, 0.3);
+}
+
+.view-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(43, 183, 223, 0.4);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .recommendations-header {

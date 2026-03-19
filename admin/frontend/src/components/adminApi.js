@@ -30,6 +30,16 @@ export async function deleteUser(userId) {
   return response.data;
 }
 
+export async function createUser(data) {
+  const response = await API.post('/admin/users', data);
+  return response.data;
+}
+
+export async function updateUser(id, data) {
+  const response = await API.put(`/admin/users/${id}`, data);
+  return response.data;
+}
+
 export async function deleteItem(type, id) {
   const response = await API.delete(`/admin/${type}/${id}`);
   return response.data;
@@ -42,6 +52,16 @@ export async function updateItem(type, id, data) {
 
 export async function createItem(type, data) {
   const response = await API.post(`/admin/${type}`, data);
+  return response.data;
+}
+
+export async function getItem(type, id) {
+  const response = await API.get(`/admin/${type}/${id}`);
+
+  if (type === 'universities') return response.data.university;
+  if (type === 'scholarships') return response.data.scholarship;
+  if (type === 'internships') return response.data.internship;
+
   return response.data;
 }
 

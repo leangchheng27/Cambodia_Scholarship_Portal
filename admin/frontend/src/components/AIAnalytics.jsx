@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
-import { getAIAnalytics } from './adminApi';
+import { getAIAnalytics } from './adminApi.js';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   ScatterChart, Scatter
 } from 'recharts';
-import LoadingText from "../components/ui/LoadingText/LoadingText.jsx";
+import LoadingText from "./LoadingText.jsx";
 import './AIAnalytics.css';
+import graphIcon from '../assets/icon/graph.png';
+import scoreIcon from '../assets/icon/score.jpg';
+import clickIcon from '../assets/icon/click.png';
+import saveIcon from '../assets/icon/save.png';
+import ai from '../assets/icon/ai.png';
+
 
 const AIAnalytics = () => {
   const [analytics, setAnalytics] = useState(null);
@@ -98,7 +104,9 @@ const AIAnalytics = () => {
       {/* Key Metrics Section */}
       <div className="ai-metrics-grid">
         <div className="metric-card ai-metric-primary">
-          <div className="metric-icon">📈</div>
+          <div className="metric-icon">
+            <img src={graphIcon} alt="Total feedback icon" className="metric-icon-image" />
+          </div>
           <div className="metric-content">
             <h3>Total Feedback Records</h3>
             <p className="metric-value">{analytics.totalFeedback}</p>
@@ -107,7 +115,9 @@ const AIAnalytics = () => {
         </div>
 
         <div className="metric-card ai-metric-success">
-          <div className="metric-icon">⭐</div>
+          <div className="metric-icon">
+            <img src={scoreIcon} alt="Average recommendation score icon" className="metric-icon-image" />
+          </div>
           <div className="metric-content">
             <h3>Avg Recommendation Score</h3>
             <p className="metric-value">{analytics.recommendationQuality.avgScore.toFixed(2)}</p>
@@ -116,7 +126,9 @@ const AIAnalytics = () => {
         </div>
 
         <div className="metric-card ai-metric-info">
-          <div className="metric-icon">✅</div>
+          <div className="metric-icon">
+            <img src={clickIcon} alt="Click through rate icon" className="metric-icon-image" />
+          </div>
           <div className="metric-content">
             <h3>Click-Through Rate</h3>
             <p className="metric-value">{(analytics.recommendationQuality.engagementRate * 100).toFixed(1)}%</p>
@@ -125,7 +137,9 @@ const AIAnalytics = () => {
         </div>
 
         <div className="metric-card ai-metric-warning">
-          <div className="metric-icon">💾</div>
+          <div className="metric-icon">
+            <img src={saveIcon} alt="Save rate icon" className="metric-icon-image" />
+          </div>
           <div className="metric-content">
             <h3>Save Rate</h3>
             <p className="metric-value">{(analytics.recommendationQuality.saveRate * 100).toFixed(1)}%</p>
@@ -244,7 +258,10 @@ const AIAnalytics = () => {
 
       {/* AI Insights Section */}
       <div className="ai-insights-section">
-        <h2>🤖 How the AI Works</h2>
+        <h2 className="section-title-with-icon">
+          <img src={ai} alt="AI insights icon" className="section-title-icon" />
+          <span>How the AI Works</span>
+        </h2>
         <div className="insights-grid">
           <div className="insight-card">
             <h3>1. Profile Analysis</h3>
@@ -349,7 +366,7 @@ const AIAnalytics = () => {
       {/* Refresh Button */}
       <div className="ai-actions">
         <button className="refresh-btn" onClick={fetchAnalytics}>
-          🔄 Refresh Analytics
+          Refresh Analytics
         </button>
       </div>
     </div>
