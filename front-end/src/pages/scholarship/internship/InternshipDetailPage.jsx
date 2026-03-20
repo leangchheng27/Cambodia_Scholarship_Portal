@@ -200,7 +200,7 @@ const InternshipDetailPage = () => {
       <div className="internship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
-        <div className="sdet-content"><LoadingText text="Loading internship details..." /></div>
+        <div className="sdet-content sdet-loading"><LoadingText text="Loading internship details..." /></div>
         <Footer />
       </div>
     );
@@ -211,7 +211,7 @@ const InternshipDetailPage = () => {
       <div className="internship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
-        <div className="sdet-content"><p>{error || 'Internship not found'}</p></div>
+        <div className="sdet-content sdet-loading"><p>{error || 'Internship not found'}</p></div>
         <Footer />
       </div>
     );

@@ -205,7 +205,7 @@ const CambodiaScholarshipDetailPage = () => {
       <div className="cambodia-scholarship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
-        <div className="sdet-content"><LoadingText text="Loading scholarship details..." /></div>
+        <div className="sdet-content sdet-loading"><LoadingText text="Loading scholarship details..." /></div>
         <Footer />
       </div>
     );
@@ -216,7 +216,7 @@ const CambodiaScholarshipDetailPage = () => {
       <div className="cambodia-scholarship-detail-page">
         <Header />
         <HeroBanner slides={bannerSlides} />
-        <div className="sdet-content"><p>{error || 'Scholarship not found'}</p></div>
+        <div className="sdet-content sdet-loading"><p>{error || 'Scholarship not found'}</p></div>
         <Footer />
       </div>
     );

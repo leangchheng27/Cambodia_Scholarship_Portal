@@ -123,29 +123,25 @@ export default function AbroadScholarshipPage() {
     <div className="abroad-list-page">
       <Header />
       
-      <HeroBanner slides={bannerSlides} />
-
-      {/* Page Header */}
-      <div className="resource-shell">
-        <section className="resource-hero">
-          <p className="resource-hero-eyebrow">Premium Scholarship Hub</p>
-          <h1 className="resource-hero-title">International scholarships curated in a premium catalog experience.</h1>
-          <p className="resource-hero-description">
-            Browse global scholarship posters, compare options quickly, and jump into detailed requirements with one consistent flow.
-          </p>
-          <div className="resource-hero-actions">
-            <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
-            <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+      <div className="resource-hero-banner-wrap">
+        <HeroBanner slides={bannerSlides} />
+        <div className="resource-hero-banner-overlay">
+          <div className="resource-shell">
+            <section className="resource-hero resource-hero-on-banner">
+              <h1 className="resource-hero-title">International scholarships curated in a premium catalog experience.</h1>
+              <p className="resource-hero-description">
+                Browse global scholarship posters, compare options quickly, and jump into detailed requirements with one consistent flow.
+              </p>
+              <div className="resource-hero-actions">
+                <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
+                <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <nav className="resource-sticky-nav" aria-label="Abroad scholarship sections">
-          <ul>
-            <li><a href="#resource-features">Feature Grid</a></li>
-            <li><a href="#resource-posters">Posters</a></li>
-          </ul>
-        </nav>
-
+      <div className="resource-shell">
         <section id="resource-features" className="resource-section">
           <h2 className="resource-section-title">Global opportunities, local clarity</h2>
           <p className="resource-section-description">The design is premium, but the core flow remains poster first and details second for speed.</p>
@@ -167,15 +163,7 @@ export default function AbroadScholarshipPage() {
 
       {/* Scholarship Grid */}
       <div id="resource-posters" className="scholarship-list-container resource-posters">
-        <div className="resource-poster-head">
-          <div>
-            <h2 className="resource-poster-title">International scholarship posters</h2>
-            <p className="resource-poster-subtitle">Open any poster to review complete scholarship details.</p>
-          </div>
-          <span className="resource-chip">Poster to Details</span>
-        </div>
-
-          <div className="list-mode-toggle" role="group" aria-label="Abroad scholarship list mode">
+          <div className="list-mode-toggle" role="group" aria-label="Abroad scholarship list mode\">
             <button
               type="button"
               className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`}

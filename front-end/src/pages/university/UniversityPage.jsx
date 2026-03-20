@@ -26,27 +26,25 @@ export default function UniversityPage() {
     return (
       <div className="university-page">
         <Header/>
-        <HeroBanner slides={bannerSlides} />
-        <div className="resource-shell">
-          <section className="resource-hero">
-            <p className="resource-hero-eyebrow">Premium University Hub</p>
-            <h1 className="resource-hero-title">University discovery with premium SaaS clarity.</h1>
-            <p className="resource-hero-description">
-              Compare universities, scan campuses, and move from directory discovery to full university detail pages in one smooth flow.
-            </p>
-            <div className="resource-hero-actions">
-              <a className="resource-cta resource-cta-primary" href="#resource-directory">Browse Directory</a>
-              <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+        <div className="resource-hero-banner-wrap">
+          <HeroBanner slides={bannerSlides} />
+          <div className="resource-hero-banner-overlay">
+            <div className="resource-shell">
+              <section className="resource-hero resource-hero-on-banner">
+                <h1 className="resource-hero-title">University discovery with premium SaaS clarity.</h1>
+                <p className="resource-hero-description">
+                  Compare universities, scan campuses, and move from directory discovery to full university detail pages in one smooth flow.
+                </p>
+                <div className="resource-hero-actions">
+                  <a className="resource-cta resource-cta-primary" href="#resource-directory">Browse Directory</a>
+                  <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+                </div>
+              </section>
             </div>
-          </section>
+          </div>
+        </div>
 
-          <nav className="resource-sticky-nav" aria-label="University page sections">
-            <ul>
-              <li><a href="#resource-features">Feature Grid</a></li>
-              <li><a href="#resource-directory">Directory</a></li>
-            </ul>
-          </nav>
-
+        <div className="resource-shell">
           <section id="resource-features" className="resource-section">
             <h2 className="resource-section-title">Directory flow that supports better decisions</h2>
             <p className="resource-section-description">Students can explore province filters, table listings, and jump directly into details pages.</p>
@@ -67,13 +65,6 @@ export default function UniversityPage() {
           </section>
 
         <div id="resource-directory" className="university-page-container resource-posters">
-          <div className="resource-poster-head">
-            <div>
-              <h2 className="resource-poster-title">University directory</h2>
-              <p className="resource-poster-subtitle">Select any university row to open the full details page.</p>
-            </div>
-            <span className="resource-chip">Directory to Details</span>
-          </div>
           <h1 className="university-page-title">Universities in Cambodia</h1>
           <UniversityFilterMapLayout>
             <UniversityFilter selectedProvince={selectedProvince} onProvinceSelect={setSelectedProvince} />

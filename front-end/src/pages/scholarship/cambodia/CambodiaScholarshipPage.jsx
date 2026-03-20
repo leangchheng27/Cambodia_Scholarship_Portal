@@ -123,29 +123,25 @@ export default function CambodiaScholarshipPage() {
     <div className="cambodia-list-page">
       <Header />
       
-      <HeroBanner slides={bannerSlides} />
-
-      {/* Page Header */}
-      <div className="resource-shell">
-        <section className="resource-hero">
-          <p className="resource-hero-eyebrow">Premium Scholarship Hub</p>
-          <h1 className="resource-hero-title">Cambodia scholarship opportunities in a premium SaaS experience.</h1>
-          <p className="resource-hero-description">
-            Discover local scholarships through a polished poster-first workflow and dive into complete requirements in one click.
-          </p>
-          <div className="resource-hero-actions">
-            <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
-            <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+      <div className="resource-hero-banner-wrap">
+        <HeroBanner slides={bannerSlides} />
+        <div className="resource-hero-banner-overlay">
+          <div className="resource-shell">
+            <section className="resource-hero resource-hero-on-banner">
+              <h1 className="resource-hero-title">Cambodia scholarship opportunities in a premium SaaS experience.</h1>
+              <p className="resource-hero-description">
+                Discover local scholarships through a polished poster-first workflow and dive into complete requirements in one click.
+              </p>
+              <div className="resource-hero-actions">
+                <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
+                <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <nav className="resource-sticky-nav" aria-label="Scholarship page sections">
-          <ul>
-            <li><a href="#resource-features">Feature Grid</a></li>
-            <li><a href="#resource-posters">Posters</a></li>
-          </ul>
-        </nav>
-
+      <div className="resource-shell">
         <section id="resource-features" className="resource-section">
           <h2 className="resource-section-title">Purpose-built for scholarship decisions</h2>
           <p className="resource-section-description">Your existing poster to details flow is now wrapped in a stronger premium SaaS presentation.</p>
@@ -167,13 +163,6 @@ export default function CambodiaScholarshipPage() {
 
       {/* Scholarship Grid */}
       <div id="resource-posters" className="scholarship-list-container resource-posters">
-        <div className="resource-poster-head">
-          <div>
-            <h2 className="resource-poster-title">Scholarship posters</h2>
-            <p className="resource-poster-subtitle">Choose a poster to open full scholarship details instantly.</p>
-          </div>
-          <span className="resource-chip">Poster to Details</span>
-        </div>
 
           <div className="list-mode-toggle" role="group" aria-label="Scholarship list mode">
             <button
