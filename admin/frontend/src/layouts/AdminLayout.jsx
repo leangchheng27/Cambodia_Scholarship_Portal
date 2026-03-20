@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import cspLogo from '../../assets/logo.png';
+import cspLogo from '../assets/logo.png';
 import './AdminLayout.css';
 
 const AdminLayout = ({ activeTab, setActiveTab, onLogout, children, pageTitle }) => {

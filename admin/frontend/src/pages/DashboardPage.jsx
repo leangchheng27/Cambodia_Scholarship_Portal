@@ -11,6 +11,7 @@ import ScholarshipsTable from '../components/sections/ScholarshipsTable.jsx';
 import InternshipsTable from '../components/sections/InternshipsTable.jsx';
 import ItemFormModal from '../components/modals/ItemFormModal.jsx';
 import { getInitialFormState } from '../components/common/FormUtils.js';
+import '../components/sections/TablesStyles.css';
 
 const DashboardPage = () => {
     const [stats, setStats] = useState(null);
