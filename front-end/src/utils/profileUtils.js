@@ -116,28 +116,22 @@ export async function getAIRecommendations(userProfile, scholarships, limit = 10
   try {
     console.log('Sending request to backend...');
     const data = await apiGetRecommendations(userProfile, scholarships, true, limit);
-    console.log('Backend recommendations response:', data);
     
+    // Check if backend returned success
     if (data.success && data.data?.recommendations) {
-      console.log(`Received ${data.data.recommendations.length} recommendations with match scores`);
+      console.log(`✅ Backend returned ${data.data.recommendations.length} recommendations`);
       const sorted = data.data.recommendations.sort((a, b) => b.matchScore - a.matchScore);
-      sorted.forEach((rec, i) => {
-        console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
-      });
       return sorted;
     }
     
-    console.warn('Backend response format unexpected:', data);
+    // If response doesn't have the expected structure, fall back to local matching
     throw new Error('Invalid backend response format');
   } catch (error) {
-    console.error('Error getting AI recommendations:', error);
-    console.log('Falling back to local client-side matching...');
+    console.error('❌ Error getting AI recommendations:', error.message);
+    console.log('🔄 Falling back to local client-side matching...');
     // Use local client-side matching as fallback
     const localRecommendations = getScholarshipRecommendations(userProfile, scholarships, limit);
-    console.log(`Local matching generated ${localRecommendations.length} recommendations with scores`);
-    localRecommendations.forEach((rec, i) => {
-      console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
-    });
+    console.log(`Local matching generated ${localRecommendations.length} recommendations`);
     return localRecommendations;
   }
 }

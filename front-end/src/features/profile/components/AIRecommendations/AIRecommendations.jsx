@@ -1,85 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getScholarshipRecommendations, calculateGPA } from '../../../../utils/scholarshipMatcher';
+import { getAIRecommendations } from '../../../../utils/profileUtils';
 import { getScholarships } from '../../../../api/scholarshipApi';
 import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import './AIRecommendations.css';
 
 const AIRecommendations = ({ userProfile }) => {
-  const [recommendations, setRecommendations] = useState([]);
+  const [recommendedScholarships, setRecommendedScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showType, setShowType] = useState('all'); // 'all', 'cambodia', 'abroad'
+  const [filterType, setFilterType] = useState('cambodia'); // 'cambodia' or 'abroad'
+
+  const fetchRecommendations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Check if user has grades
+      if (!userProfile.grades || Object.keys(userProfile.grades).length === 0) {
+        setRecommendedScholarships([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch all scholarships from API
+      let scholarshipsFromAPI = await getScholarships();
+
+      // Build enriched profile (same as scholarship list pages)
+      const enrichedProfile = {
+        ...userProfile,
+        studentType: userProfile.studentType || userProfile.academicType,
+      };
+
+      // Fetch recommendations separately for Cambodia and Abroad (same as scholarship list pages)
+      // This ensures we get the same AI matching results as the individual pages
+      const cambodiaScholarships = scholarshipsFromAPI.filter(s => s.type === 'cambodia' || !s.type);
+      const abroadScholarships = scholarshipsFromAPI.filter(s => s.type === 'abroad');
+
+      // Get recommendations for each region (same limit as scholarship list pages)
+      const cambodiaRecommendations = await getAIRecommendations(
+        enrichedProfile,
+        cambodiaScholarships,
+        cambodiaScholarships.length
+      );
+
+      const abroadRecommendations = await getAIRecommendations(
+        enrichedProfile,
+        abroadScholarships,
+        abroadScholarships.length
+      );
+
+      // Combine and add category to all recommendations
+      const allRecommendations = [
+        ...cambodiaRecommendations.map(s => ({
+          ...s,
+          category: 'cambodia'
+        })),
+        ...abroadRecommendations.map(s => ({
+          ...s,
+          category: 'abroad'
+        }))
+      ];
+
+      console.log('Received Cambodia:', cambodiaRecommendations.length, 'Abroad:', abroadRecommendations.length);
+
+      setRecommendedScholarships(allRecommendations);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching recommendations:', err);
+      setError('Failed to load recommendations. Please try again.');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Check if user has grades
-        if (!userProfile.grades || Object.keys(userProfile.grades).length === 0) {
-          setError('Please add your grades to get personalized recommendations');
-          setLoading(false);
-          return;
-        }
-
-        // Fetch scholarships from API
-        let scholarshipsFromAPI = await getScholarships();
-
-        // Tag scholarships with their category information
-        // Could improve this by checking category from API if available
-        const allScholarships = scholarshipsFromAPI.map((s, index) => ({
-          ...s,
-          category: index % 2 === 0 ? 'cambodia' : 'abroad' // Simple categorization, can be improved
-        }));
-        
-        console.log('Scholarships from API:', allScholarships.length);
-        console.log('Sample scholarship:', allScholarships[0]?.name, 'has category:', allScholarships[0]?.category);
-
-        // Calculate GPA for user profile
-        const gpa = calculateGPA(userProfile.grades);
-        const enrichedProfile = {
-          ...userProfile,
-          gpa
-        };
-
-        // Get AI recommendations
-        const aiRecommendations = getScholarshipRecommendations(enrichedProfile, allScholarships, 12);
-        console.log('Received recommendations:', aiRecommendations.length);
-        console.log('Categories in recommendations:', aiRecommendations.map(r => r.category));
-        setRecommendations(aiRecommendations);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching recommendations:', err);
-        setError('Failed to load recommendations. Please try again.');
-        setLoading(false);
-      }
-    };
-
     if (userProfile) {
       fetchRecommendations();
     }
   }, [userProfile]);
 
-  const filteredRecommendations = recommendations.filter(scholarship => {
-    if (showType === 'all') return true;
-    if (showType === 'cambodia') return scholarship.category === 'cambodia';
-    if (showType === 'abroad') return scholarship.category === 'abroad';
-    return true;
+  // Filter recommended scholarships by type (ONLY show filtered results, not all data)
+  const filteredRecommendations = recommendedScholarships.filter(scholarship => {
+    return filterType === 'cambodia' 
+      ? scholarship.category === 'cambodia'
+      : scholarship.category === 'abroad';
   });
 
-  console.log('=== FILTER DEBUG ===');
-  console.log('AIRecommendations - Current filter:', showType);
-  console.log('AIRecommendations - Total recommendations:', recommendations.length);
-  console.log('AIRecommendations - Filtered count:', filteredRecommendations.length);
-  console.log('AIRecommendations - Cambodia count:', recommendations.filter(s => s.category === 'cambodia').length);
-  console.log('AIRecommendations - Abroad count:', recommendations.filter(s => s.category === 'abroad').length);
-  console.log('Sample scholarships with categories:');
-  recommendations.slice(0, 3).forEach(s => {
-    console.log(`  - ${s.title}: category = ${s.category || 'UNDEFINED'}`);
-  });
-  console.log('===================');
+  const recommendationsAvailable = userProfile?.grades && Object.keys(userProfile.grades).length > 0;
 
   const getBasePath = (scholarship) => {
     return scholarship.category === 'cambodia' 
@@ -98,7 +105,7 @@ const AIRecommendations = ({ userProfile }) => {
     return (
       <div className="ai-recommendations-section">
         <div className="recommendations-header">
-          <h2 className="recommendations-title">AI Scholarship Recommendations</h2>
+          <h2 className="recommendations-title">Recommended Scholarships</h2>
         </div>
         <div className="loading-state">
           <div className="loading-spinner"></div>
@@ -108,25 +115,25 @@ const AIRecommendations = ({ userProfile }) => {
     );
   }
 
-  if (error) {
+  if (!recommendationsAvailable) {
     return (
       <div className="ai-recommendations-section">
         <div className="recommendations-header">
-          <h2 className="recommendations-title"> AI Scholarship Recommendations</h2>
+          <h2 className="recommendations-title">Recommended Scholarships</h2>
         </div>
-        <div className="error-state">
-          <span className="error-icon">⚠️</span>
-          <p>{error}</p>
+        <div className="empty-recommendations">
+          <span className="empty-icon">📚</span>
+          <p>Add your grades to get personalized scholarship recommendations</p>
         </div>
       </div>
     );
   }
 
-  if (recommendations.length === 0) {
+  if (recommendedScholarships.length === 0) {
     return (
       <div className="ai-recommendations-section">
         <div className="recommendations-header">
-          <h2 className="recommendations-title">Scholarship Recommendations</h2>
+          <h2 className="recommendations-title">Recommended Scholarships</h2>
         </div>
         <div className="empty-recommendations">
           <span className="empty-icon">🔍</span>
@@ -139,46 +146,31 @@ const AIRecommendations = ({ userProfile }) => {
   return (
     <div className="ai-recommendations-section">
       <div className="recommendations-header">
-        <div>
-          <h2 className="recommendations-title">AI Scholarship Recommendations</h2>
+        <div className="header-top">
+          <h2 className="recommendations-title">Recommended Scholarships</h2>
           <p className="recommendations-subtitle">
-            Found {recommendations.length} scholarships perfectly matched to your academic profile
+            Top scholarships matched to your academic profile
           </p>
         </div>
         
         <div className="filter-buttons">
           <button 
-            className={`filter-btn ${showType === 'all' ? 'active' : ''}`}
-            onClick={() => {
-              console.log('Filter clicked: all');
-              setShowType('all');
-            }}
+            className={`filter-btn ${filterType === 'cambodia' ? 'active' : ''}`}
+            onClick={() => setFilterType('cambodia')}
           >
-            All ({recommendations.length})
+            Cambodia ({recommendedScholarships.filter(s => s.category === 'cambodia').length})
           </button>
           <button 
-            className={`filter-btn ${showType === 'cambodia' ? 'active' : ''}`}
-            onClick={() => {
-              console.log('Filter clicked: cambodia');
-              setShowType('cambodia');
-            }}
+            className={`filter-btn ${filterType === 'abroad' ? 'active' : ''}`}
+            onClick={() => setFilterType('abroad')}
           >
-            Cambodia ({recommendations.filter(s => s.category === 'cambodia').length})
-          </button>
-          <button 
-            className={`filter-btn ${showType === 'abroad' ? 'active' : ''}`}
-            onClick={() => {
-              console.log('Filter clicked: abroad');
-              setShowType('abroad');
-            }}
-          >
-            Abroad ({recommendations.filter(s => s.category === 'abroad').length})
+            Abroad ({recommendedScholarships.filter(s => s.category === 'abroad').length})
           </button>
         </div>
       </div>
 
       <div className="recommendations-grid">
-        {filteredRecommendations.slice(0, 5).map((scholarship) => {
+        {filteredRecommendations.slice(0, 6).map((scholarship) => {
           const recommendationKey = `${scholarship.category || 'unknown'}-${scholarship.id}`;
 
           return (
@@ -222,7 +214,7 @@ const AIRecommendations = ({ userProfile }) => {
         )})}
       </div>
 
-      {filteredRecommendations.length > 5 && (
+      {filteredRecommendations.length > 6 && (
         <div className="view-more-section">
           <Link to="/home" className="view-more-btn">
             View More Recommendations

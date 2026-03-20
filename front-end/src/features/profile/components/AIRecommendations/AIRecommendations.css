@@ -16,23 +16,27 @@
 
 .recommendations-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 32px;
-  flex-wrap: wrap;
-  gap: 20px;
+}
+
+.header-top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .recommendations-title {
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
-  margin: 0 0 8px 0;
+  color: #1a202c;
+  margin: 0;
 }
 
 .recommendations-subtitle {
-  font-size: 16px;
-  color: #6b7280;
+  font-size: 14px;
+  color: #718096;
   margin: 0;
 }
 
@@ -43,11 +47,11 @@
 }
 
 .filter-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: 2px solid #e5e7eb;
+  padding: 10px 24px;
+  border-radius: 6px;
+  border: 2px solid #e2e8f0;
   background: white;
-  color: #6b7280;
+  color: #4a5568;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -57,14 +61,14 @@
 .filter-btn:hover {
   border-color: #2bb7df;
   color: #2bb7df;
-  transform: translateY(-2px);
+  background: #f0fafb;
 }
 
 .filter-btn.active {
-  background: #2bb7df;
-  border-color: #2bb7df;
+  background-color: #718096;
+  background-color: #718096;
   color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(43, 183, 223, 0.3);
 }
 
 /* Loading and Error States */
@@ -210,7 +214,7 @@
   display: block;
   width: 100%;
   padding: 12px;
-  background: #2bb7df;
+  background-color: #718096;
   color: white;
   text-align: center;
   border-radius: 8px;
@@ -235,7 +239,7 @@
 
 .view-more-btn {
   padding: 14px 32px;
-  background: linear-gradient(135deg, #2bb7df 0%, #1a9ac8 100%);
+  background-color: #718096;
   color: white;
   border-radius: 8px;
   font-size: 16px;

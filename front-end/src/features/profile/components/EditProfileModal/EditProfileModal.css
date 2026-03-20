@@ -110,14 +110,14 @@
 }
 
 .interest-chip:hover {
-  border-color: #3b82f6;
+  background-color: #718096;
   background: #eff6ff;
 }
 
 .interest-chip.selected {
-  background: #3b82f6;
+  background-color: #718096;
   color: white;
-  border-color: #3b82f6;
+  background-color: #718096;
 }
 
 /* Modal Footer */
@@ -150,12 +150,12 @@
 }
 
 .save-btn {
-  background: #3b82f6;
+  background-color: #718096;
   color: white;
 }
 
 .save-btn:hover {
-  background: #2563eb;
+  background-color: #718096;
 }
 
 /* Responsive Design */
@@ -206,7 +206,7 @@
   padding: 16px;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
-  background: white;
+  background-color: #718096;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.95rem;
@@ -216,15 +216,15 @@
 
 .student-type-btn:hover {
   border-color: #3b82f6;
-  background: #eff6ff;
+  background-color: #718096;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
 }
 
 .student-type-btn.selected {
-  background: #3b82f6;
+  background-color: #718096;
   color: white;
-  border-color: #3b82f6;
+  background-color: #718096;
 }
 
 .type-icon {

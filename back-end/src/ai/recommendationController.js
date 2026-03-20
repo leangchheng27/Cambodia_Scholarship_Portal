@@ -158,13 +158,13 @@ const analyzeProfile = async (req, res) => {
 const getRecommendations = async (req, res) => {
   try {
     const { userProfile, scholarships, useAI = true, limit = 10 } = req.body;
+    
     if (!useAI) {
       return res.status(400).json({
         success: false,
         error: 'Rule-based recommendations are disabled. This endpoint is AI-only.',
       });
     }
-
 
     // Validate input
     if (!userProfile || !scholarships) {
@@ -180,6 +180,7 @@ const getRecommendations = async (req, res) => {
     };
 
     const validation = validateProfile(normalizedUserProfile);
+    
     if (!validation.isValid) {
       return res.status(400).json({ 
         success: false,
