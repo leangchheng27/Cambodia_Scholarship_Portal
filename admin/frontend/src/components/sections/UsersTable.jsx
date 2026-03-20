@@ -5,7 +5,7 @@ const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit
         <div className="users-section">
             <div className="section-header">
                 <h2>All Users</h2>
-                <button onClick={() => onEdit('create')} className="add-btn">+ Add User</button>
+                <button onClick={() => onEdit('users')} className="add-btn">+ Add User</button>
             </div>
             <div className="table-container">
                 <table className="users-table">
@@ -45,7 +45,7 @@ const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit
                                     <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                                     <td>
                                         <button
-                                            onClick={() => onEdit('edit', user)}
+                                            onClick={() => onEdit('users', user)}
                                             className="edit-btn"
                                         >
                                             Edit

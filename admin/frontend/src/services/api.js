@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Create axios instance with base URL pointing to backend server
-// NOTE: backend mounts routes at root (e.g., /auth, /recommendations)
+// NOTE: admin and main websites share the same backend database
 const API = axios.create({
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://localhost:3000',
 });
 
 // Set auth header on every request

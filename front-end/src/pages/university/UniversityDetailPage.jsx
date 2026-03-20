@@ -108,35 +108,47 @@ const UniversityDetailPage = () => {
   if (!university) return renderStatePage('University not found', 'error');
   const detailBannerSlides = buildBannerSlides(university);
 
-  // Format majors
-  const majorsContent = university.UniversityMajors && university.UniversityMajors.length > 0
-    ? university.UniversityMajors.map(major => `${major.name}${major.degree_level ? ` (${major.degree_level})` : major.specialization ? ` - ${major.specialization}` : ''}`)
-    : ["Information coming soon."];
+  // Format majors - use text field first, then fall back to related table
+  const majorsContent = university.majors && university.majors.trim()
+    ? university.majors.split('\n').map(m => m.trim()).filter(m => m)
+    : (university.UniversityMajors && university.UniversityMajors.length > 0
+      ? university.UniversityMajors.map(major => `${major.name}${major.degree_level ? ` (${major.degree_level})` : major.specialization ? ` - ${major.specialization}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format application guide
-  const appGuideContent = university.UniversityApplicationGuideSteps && university.UniversityApplicationGuideSteps.length > 0
-    ? university.UniversityApplicationGuideSteps
-        .sort((a, b) => a.step_number - b.step_number)
-        .map(step => `Step ${step.step_number}: ${step.title || ''}\n${step.description || ''}`)
-    : ["Information coming soon."];
+  // Format application guide - use text field first, then fall back to related table
+  const appGuideContent = university.application_guide && university.application_guide.trim()
+    ? university.application_guide.split('\n').map(a => a.trim()).filter(a => a)
+    : (university.UniversityApplicationGuideSteps && university.UniversityApplicationGuideSteps.length > 0
+      ? university.UniversityApplicationGuideSteps
+          .sort((a, b) => a.step_number - b.step_number)
+          .map(step => `Step ${step.step_number}: ${step.title || ''}\n${step.description || ''}`)
+      : ["Information coming soon."]);
 
-  // Format tuition fees
-  const tuitionContent = university.UniversityTuitionFees && university.UniversityTuitionFees.length > 0
-    ? university.UniversityTuitionFees.map(fee => `${fee.student_type || 'Tuition'}: ${fee.amount ? `$${fee.amount}` : 'N/A'}${fee.note ? ` - ${fee.note}` : ''}`)
-    : ["Information coming soon."];
+  // Format tuition fees - use text field first, then fall back to related table
+  const tuitionContent = university.tuition_fees && university.tuition_fees.trim()
+    ? university.tuition_fees.split('\n').map(t => t.trim()).filter(t => t)
+    : (university.UniversityTuitionFees && university.UniversityTuitionFees.length > 0
+      ? university.UniversityTuitionFees.map(fee => `${fee.student_type || 'Tuition'}: ${fee.amount ? `$${fee.amount}` : 'N/A'}${fee.note ? ` - ${fee.note}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format campus
-  const campusContent = university.UniversityCampuses && university.UniversityCampuses.length > 0
-    ? university.UniversityCampuses.map(campus => `${campus.name || 'Campus'}${campus.description ? ` - ${campus.description}` : ''}`)
-    : ["Information coming soon."];
+  // Format campus - use text field first, then fall back to related table
+  const campusContent = university.campus && university.campus.trim()
+    ? university.campus.split('\n').map(c => c.trim()).filter(c => c)
+    : (university.UniversityCampuses && university.UniversityCampuses.length > 0
+      ? university.UniversityCampuses.map(campus => `${campus.name || 'Campus'}${campus.description ? ` - ${campus.description}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format news/achievements for others section
-  const othersContent = university.UniversityNews && university.UniversityNews.length > 0
-    ? university.UniversityNews.map(news => news.title || "News")
-    : ["Information coming soon."];
+  // Format news/achievements for others section - use text field first, then fall back to related table
+  const othersContent = university.others && university.others.trim()
+    ? university.others.split('\n').map(o => o.trim()).filter(o => o)
+    : (university.UniversityNews && university.UniversityNews.length > 0
+      ? university.UniversityNews.map(news => news.title || "News")
+      : ["Information coming soon."]);
 
   const det = {
-    generalInfo: [university.description || "Information coming soon."],
+    generalInfo: university.general_information && university.general_information.trim() 
+      ? university.general_information.split('\n').map(g => g.trim()).filter(g => g)
+      : [university.description || "Information coming soon."],
     majors: majorsContent,
     applicationGuide: appGuideContent,
     tuitionFees: tuitionContent,

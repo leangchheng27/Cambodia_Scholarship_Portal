@@ -5,7 +5,7 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
         <div className="content-section">
             <div className="section-header">
                 <h2>Universities</h2>
-                <button onClick={() => onEdit('create')} className="add-btn">
+                <button onClick={() => onEdit('universities')} className="add-btn">
                     + Add University
                 </button>
             </div>
@@ -31,7 +31,7 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
                                     <td>{university.original_link || university.website || 'N/A'}</td>
                                     <td>
                                         <button 
-                                            onClick={() => onEdit('edit', university)}
+                                            onClick={() => onEdit('universities', university)}
                                             className="edit-btn"
                                         >
                                             Edit

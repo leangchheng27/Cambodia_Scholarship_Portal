@@ -35,11 +35,18 @@ export const getInitialFormState = (tab, item = null) => {
             original_link: item?.original_link || item?.website || '',
             poster_image_url: item?.poster_image_url || item?.image_url || '',
             slider_image_url: item?.slider_image_url || '',
+            general_information: item?.general_information || '',
+            majors: item?.majors || '',
+            application_guide: item?.application_guide || '',
+            tuition_fees: item?.tuition_fees || '',
+            campus: item?.campus || '',
+            others: item?.others || '',
         };
     }
 
     if (tab === 'scholarships') {
         const details = parseDetails(item?.details);
+        const aiMetadata = parseDetails(item?.ai_metadata) || {};
 
         return {
             name: item?.name || '',
@@ -53,6 +60,21 @@ export const getInitialFormState = (tab, item = null) => {
             eligibility: toMultilineText(details.eligibility || details.eligibilities),
             applicable_programs: toMultilineText(details.programs || details.fieldsOfStudy),
             benefits: toMultilineText(details.benefits),
+            // AI Metadata fields
+            ai_metadata_studentTypes: Array.isArray(aiMetadata.studentTypes) 
+                ? aiMetadata.studentTypes.join(', ') 
+                : (typeof aiMetadata.studentTypes === 'string' ? aiMetadata.studentTypes : ''),
+            ai_metadata_fieldCategories: Array.isArray(aiMetadata.fieldCategories) 
+                ? aiMetadata.fieldCategories.join(', ') 
+                : (typeof aiMetadata.fieldCategories === 'string' ? aiMetadata.fieldCategories : ''),
+            ai_metadata_requiredSubjects: Array.isArray(aiMetadata.requiredSubjects) 
+                ? aiMetadata.requiredSubjects.join(', ') 
+                : (typeof aiMetadata.requiredSubjects === 'string' ? aiMetadata.requiredSubjects : ''),
+            ai_metadata_minGPA: aiMetadata.minGPA || '',
+            ai_metadata_difficultyLevel: aiMetadata.difficultyLevel || '',
+            ai_metadata_keywords: Array.isArray(aiMetadata.keywords) 
+                ? aiMetadata.keywords.join(', ') 
+                : (typeof aiMetadata.keywords === 'string' ? aiMetadata.keywords : ''),
         };
     }
 

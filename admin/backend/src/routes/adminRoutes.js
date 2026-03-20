@@ -293,7 +293,7 @@ router.get('/universities/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/universities', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url, general_information, majors, application_guide, tuition_fees, campus, others } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? website;
         
@@ -309,6 +309,12 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
             slider_image_url,
             original_link: resolvedOriginalLink,
             website,
+            general_information,
+            majors,
+            application_guide,
+            tuition_fees,
+            campus,
+            others,
         });
 
         res.status(201).json({ 
@@ -326,7 +332,7 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
  */
 router.put('/universities/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url, general_information, majors, application_guide, tuition_fees, campus, others } = req.body;
         const university = await University.findByPk(req.params.id);
         
         if (!university) {
@@ -342,6 +348,12 @@ router.put('/universities/:id', authenticateAdmin, async (req, res) => {
         if (slider_image_url !== undefined) university.slider_image_url = slider_image_url;
         if (original_link !== undefined) university.original_link = original_link;
         if (website !== undefined) university.website = website;
+        if (general_information !== undefined) university.general_information = general_information;
+        if (majors !== undefined) university.majors = majors;
+        if (application_guide !== undefined) university.application_guide = application_guide;
+        if (tuition_fees !== undefined) university.tuition_fees = tuition_fees;
+        if (campus !== undefined) university.campus = campus;
+        if (others !== undefined) university.others = others;
 
         await university.save();
         
@@ -486,6 +498,8 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
             eligibility,
             applicable_programs,
             benefits,
+            ai_metadata,
+            aiMetadata,
         } = req.body;
         const scholarship = await Scholarship.findByPk(req.params.id);
         
@@ -507,6 +521,16 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
 
         const details = buildDetailsPayload(scholarship.details, { eligibility, applicable_programs, benefits });
         if (details !== undefined) scholarship.details = details;
+
+        // Update AI metadata
+        const metadataToUpdate = ai_metadata || aiMetadata;
+        if (metadataToUpdate !== undefined) {
+            if (typeof metadataToUpdate === 'string') {
+                scholarship.ai_metadata = JSON.parse(metadataToUpdate);
+            } else {
+                scholarship.ai_metadata = metadataToUpdate;
+            }
+        }
 
         await scholarship.save();
         

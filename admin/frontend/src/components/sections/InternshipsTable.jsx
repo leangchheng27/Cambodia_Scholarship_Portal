@@ -5,7 +5,7 @@ const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_
         <div className="content-section">
             <div className="section-header">
                 <h2>Internships</h2>
-                <button onClick={() => onEdit('create')} className="add-btn">
+                <button onClick={() => onEdit('internships')} className="add-btn">
                     + Add Internship
                 </button>
             </div>
@@ -31,7 +31,7 @@ const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_
                                     <td>{internship.course_duration || 'N/A'}</td>
                                     <td>
                                         <button 
-                                            onClick={() => onEdit('edit', internship)}
+                                            onClick={() => onEdit('internships', internship)}
                                             className="edit-btn"
                                         >
                                             Edit

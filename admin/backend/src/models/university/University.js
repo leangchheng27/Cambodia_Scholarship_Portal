@@ -73,6 +73,12 @@ const University = sequelize.define('University', {
       this.setDataValue('original_link', normalizeNullableString(value));
     },
   },
+  general_information: DataTypes.TEXT,
+  majors: DataTypes.TEXT,
+  application_guide: DataTypes.TEXT,
+  tuition_fees: DataTypes.TEXT,
+  campus: DataTypes.TEXT,
+  others: DataTypes.TEXT,
 }, {
   tableName: 'university',
   timestamps: false,

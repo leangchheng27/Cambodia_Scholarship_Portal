@@ -17,7 +17,7 @@ const ScholarshipsTable = ({
         <div className="content-section">
             <div className="section-header">
                 <h2>Scholarships</h2>
-                <button onClick={() => onEdit('create')} className="add-btn">
+                <button onClick={() => onEdit('scholarships')} className="add-btn">
                     + Add Scholarship
                 </button>
             </div>
@@ -59,7 +59,7 @@ const ScholarshipsTable = ({
                                     <td>{scholarship.course_duration || 'N/A'}</td>
                                     <td>
                                         <button 
-                                            onClick={() => onEdit('edit', scholarship)}
+                                            onClick={() => onEdit('scholarships', scholarship)}
                                             className="edit-btn"
                                         >
                                             Edit

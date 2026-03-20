@@ -160,6 +160,45 @@ const DashboardPage = () => {
         e.preventDefault();
         const data = { ...formState };
 
+        // Handle AI Metadata for Scholarships
+        if (activeTab === 'scholarships') {
+            const aiMetadata = {};
+            const fieldsToRemove = [];
+
+            // Extract all ai_metadata_* fields
+            for (const key in data) {
+                if (key.startsWith('ai_metadata_')) {
+                    const fieldName = key.replace('ai_metadata_', '');
+                    const value = data[key];
+
+                    if (value !== '' && value !== undefined && value !== null) {
+                        // Convert comma-separated strings to arrays for certain fields
+                        if (['studentTypes', 'fieldCategories', 'requiredSubjects', 'keywords'].includes(fieldName)) {
+                            aiMetadata[fieldName] = value
+                                .split(',')
+                                .map(item => item.trim())
+                                .filter(item => item !== '');
+                        } else if (fieldName === 'minGPA') {
+                            // Convert to number
+                            aiMetadata[fieldName] = parseFloat(value);
+                        } else {
+                            aiMetadata[fieldName] = value;
+                        }
+                    }
+
+                    fieldsToRemove.push(key);
+                }
+            }
+
+            // Remove the individual ai_metadata_* fields
+            fieldsToRemove.forEach(key => delete data[key]);
+
+            // Add the combined ai_metadata object if it has any fields
+            if (Object.keys(aiMetadata).length > 0) {
+                data.ai_metadata = aiMetadata;
+            }
+        }
+
         try {
             if (activeTab === 'users') {
                 // Strip empty password so it isn't accidentally blanked on edit
