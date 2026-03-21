@@ -163,16 +163,53 @@ function getScholarshipEmbeddingText(scholarship) {
 }
 
 /**
+ * Map Cambodian subjects to descriptive phrases for better AI understanding
+ */
+const SUBJECT_DESCRIPTORS = {
+  'Mathematics': 'logical reasoning and quantitative analysis',
+  'Math': 'logical reasoning and quantitative analysis',
+  'Physics': 'physics and physical sciences',
+  'Chemistry': 'chemistry and molecular sciences',
+  'Biology': 'biological sciences and life sciences',
+  'Khmer': 'language studies, writing, and humanities',
+  'Khmer Literature': 'language studies, writing, and humanities',
+  'English': 'english language, communication, and linguistics',
+  'Physical Education': 'sports science and physical development',
+  'History': 'history, social sciences, and humanities',
+  'Geography': 'geography, environmental studies, and earth sciences',
+  'Moral-Civics Education': 'ethics, social development, and civic responsibility',
+  'Earth & Environmental Science': 'earth sciences, environmental studies, and sustainability',
+  'Accounting': 'accounting, finance, and business management',
+  'Economy': 'economics, business studies, and market analysis',
+  'Management': 'management, organizational studies, and business administration'
+};
+
+/**
  * Get text description for user profile (used in AI embeddings)
- * @param {Object} userProfile - User profile object
- * @returns {string} - Text representation of user profile
+ * Uses letter grades + subject descriptors for Cambodian subject understanding
+ * @param {Object} userProfile - User profile object with grades (A-F letters)
+ * @returns {string} - Text representation of user profile for AI matching
  */
 function getUserProfileEmbeddingText(userProfile) {
-  const strongSubjects = analyzeStrongSubjects(userProfile.grades);
-  const recommendedFields = getRecommendedFields(userProfile.studentType, userProfile.grades);
-  const gpa = calculateGPA(userProfile.grades);
+  // Build profile from letter grades with descriptive phrases
+  const gradeDescriptions = [];
   
-  return `${userProfile.studentType} student with GPA ${gpa}. Strong in ${strongSubjects.join(', ')}. Interested in ${recommendedFields.slice(0, 5).join(', ')}.`;
+  if (userProfile.grades && typeof userProfile.grades === 'object') {
+    Object.entries(userProfile.grades)
+      .filter(([_, grade]) => grade) // Only include subjects with grades
+      .forEach(([subject, grade]) => {
+        const descriptivePhrase = SUBJECT_DESCRIPTORS[subject] || subject;
+        gradeDescriptions.push(`${descriptivePhrase} (grade ${grade})`);
+      });
+  }
+  
+  // Build profile text with academic stream + grades
+  const academicStream = userProfile.studentType === 'science' ? 'Science student' : 'Society student';
+  const gradesText = gradeDescriptions.length > 0 
+    ? gradeDescriptions.join(', ')
+    : 'academic studies';
+  
+  return `${academicStream} with strengths in ${gradesText}. Seeking scholarships that match their academic profile and interests.`;
 }
 
 export {

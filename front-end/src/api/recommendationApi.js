@@ -10,12 +10,12 @@ export const analyzeProfile = async (studentType, grades) => {
   }
 };
 
-export const getScholarshipRecommendations = async (userProfile, scholarships, useAI = true, limit = 10) => {
+export const getScholarshipRecommendations = async (userProfile, scholarships, limit = 10) => {
   try {
     const response = await API.post('/recommendations/scholarships', {
       userProfile,
       scholarships,
-      useAI,
+      useAI: true,
       limit,
     });
     return response.data;

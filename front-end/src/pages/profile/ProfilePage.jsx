@@ -5,7 +5,6 @@ import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
 import EditProfileModal from '../../features/profile/components/EditProfileModal/EditProfileModal.jsx';
 import AIRecommendations from '../../features/profile/components/AIRecommendations/AIRecommendations.jsx';
-import { calculateGPA, analyzeStrongSubjects } from '../../utils/profileUtils';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -39,29 +38,9 @@ const ProfilePage = () => {
   console.log("ProfilePage - Merged userData:", userData);
   console.log("ProfilePage - Interests:", userData.interests);
 
-  // Safe calculation helpers
-  const getGPA = () => {
-    try {
-      if (userData.grades && Object.keys(userData.grades).length > 0) {
-        return calculateGPA(userData.grades);
-      }
-      return '0.00';
-    } catch (error) {
-      console.error('Error calculating GPA:', error);
-      return '0.00';
-    }
-  };
-
-  const getStrongSubjects = () => {
-    try {
-      if (userData.grades && Object.keys(userData.grades).length > 0) {
-        return analyzeStrongSubjects(userData.grades);
-      }
-      return [];
-    } catch (error) {
-      console.error('Error analyzing strong subjects:', error);
-      return [];
-    }
+  // Check if user has academic information
+  const hasAcademicInfo = () => {
+    return (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField;
   };
 
   const handleLogout = () => {
@@ -193,24 +172,6 @@ const ProfilePage = () => {
 
                       {Object.keys(userData.grades).length > 0 && (
                         <>
-                          <div className="info-item">
-                            <span className="info-label">GPA :</span>
-                            <span className="info-value gpa-badge">
-                              {getGPA()}
-                            </span>
-                          </div>
-
-                          <div className="info-item">
-                            <span className="info-label">Strong Subjects:</span>
-                            <div className="tags-container" style={{display: 'inline-flex', gap: '6px', marginLeft: '8px'}}>
-                              {getStrongSubjects().map((subject, index) => (
-                                <span key={index} className="tag strong-subject-tag">
-                                  ⭐ {subject}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
                           <div className="grades-summary">
                             <h4>Subject Grades:</h4>
                             <div className="grades-grid">

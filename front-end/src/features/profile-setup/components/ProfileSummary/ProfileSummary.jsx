@@ -8,8 +8,6 @@ const ProfileSummary = ({
   academicType, 
   universityField, 
   grades,
-  gpa,
-  strongSubjects,
   recommendedFields 
 }) => {
   const isUniversityLevel = (studentType === 'college' || studentType === 'graduate') || 
@@ -66,24 +64,7 @@ const ProfileSummary = ({
                       </div>
                     </div>
                     
-                    {gpa > 0 && (
-                      <div className="summary-item">
-                        <span className="summary-label">GPA:</span>
-                        <span className="summary-value gpa-display">
-                          {typeof gpa === 'number' ? gpa.toFixed(2) : gpa} / 4.0
-                        </span>
-                      </div>
-                    )}
-                    {strongSubjects.length > 0 && (
-                      <div className="summary-item">
-                        <span className="summary-label">Strong Subjects:</span>
-                        <div className="strong-subjects-list">
-                          {strongSubjects.map(subject => (
-                            <span key={subject} className="subject-badge">{subject}</span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+
                     
                     {recommendedFields.length > 0 && (
                       <div className="summary-item">
@@ -98,7 +79,7 @@ const ProfileSummary = ({
                     
                     <div className="ai-notice">
                       <span className="ai-icon"></span>
-                      <p>Our AI will analyze your profile and recommend scholarships that match your grades, subjects, and academic strengths!</p>
+                      <p>Our AI analyzes your subject grades and uses semantic understanding of Cambodian subjects to find scholarships that match your academic strengths!</p>
                     </div>
                   </>
                 )}

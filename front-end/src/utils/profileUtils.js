@@ -110,12 +110,9 @@ export async function getAIRecommendations(userProfile, scholarships, limit = 10
     limit 
   });
   
-  // Import scholarshipMatcher for fallback
-  const { getScholarshipRecommendations } = await import('./scholarshipMatcher');
-  
   try {
     console.log('Sending request to backend...');
-    const data = await apiGetRecommendations(userProfile, scholarships, true, limit);
+    const data = await apiGetRecommendations(userProfile, scholarships, limit);
     
     // Check if backend returned success
     if (data.success && data.data?.recommendations) {
@@ -124,14 +121,11 @@ export async function getAIRecommendations(userProfile, scholarships, limit = 10
       return sorted;
     }
     
-    // If response doesn't have the expected structure, fall back to local matching
+    // If response doesn't have the expected structure, throw error
     throw new Error('Invalid backend response format');
   } catch (error) {
-    console.error('❌ Error getting AI recommendations:', error.message);
-    console.log('🔄 Falling back to local client-side matching...');
-    // Use local client-side matching as fallback
-    const localRecommendations = getScholarshipRecommendations(userProfile, scholarships, limit);
-    console.log(`Local matching generated ${localRecommendations.length} recommendations`);
-    return localRecommendations;
+    console.error('❌ AI recommendation error:', error.message);
+    // NO FALLBACK - Error propagates to caller
+    throw error;
   }
 }
