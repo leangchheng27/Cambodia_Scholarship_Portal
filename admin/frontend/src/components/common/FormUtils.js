@@ -80,6 +80,7 @@ export const getInitialFormState = (tab, item = null) => {
 
     if (tab === 'internships') {
         const details = parseDetails(item?.details);
+        const aiMetadata = (item?.ai_metadata || item?.aiMetadata) || {};
 
         return {
             name: item?.name || '',
@@ -92,6 +93,13 @@ export const getInitialFormState = (tab, item = null) => {
             eligibility: toMultilineText(details.eligibility || details.eligibilities),
             applicable_programs: toMultilineText(details.programs || details.fieldsOfStudy),
             benefits: toMultilineText(details.benefits),
+            // AI Metadata fields
+            ai_metadata_fieldCategories: Array.isArray(aiMetadata.fieldCategories) 
+                ? aiMetadata.fieldCategories.join(', ') 
+                : (typeof aiMetadata.fieldCategories === 'string' ? aiMetadata.fieldCategories : ''),
+            ai_metadata_keywords: Array.isArray(aiMetadata.keywords) 
+                ? aiMetadata.keywords.join(', ') 
+                : (typeof aiMetadata.keywords === 'string' ? aiMetadata.keywords : ''),
         };
     }
 

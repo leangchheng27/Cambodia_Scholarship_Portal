@@ -152,8 +152,16 @@ const analyzeProfile = async (req, res) => {
  * Get scholarship recommendations for a user
  * POST /api/recommendations/scholarships
  * 
- * @param {Object} req.body - { userProfile: { studentType, grades, gpa? }, scholarships, useAI?, limit? }
- * @returns {Object} - { recommendations: Array<Scholarship> }
+ * @param {Object} req.body - { userProfile, scholarships, useAI?, limit? }
+ * @param {Object} req.body.userProfile - User profile with:
+ *   - studentType: 'highschool' | 'college' | 'graduate'
+ *   - grades?: Object (for highschool students)
+ *   - universityField?: string (for college/graduate students)
+ *   - gpa?: number (optional, auto-calculated if missing)
+ * @param {Array} req.body.scholarships - Array of scholarship/internship objects
+ * @param {boolean} req.body.useAI - Must be true (default: true)
+ * @param {number} req.body.limit - Max recommendations to return (default: 10)
+ * @returns {Object} - { success, data: { recommendations, total, method } }
  */
 const getRecommendations = async (req, res) => {
   try {
@@ -190,9 +198,13 @@ const getRecommendations = async (req, res) => {
 
     const normalizedScholarships = scholarships.map(normalizeScholarshipForRecommendations);
 
-    // Calculate GPA if not provided
-    if (!normalizedUserProfile.gpa) {
+    // Calculate GPA if not provided (only for high school students with grades)
+    if (!normalizedUserProfile.gpa && normalizedUserProfile.grades) {
       normalizedUserProfile.gpa = parseFloat(calculateGPA(normalizedUserProfile.grades));
+    }
+    // University students may not have a GPA - set default if missing
+    if (!normalizedUserProfile.gpa) {
+      normalizedUserProfile.gpa = 3.5; // Default GPA for university students
     }
 
     // Fetch popularity map from the feedback table and blend with AI scores.
@@ -249,8 +261,9 @@ const analyzeUniversityProfile = async (req, res) => {
 
     // Get recommendations
     const recommendations = getUniversityInternshipRecommendations(
-      universityProfile,
-      opportunities
+      opportunities,
+      universityProfile.currentField,
+      universityProfile.gpa
     );
 
     return res.status(200).json({

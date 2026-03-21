@@ -19,10 +19,12 @@ import banner5 from '../../../assets/banner/p5.png';
 export default function InternshipPage() {
   const { user, profile } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const [internships, setInternships] = useState([]);
+  const [allInternships, setAllInternships] = useState([]);
+  const [recommendedInternships, setRecommendedInternships] = useState([]);
+  const [viewMode, setViewMode] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hasRecommendationScores, setHasRecommendationScores] = useState(false);
+  const [recommendationsAvailable, setRecommendationsAvailable] = useState(false);
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
   
   useEffect(() => {
@@ -30,22 +32,31 @@ export default function InternshipPage() {
       try {
         setLoading(true);
         const data = await getInternships();
+        setAllInternships(data);
 
         const effectiveProfile = { ...(user || {}), ...(profile || {}) };
         const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
         const hasGrades = Boolean(effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0);
+        const hasUniversityField = Boolean(effectiveProfile.universityField);
 
-        if (studentType && hasGrades) {
+        // Only college/graduate students get AI recommendations
+        const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
+        
+        if (isUniversityStudent && hasUniversityField) {
+          // Get AI recommendations for college students
           const recommendations = await getAIRecommendations(
             { ...effectiveProfile, studentType },
             data,
             data.length
           );
-          setInternships(recommendations);
-          setHasRecommendationScores(true);
+          setRecommendedInternships(recommendations);
+          setRecommendationsAvailable(true);
+          setViewMode('recommended');
         } else {
-          setInternships(data);
-          setHasRecommendationScores(false);
+          // High school students: show all internships, no recommendations
+          setRecommendedInternships([]);
+          setRecommendationsAvailable(false);
+          setViewMode('all');
         }
 
         setError(null);
@@ -60,16 +71,30 @@ export default function InternshipPage() {
     fetchInternships();
   }, [user, profile]);
   
+  const displayedInternships = viewMode === 'recommended' && recommendationsAvailable
+    ? recommendedInternships
+    : allInternships;
+  const hasRecommendationScores = viewMode === 'recommended' && recommendationsAvailable;
+  
   const itemsPerPage = 12;
-  const totalPages = Math.ceil(internships.length / itemsPerPage);
+  const totalPages = Math.ceil(displayedInternships.length / itemsPerPage);
   
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentInternships = internships.slice(startIndex, endIndex);
+  const currentInternships = displayedInternships.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleViewModeChange = (mode) => {
+    if (mode === 'recommended' && !recommendationsAvailable) {
+      return;
+    }
+
+    setViewMode(mode);
+    setCurrentPage(1);
   };
 
   if (loading) {
@@ -142,12 +167,28 @@ export default function InternshipPage() {
 
       {/* Internship Grid */}
       <div id="resource-posters" className="scholarship-list-container resource-posters">
-        <div className="resource-poster-head">
-          <div>
-            <h2 className="resource-poster-title">Internship posters</h2>
-            <p className="resource-poster-subtitle">Select any poster to open the detailed internship page.</p>
+        
+          <div className="list-mode-toggle" role="group" aria-label="Internship list mode">
+            <button
+              type="button"
+              className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('all')}
+            >
+              All Data ({allInternships.length})
+            </button>
+            <button
+              type="button"
+              className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('recommended')}
+              disabled={!recommendationsAvailable}
+            >
+              Recommended ({recommendedInternships.length})
+            </button>
           </div>
-        </div>
+
+          {!recommendationsAvailable && (
+            <p className="list-mode-hint">College & University students: Complete your profile to see internship recommendations matched to your field of study.</p>
+          )}
         <div className="scholarship-grid">
           {currentInternships.map((internship) => (
             <ScholarshipCard

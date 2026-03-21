@@ -186,12 +186,21 @@ const SUBJECT_DESCRIPTORS = {
 
 /**
  * Get text description for user profile (used in AI embeddings)
- * Uses letter grades + subject descriptors for Cambodian subject understanding
- * @param {Object} userProfile - User profile object with grades (A-F letters)
+ * Handles both high school (grades) and university (field of study) students
+ * @param {Object} userProfile - User profile object
  * @returns {string} - Text representation of user profile for AI matching
  */
 function getUserProfileEmbeddingText(userProfile) {
-  // Build profile from letter grades with descriptive phrases
+  const isUniversityStudent = userProfile.studentType === 'college';
+  
+  // UNIVERSITY STUDENTS: Use field of study
+  if (isUniversityStudent) {
+    const field = userProfile.universityField || 'general studies';
+    
+    return `University student pursuing ${field}. Seeking internships and opportunities aligned with their field of study.`;
+  }
+  
+  // HIGH SCHOOL STUDENTS: Use letter grades with descriptive phrases
   const gradeDescriptions = [];
   
   if (userProfile.grades && typeof userProfile.grades === 'object') {

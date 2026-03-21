@@ -120,6 +120,126 @@
   background-color: #718096;
 }
 
+/* Student Type Selector */
+.student-type-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.student-type-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.student-type-btn:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+}
+
+.student-type-btn.selected {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.type-icon {
+  font-size: 2rem;
+}
+
+/* Grades Container */
+.grades-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.grade-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.subject-name {
+  font-weight: 500;
+  color: #374151;
+  flex: 1;
+}
+
+.grade-select {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  min-width: 150px;
+  transition: border-color 0.2s;
+}
+
+.grade-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.grade-select option {
+  padding: 8px;
+}
+
+/* Field Select (for University Students) */
+.field-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.field-select option {
+  padding: 8px;
+  color: #374151;
+}
+
+.field-hint {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
 /* Modal Footer */
 .modal-footer {
   display: flex;
@@ -182,100 +302,14 @@
   }
 
   .student-type-selector {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .student-type-btn {
     width: 100%;
   }
-}
 
-/* Student Type Selector */
-.student-type-selector {
-  display: flex;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.student-type-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  background-color: #718096;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #2FA6C4;
-}
-
-.student-type-btn:hover {
-  border-color: #3b82f6;
-  background-color: #718096;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
-}
-
-.student-type-btn.selected {
-  background-color: #718096;
-  color: white;
-  background-color: #718096;
-}
-
-.type-icon {
-  font-size: 2rem;
-}
-
-/* Grades Container */
-.grades-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: #f9fafb;
-  padding: 16px;
-  border-radius: 8px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.grade-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.subject-name {
-  font-weight: 500;
-  color: #374151;
-  flex: 1;
-}
-
-.grade-select {
-  padding: 6px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  background: white;
-  cursor: pointer;
-  min-width: 150px;
-  transition: border-color 0.2s;
-}
-
-.grade-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.grade-select option {
-  padding: 8px;
+  .grade-select {
+    min-width: 100px;
+  }
 }

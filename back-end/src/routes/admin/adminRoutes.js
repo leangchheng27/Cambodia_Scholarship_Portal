@@ -619,6 +619,8 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             eligibility,
             applicable_programs,
             benefits,
+            ai_metadata,
+            aiMetadata,
         } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
@@ -626,6 +628,16 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
         
         if (!name) {
             return res.status(400).json({ error: 'Internship name is required' });
+        }
+
+        // Parse AI metadata if provided
+        let parsedAiMetadata = ai_metadata || aiMetadata;
+        if (parsedAiMetadata && typeof parsedAiMetadata === 'string') {
+            try {
+                parsedAiMetadata = JSON.parse(parsedAiMetadata);
+            } catch (e) {
+                parsedAiMetadata = undefined;
+            }
         }
 
         const internship = await Scholarship.create({
@@ -639,6 +651,7 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             slider_image_url,
             type: 'internship',
             ...(details !== undefined ? { details } : {}),
+            ...(parsedAiMetadata !== undefined ? { ai_metadata: parsedAiMetadata } : {}),
         });
 
         res.status(201).json({ 
@@ -669,6 +682,8 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
             eligibility,
             applicable_programs,
             benefits,
+            ai_metadata,
+            aiMetadata,
         } = req.body;
         const internship = await Scholarship.findByPk(req.params.id);
         
@@ -689,6 +704,16 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
         const details = buildDetailsPayload(internship.details, { eligibility, applicable_programs, benefits });
         if (details !== undefined) internship.details = details;
+
+        // Update AI metadata if provided
+        const metadataToUpdate = ai_metadata || aiMetadata;
+        if (metadataToUpdate !== undefined) {
+            if (typeof metadataToUpdate === 'string') {
+                internship.ai_metadata = JSON.parse(metadataToUpdate);
+            } else {
+                internship.ai_metadata = metadataToUpdate;
+            }
+        }
 
         await internship.save();
         

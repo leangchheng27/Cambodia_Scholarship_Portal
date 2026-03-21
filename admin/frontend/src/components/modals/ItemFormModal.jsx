@@ -294,6 +294,58 @@ const ItemFormModal = ({
                             <textarea name="eligibility" placeholder="Eligibility (one item per line)" value={formState.eligibility || ''} onChange={onFieldChange} rows="4" />
                             <textarea name="applicable_programs" placeholder="Applicable Programs (one item per line)" value={formState.applicable_programs || ''} onChange={onFieldChange} rows="4" />
                             <textarea name="benefits" placeholder="Benefits (one item per line)" value={formState.benefits || ''} onChange={onFieldChange} rows="4" />
+                            
+                            {/* AI Metadata Section */}
+                            <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '16px', marginTop: '16px' }}>
+                                <label style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600', display: 'block', marginBottom: '16px' }}>🤖 AI Metadata (for Recommendations)</label>
+                                
+                                <div>
+                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Field Categories</label>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '12px' }}>
+                                        {['Engineering', 'Medicine', 'Business', 'Law', 'Arts', 'Science', 'Technology', 'Agriculture', 'Education', 'Nursing', 'Psychology', 'Architecture', 'Finance', 'Computer Science', 'Social Sciences'].map((category) => {
+                                            const categoriesArray = (formState.ai_metadata_fieldCategories || '').split(',').map(s => s.trim()).filter(s => s);
+                                            const isChecked = categoriesArray.includes(category);
+                                            return (
+                                                <label key={category} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#cbd5e1', cursor: 'pointer' }}>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={isChecked}
+                                                        onChange={(e) => {
+                                                            const current = (formState.ai_metadata_fieldCategories || '').split(',').map(s => s.trim()).filter(s => s);
+                                                            let updated;
+                                                            if (e.target.checked) {
+                                                                updated = [...current, category];
+                                                            } else {
+                                                                updated = current.filter(c => c !== category);
+                                                            }
+                                                            onFieldChange({
+                                                                target: {
+                                                                    name: 'ai_metadata_fieldCategories',
+                                                                    value: updated.join(', ')
+                                                                }
+                                                            });
+                                                        }}
+                                                        style={{ cursor: 'pointer' }}
+                                                    />
+                                                    {category}
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Keywords & Tags</label>
+                                    <textarea 
+                                        name="ai_metadata_keywords" 
+                                        placeholder="technology, programming, software development&#10;(one item per line)" 
+                                        value={formState.ai_metadata_keywords || ''} 
+                                        onChange={onFieldChange} 
+                                        rows="3"
+                                        style={{ fontSize: '12px', width: '100%' }}
+                                    />
+                                </div>
+                            </div>
                         </>
                     )}
 
