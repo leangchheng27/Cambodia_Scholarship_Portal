@@ -2,29 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAIRecommendations } from '../../../../utils/profileUtils';
 import { getScholarships } from '../../../../api/scholarshipApi';
+import { getInternships } from '../../../../api/internshipApi';
 import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import './AIRecommendations.css';
 
 const AIRecommendations = ({ userProfile }) => {
   const [recommendedScholarships, setRecommendedScholarships] = useState([]);
+  const [recommendedInternships, setRecommendedInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterType, setFilterType] = useState('cambodia'); // 'cambodia' or 'abroad'
+  const [filterType, setFilterType] = useState('cambodia'); // 'cambodia', 'abroad', or 'internship'
+  const [viewMode, setViewMode] = useState('scholarships'); // 'scholarships' or 'internships'
+
+  // Check if user is college/university student
+  const isUniversityStudent = userProfile?.studentType === 'college' || userProfile?.studentType === 'graduate';
+  const isHighSchoolStudent = userProfile?.studentType === 'highschool' || userProfile?.academicType;
 
   const fetchRecommendations = async () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Check if user has grades
-      if (!userProfile.grades || Object.keys(userProfile.grades).length === 0) {
-        setRecommendedScholarships([]);
-        setLoading(false);
-        return;
-      }
-
-      // Fetch all scholarships from API
-      let scholarshipsFromAPI = await getScholarships();
 
       // Build enriched profile (same as scholarship list pages)
       const enrichedProfile = {
@@ -32,39 +29,55 @@ const AIRecommendations = ({ userProfile }) => {
         studentType: userProfile.studentType || userProfile.academicType,
       };
 
-      // Fetch recommendations separately for Cambodia and Abroad (same as scholarship list pages)
-      // This ensures we get the same AI matching results as the individual pages
-      const cambodiaScholarships = scholarshipsFromAPI.filter(s => s.type === 'cambodia' || !s.type);
-      const abroadScholarships = scholarshipsFromAPI.filter(s => s.type === 'abroad');
+      // For HIGH SCHOOL STUDENTS: Fetch scholarship recommendations
+      if (isHighSchoolStudent && userProfile?.grades && Object.keys(userProfile.grades).length > 0) {
+        const scholarshipsFromAPI = await getScholarships();
 
-      // Get recommendations for each region (same limit as scholarship list pages)
-      const cambodiaRecommendations = await getAIRecommendations(
-        enrichedProfile,
-        cambodiaScholarships,
-        cambodiaScholarships.length
-      );
+        // Fetch recommendations separately for Cambodia and Abroad
+        const cambodiaScholarships = scholarshipsFromAPI.filter(s => s.type === 'cambodia' || !s.type);
+        const abroadScholarships = scholarshipsFromAPI.filter(s => s.type === 'abroad');
 
-      const abroadRecommendations = await getAIRecommendations(
-        enrichedProfile,
-        abroadScholarships,
-        abroadScholarships.length
-      );
+        const cambodiaRecommendations = await getAIRecommendations(
+          enrichedProfile,
+          cambodiaScholarships,
+          cambodiaScholarships.length
+        );
 
-      // Combine and add category to all recommendations
-      const allRecommendations = [
-        ...cambodiaRecommendations.map(s => ({
-          ...s,
-          category: 'cambodia'
-        })),
-        ...abroadRecommendations.map(s => ({
-          ...s,
-          category: 'abroad'
-        }))
-      ];
+        const abroadRecommendations = await getAIRecommendations(
+          enrichedProfile,
+          abroadScholarships,
+          abroadScholarships.length
+        );
 
-      console.log('Received Cambodia:', cambodiaRecommendations.length, 'Abroad:', abroadRecommendations.length);
+        const allRecommendations = [
+          ...cambodiaRecommendations.map(s => ({
+            ...s,
+            category: 'cambodia'
+          })),
+          ...abroadRecommendations.map(s => ({
+            ...s,
+            category: 'abroad'
+          }))
+        ];
 
-      setRecommendedScholarships(allRecommendations);
+        console.log('Received Cambodia:', cambodiaRecommendations.length, 'Abroad:', abroadRecommendations.length);
+        setRecommendedScholarships(allRecommendations);
+      }
+
+      // For COLLEGE/GRADUATE STUDENTS: Fetch internship recommendations
+      if (isUniversityStudent && userProfile?.universityField) {
+        const internshipsFromAPI = await getInternships();
+
+        const internshipRecommendations = await getAIRecommendations(
+          enrichedProfile,
+          internshipsFromAPI,
+          internshipsFromAPI.length
+        );
+
+        console.log('Received Internships:', internshipRecommendations.length);
+        setRecommendedInternships(internshipRecommendations);
+      }
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching recommendations:', err);
@@ -79,17 +92,23 @@ const AIRecommendations = ({ userProfile }) => {
     }
   }, [userProfile]);
 
-  // Filter recommended scholarships by type (ONLY show filtered results, not all data)
-  const filteredRecommendations = recommendedScholarships.filter(scholarship => {
-    return filterType === 'cambodia' 
-      ? scholarship.category === 'cambodia'
-      : scholarship.category === 'abroad';
-  });
+  // Filter recommendations based on view mode
+  const filteredRecommendations = viewMode === 'scholarships'
+    ? recommendedScholarships.filter(scholarship => {
+        return filterType === 'cambodia' 
+          ? scholarship.category === 'cambodia'
+          : scholarship.category === 'abroad';
+      })
+    : recommendedInternships;
 
-  const recommendationsAvailable = userProfile?.grades && Object.keys(userProfile.grades).length > 0;
+  const scholarshipsAvailable = isHighSchoolStudent && userProfile?.grades && Object.keys(userProfile.grades).length > 0;
+  const internshipsAvailable = isUniversityStudent && userProfile?.universityField;
 
-  const getBasePath = (scholarship) => {
-    return scholarship.category === 'cambodia' 
+  const getBasePath = (item) => {
+    if (viewMode === 'internships') {
+      return '/scholarships/internship';
+    }
+    return item.category === 'cambodia' 
       ? '/scholarships/cambodia' 
       : '/scholarships/abroad';
   };
@@ -105,7 +124,9 @@ const AIRecommendations = ({ userProfile }) => {
     return (
       <div className="ai-recommendations-section">
         <div className="recommendations-header">
-          <h2 className="recommendations-title">Recommended Scholarships</h2>
+          <h2 className="recommendations-title">
+            {viewMode === 'scholarships' ? 'Recommended Scholarships' : 'Recommended Internships'}
+          </h2>
         </div>
         <div className="loading-state">
           <div className="loading-spinner"></div>
@@ -115,29 +136,42 @@ const AIRecommendations = ({ userProfile }) => {
     );
   }
 
-  if (!recommendationsAvailable) {
-    return (
-      <div className="ai-recommendations-section">
-        <div className="recommendations-header">
-          <h2 className="recommendations-title">Recommended Scholarships</h2>
-        </div>
-        <div className="empty-recommendations">
-          <span className="empty-icon">📚</span>
-          <p>Add your grades to get personalized scholarship recommendations</p>
-        </div>
-      </div>
-    );
+  // Show nothing if no recommendations available for either type
+  if (!scholarshipsAvailable && !internshipsAvailable) {
+    return null;
   }
 
-  if (recommendedScholarships.length === 0) {
+  // If only one type available, lock to that view mode
+  let displayViewMode = viewMode;
+  if (scholarshipsAvailable && !internshipsAvailable) {
+    displayViewMode = 'scholarships';
+  } else if (!scholarshipsAvailable && internshipsAvailable) {
+    displayViewMode = 'internships';
+  }
+
+  // Filter for current view mode
+  const currentRecommendations = displayViewMode === 'scholarships'
+    ? recommendedScholarships.filter(scholarship => {
+        return filterType === 'cambodia' 
+          ? scholarship.category === 'cambodia'
+          : scholarship.category === 'abroad';
+      })
+    : recommendedInternships;
+
+  if (currentRecommendations.length === 0) {
+    const typeLabel = displayViewMode === 'scholarships' 
+      ? 'scholarships' 
+      : 'internships';
     return (
       <div className="ai-recommendations-section">
         <div className="recommendations-header">
-          <h2 className="recommendations-title">Recommended Scholarships</h2>
+          <h2 className="recommendations-title">
+            {displayViewMode === 'scholarships' ? 'Recommended Scholarships' : 'Recommended Internships'}
+          </h2>
         </div>
         <div className="empty-recommendations">
           <span className="empty-icon">🔍</span>
-          <p>No scholarships found matching your profile. Try updating your grades.</p>
+          <p>No {typeLabel} found matching your profile. Try updating your information.</p>
         </div>
       </div>
     );
@@ -147,77 +181,111 @@ const AIRecommendations = ({ userProfile }) => {
     <div className="ai-recommendations-section">
       <div className="recommendations-header">
         <div className="header-top">
-          <h2 className="recommendations-title">Recommended Scholarships</h2>
+          <h2 className="recommendations-title">
+            {displayViewMode === 'scholarships' ? 'Recommended Scholarships' : 'Recommended Internships'}
+          </h2>
           <p className="recommendations-subtitle">
-            Top scholarships matched to your academic profile
+            {displayViewMode === 'scholarships'
+              ? 'Top scholarships matched to your academic profile'
+              : 'Top internships matched to your field of study'}
           </p>
         </div>
         
-        <div className="filter-buttons">
-          <button 
-            className={`filter-btn ${filterType === 'cambodia' ? 'active' : ''}`}
-            onClick={() => setFilterType('cambodia')}
-          >
-            Cambodia ({recommendedScholarships.filter(s => s.category === 'cambodia').length})
-          </button>
-          <button 
-            className={`filter-btn ${filterType === 'abroad' ? 'active' : ''}`}
-            onClick={() => setFilterType('abroad')}
-          >
-            Abroad ({recommendedScholarships.filter(s => s.category === 'abroad').length})
-          </button>
-        </div>
+        {/* Show view mode tabs if both are available */}
+        {scholarshipsAvailable && internshipsAvailable && (
+          <div className="view-mode-tabs">
+            <button 
+              className={`mode-tab ${displayViewMode === 'scholarships' ? 'active' : ''}`}
+              onClick={() => setViewMode('scholarships')}
+            >
+              📚 Scholarships ({recommendedScholarships.length})
+            </button>
+            <button 
+              className={`mode-tab ${displayViewMode === 'internships' ? 'active' : ''}`}
+              onClick={() => setViewMode('internships')}
+            >
+              💼 Internships ({recommendedInternships.length})
+            </button>
+          </div>
+        )}
+
+        {/* Show region filters only for scholarships */}
+        {displayViewMode === 'scholarships' && (
+          <div className="filter-buttons">
+            <button 
+              className={`filter-btn ${filterType === 'cambodia' ? 'active' : ''}`}
+              onClick={() => setFilterType('cambodia')}
+            >
+              Cambodia ({recommendedScholarships.filter(s => s.category === 'cambodia').length})
+            </button>
+            <button 
+              className={`filter-btn ${filterType === 'abroad' ? 'active' : ''}`}
+              onClick={() => setFilterType('abroad')}
+            >
+              Abroad ({recommendedScholarships.filter(s => s.category === 'abroad').length})
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="recommendations-grid">
-        {filteredRecommendations.slice(0, 6).map((scholarship) => {
-          const recommendationKey = `${scholarship.category || 'unknown'}-${scholarship.id}`;
+        {currentRecommendations.slice(0, 6).map((item) => {
+          const itemKey = displayViewMode === 'scholarships'
+            ? `${item.category || 'unknown'}-${item.id}`
+            : `internship-${item.id}`;
 
           return (
-          <div key={recommendationKey} className="recommendation-card">
-            <div className="card-image-container">
-              <img 
-                src={scholarship.image} 
-                alt={scholarship.title} 
-                className="card-image"
-              />
-              <div 
-                className="match-badge"
-                style={{ backgroundColor: getMatchColor(scholarship.matchScore) }}
-              >
-                {scholarship.matchScore}% Match
-              </div>
-            </div>
-
-            <div className="card-body">
-              <h3 className="card-title">{scholarship.title}</h3>
-              <p className="card-description">{scholarship.description}</p>
-
-              <div className="match-reasons">
-                {scholarship.matchReasons?.slice(0, 3).map((reason, index) => (
-                  <div key={index} className="reason-tag">
-                    {reason}
-                  </div>
-                ))}
-              </div>
-
-              <div className="card-footer">
-                <Link 
-                  to={`${getBasePath(scholarship)}/detail/${scholarship.id}`}
-                  className="view-details-btn"
+            <div key={itemKey} className="recommendation-card">
+              <div className="card-image-container">
+                <img 
+                  src={item.image || item.poster_image_url} 
+                  alt={item.title || item.name} 
+                  className="card-image"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/300x200?text=' + (item.title || item.name);
+                  }}
+                />
+                <div 
+                  className="match-badge"
+                  style={{ backgroundColor: getMatchColor(item.matchScore) }}
                 >
-                  View Details
-                </Link>
+                  {item.matchScore}% Match
+                </div>
+              </div>
+
+              <div className="card-body">
+                <h3 className="card-title">{item.title || item.name}</h3>
+                <p className="card-description">{item.description}</p>
+
+                <div className="match-reasons">
+                  {item.matchReasons?.slice(0, 3).map((reason, index) => (
+                    <div key={index} className="reason-tag">
+                      {reason}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="card-footer">
+                  <Link 
+                    to={`${getBasePath(item)}/detail/${item.id}`}
+                    className="view-details-btn"
+                  >
+                    View Details
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        )})}
+          );
+        })}
       </div>
 
-      {filteredRecommendations.length > 6 && (
+      {currentRecommendations.length > 6 && (
         <div className="view-more-section">
-          <Link to="/home" className="view-more-btn">
-            View More Recommendations
+          <Link 
+            to={displayViewMode === 'scholarships' ? '/home' : '/scholarships/internship'} 
+            className="view-more-btn"
+          >
+            View More {displayViewMode === 'scholarships' ? 'Scholarships' : 'Internships'}
           </Link>
         </div>
       )}

@@ -119,7 +119,14 @@ function getUniversityInternshipRecommendations(internships, userField, userGPA 
     }
 
     return {
-      ...internship,
+      id: internship.id,
+      name: internship.name,
+      description: internship.description,
+      company: internship.company,
+      duration: internship.duration,
+      original_link: internship.original_link,
+      poster_image_url: internship.poster_image_url,
+      aiMetadata: internship.aiMetadata,
       matchScore,
       matchReasons: reasons
     };

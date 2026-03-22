@@ -51,22 +51,36 @@ function getPerformanceLevel(gpa) {
 
 /**
  * Validate user profile completeness
+ * Supports both high school students (grades) and university students (universityField)
  * @param {Object} userProfile - User profile object
  * @returns {Object} - Validation result with isValid and missing fields
  */
 function validateProfile(userProfile) {
-  const requiredFields = ['studentType', 'grades'];
   const missingFields = [];
   
-  for (const field of requiredFields) {
-    if (!userProfile[field]) {
-      missingFields.push(field);
-    }
+  // studentType is always required
+  if (!userProfile.studentType) {
+    missingFields.push('studentType');
   }
   
-  // Check if grades object has at least one entry
-  if (userProfile.grades && Object.keys(userProfile.grades).length === 0) {
-    missingFields.push('grades (at least one subject)');
+  // For university students (college/graduate): need universityField
+  const isUniversityStudent = userProfile.studentType === 'college' || userProfile.studentType === 'graduate';
+  
+  if (isUniversityStudent) {
+    // University students need universityField for recommendations
+    if (!userProfile.universityField) {
+      missingFields.push('universityField');
+    }
+  } else {
+    // High school students need grades
+    if (!userProfile.grades) {
+      missingFields.push('grades');
+    }
+    
+    // Check if grades object has at least one entry
+    if (userProfile.grades && Object.keys(userProfile.grades).length === 0) {
+      missingFields.push('grades (at least one subject)');
+    }
   }
   
   return {

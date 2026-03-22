@@ -3,6 +3,9 @@ import './EditProfileModal.css';
 import { SUBJECTS } from '../../../../utils/scholarshipMatcher';
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
+  // Determine if user is university or high school
+  const isUniversityStudent = userData?.studentType === 'college';
+  
   // Edit form state
   const [editForm, setEditForm] = useState({
     name: '',
@@ -10,25 +13,27 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     nationality: '',
     interests: [],
     skills: [],
-    studentType: 'science', // 'science' or 'society'
-    grades: {}, // { 'Math': 'A', 'Physics': 'B', ... }
+    studentType: 'science', // 'science', 'society', 'college'
+    academicType: 'science', // For high school only
+    grades: {}, // For high school only
+    universityField: '', // For college only
   });
 
   // Update form when userData changes
   useEffect(() => {
     if (userData && isOpen) {
       console.log("EditProfileModal - Opening with userData:", userData);
-      console.log("EditProfileModal - Skills from userData:", userData.skills);
-      console.log("EditProfileModal - Interests from userData:", userData.interests);
       
-      // Use academicType if available, otherwise fall back to studentType
-      const studentType = userData.academicType || userData.studentType || 'science';
+      const studentType = userData.studentType || userData.academicType || 'science';
+      const isUniv = studentType === 'college';
       const defaultGrades = {};
       
-      // Initialize grades for all subjects if not present
-      SUBJECTS[studentType].forEach(subject => {
-        defaultGrades[subject] = userData.grades?.[subject] || '';
-      });
+      // Initialize grades for high school students
+      if (!isUniv && SUBJECTS[userData.academicType || 'science']) {
+        SUBJECTS[userData.academicType || 'science'].forEach(subject => {
+          defaultGrades[subject] = userData.grades?.[subject] || '';
+        });
+      }
       
       setEditForm({
         name: userData.name || '',
@@ -37,23 +42,32 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
         interests: Array.isArray(userData.interests) ? [...userData.interests] : [],
         skills: Array.isArray(userData.skills) ? [...userData.skills] : [],
         studentType: studentType,
+        academicType: userData.academicType || (isUniv ? '' : 'science'),
         grades: defaultGrades,
+        universityField: userData.universityField || '',
       });
     }
   }, [userData, isOpen]);
 
   const handleSaveProfile = () => {
     console.log("EditProfileModal - Saving profile data:", editForm);
-    console.log("EditProfileModal - Skills being saved:", editForm.skills);
-    console.log("EditProfileModal - Interests being saved:", editForm.interests);
-    console.log("EditProfileModal - Grades being saved:", editForm.grades);
-    console.log("EditProfileModal - Student Type:", editForm.studentType);
     
-    // Save with both studentType and academicType for compatibility
+    const isUniv = editForm.studentType === 'college';
+    
+    // Save with appropriate fields
     const dataToSave = {
       ...editForm,
-      academicType: editForm.studentType, // For backward compatibility
+      academicType: isUniv ? undefined : (editForm.studentType || 'science'),
     };
+    
+    // Remove high school fields if university student
+    if (isUniv) {
+      dataToSave.grades = {};
+      dataToSave.academicType = undefined;
+    } else {
+      // Keep only relevant fields for high school
+      dataToSave.universityField = '';
+    }
     
     console.log("EditProfileModal - Final data to save:", dataToSave);
     onSave(dataToSave);
@@ -125,51 +139,91 @@ const handleStudentTypeChange = (newType) => {
 
           {/* Student Type Selection */}
           <div className="form-group">
-            <label>Student Type (High School Graduate)</label>
+            <label>Education Level</label>
             <div className="student-type-selector">
               <button
                 type="button"
                 className={`student-type-btn ${editForm.studentType === 'science' ? 'selected' : ''}`}
-                onClick={() => handleStudentTypeChange('science')}
+                onClick={() => setEditForm({ ...editForm, studentType: 'science', academicType: 'science' })}
               >
                 <span className="type-icon">🔬</span>
-                <span>Science Student</span>
+                <span>High School (Science)</span>
               </button>
               <button
                 type="button"
                 className={`student-type-btn ${editForm.studentType === 'society' ? 'selected' : ''}`}
-                onClick={() => handleStudentTypeChange('society')}
+                onClick={() => setEditForm({ ...editForm, studentType: 'society', academicType: 'society' })}
               >
                 <span className="type-icon">📚</span>
-                <span>Social-Science Student</span>
+                <span>High School (Society)</span>
+              </button>
+              <button
+                type="button"
+                className={`student-type-btn ${editForm.studentType === 'college' ? 'selected' : ''}`}
+                onClick={() => setEditForm({ ...editForm, studentType: 'college' })}
+              >
+                <span className="type-icon">🎓</span>
+                <span>College/University</span>
               </button>
             </div>
           </div>
 
-          {/* Grade Input Section */}
-          <div className="form-group">
-            <label>Subject Grades (High School)</label>
-            <div className="grades-container">
-              {SUBJECTS[editForm.studentType].map(subject => (
-                <div key={subject} className="grade-row">
-                  <span className="subject-name">{subject}</span>
-                  <select
-                    value={editForm.grades[subject] || ''}
-                    onChange={(e) => handleGradeChange(subject, e.target.value)}
-                    className="grade-select"
-                  >
-                    <option value="">Select Grade</option>
-                    <option value="A">A - Excellent</option>
-                    <option value="B">B - Good</option>
-                    <option value="C">C - Average</option>
-                    <option value="D">D - Below Average</option>
-                    <option value="E">E - Poor</option>
-                    <option value="F">F - Fail</option>
-                  </select>
-                </div>
-              ))}
+          {/* HIGH SCHOOL: Subject Grades Input Section */}
+          {(editForm.studentType === 'science' || editForm.studentType === 'society') && (
+            <div className="form-group">
+              <label>Subject Grades</label>
+              <div className="grades-container">
+                {SUBJECTS[editForm.studentType || 'science']?.map(subject => (
+                  <div key={subject} className="grade-row">
+                    <span className="subject-name">{subject}</span>
+                    <select
+                      value={editForm.grades[subject] || ''}
+                      onChange={(e) => setEditForm({
+                        ...editForm,
+                        grades: { ...editForm.grades, [subject]: e.target.value }
+                      })}
+                      className="grade-select"
+                    >
+                      <option value="">Select Grade</option>
+                      <option value="A">A - Excellent</option>
+                      <option value="B">B - Good</option>
+                      <option value="C">C - Average</option>
+                      <option value="D">D - Below Average</option>
+                      <option value="E">E - Poor</option>
+                      <option value="F">F - Fail</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* UNIVERSITY: Field of Study Input Section */}
+          {editForm.studentType === 'college' && (
+            <div className="form-group">
+              <label>Field of Study</label>
+              <select
+                value={editForm.universityField}
+                onChange={(e) => setEditForm({ ...editForm, universityField: e.target.value })}
+                className="field-select"
+              >
+                <option value="">Select your field of study</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Business">Business & Commerce</option>
+                <option value="Medicine">Medicine & Health Sciences</option>
+                <option value="Law">Law</option>
+                <option value="Education">Education</option>
+                <option value="Economics">Economics</option>
+                <option value="Arts">Arts & Humanities</option>
+                <option value="Science">Pure Sciences</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Architecture">Architecture & Design</option>
+                <option value="Social Sciences">Social Sciences</option>
+              </select>
+              <p className="field-hint">Your field of study helps match you with internships and scholarships for your career path.</p>
+            </div>
+          )}
 
           {/* Nationality Input */}
           <div className="form-group">

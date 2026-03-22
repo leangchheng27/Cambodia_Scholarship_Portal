@@ -226,8 +226,11 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* AI Scholarship Recommendations */}
-          {((userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField) && (
+          {/* AI Scholarship & Internship Recommendations */}
+          {(
+            (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || 
+            userData.universityField
+          ) && (
             <AIRecommendations userProfile={userData} />
           )}
         </div>

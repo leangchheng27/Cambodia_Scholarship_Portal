@@ -177,6 +177,47 @@
   box-shadow: 0 4px 12px rgba(31, 41, 55, 0.35);
 }
 
+/* List Mode Toggle - Matches Cambodia page styling */
+.list-mode-toggle {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0 14px;
+}
+
+.list-mode-btn {
+  border: 1px solid rgba(31, 41, 55, 0.2);
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.list-mode-btn:hover:not(:disabled) {
+  border-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+.list-mode-btn.active {
+  background: #374151;
+  color: #ffffff;
+  border-color: #374151;
+}
+
+.list-mode-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.list-mode-hint {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 10px 0 0;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .scholarship-grid {

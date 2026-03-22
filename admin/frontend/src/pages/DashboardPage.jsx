@@ -160,8 +160,8 @@ const DashboardPage = () => {
         e.preventDefault();
         const data = { ...formState };
 
-        // Handle AI Metadata for Scholarships
-        if (activeTab === 'scholarships') {
+        // Handle AI Metadata for Scholarships and Internships
+        if (activeTab === 'scholarships' || activeTab === 'internships') {
             const aiMetadata = {};
             const fieldsToRemove = [];
 

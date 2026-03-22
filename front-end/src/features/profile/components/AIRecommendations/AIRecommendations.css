@@ -71,6 +71,42 @@
   box-shadow: 0 4px 12px rgba(43, 183, 223, 0.3);
 }
 
+/* View Mode Tabs for switching between scholarships and internships */
+.view-mode-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.mode-tab {
+  padding: 12px 28px;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-tab:hover {
+  border-color: #2bb7df;
+  color: #2bb7df;
+  background: #f0fafb;
+}
+
+.mode-tab.active {
+  background-color: #2bb7df;
+  color: white;
+  border-color: #2bb7df;
+  box-shadow: 0 4px 12px rgba(43, 183, 223, 0.3);
+}
+
 /* Loading and Error States */
 .loading-state,
 .error-state,

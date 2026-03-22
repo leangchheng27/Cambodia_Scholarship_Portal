@@ -81,6 +81,12 @@ const Scholarship = sequelize.define('Scholarship', {
   },
   details: DataTypes.JSON,
   ai_metadata: DataTypes.JSON,
+  aiMetadata: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('ai_metadata');
+    },
+  },
 }, {
   tableName: 'scholarship',
   timestamps: false,

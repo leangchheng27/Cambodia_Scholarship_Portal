@@ -147,12 +147,15 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
       }
       
       // Check student type eligibility
+      // If studentTypes is missing, treat as 'both' (available to all students)
+      // This is important for internships which don't specify student type limitations
       if (scholarship.aiMetadata?.studentTypes) {
         const types = scholarship.aiMetadata.studentTypes;
         if (!types.includes('both') && !types.includes(userProfile.studentType)) {
           return false; // Wrong student type - EXCLUDE
         }
       }
+      // If studentTypes is missing or empty, allow all students (implicit 'both')
       
       return true; // Meets all hard constraints
     });
@@ -192,11 +195,15 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
             let eligibilityBonus = 0;
             
             // Check student type compatibility
+            // If studentTypes is missing, treat as 'both' (+10 bonus for all students)
             if (scholarship.aiMetadata?.studentTypes) {
               const types = scholarship.aiMetadata.studentTypes;
               if (types.includes('both') || types.includes(userProfile.studentType)) {
                 eligibilityBonus += 10;
               }
+            } else {
+              // Missing studentTypes = available to all students = bonus applies
+              eligibilityBonus += 10;
             }
             
             // GPA requirement bonus (since we filtered, user meets it)

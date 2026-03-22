@@ -40,6 +40,7 @@ const syncDatabase = async () => {
         await ensureColumn(queryInterface, 'internship', 'original_link', { type: DataTypes.STRING(512), allowNull: true });
         await ensureColumn(queryInterface, 'internship', 'poster_image_url', { type: DataTypes.STRING(512), allowNull: true });
         await ensureColumn(queryInterface, 'internship', 'slider_image_url', { type: DataTypes.STRING(512), allowNull: true });
+        await ensureColumn(queryInterface, 'internship', 'ai_metadata', { type: DataTypes.JSON, allowNull: true });
 
         await ensureColumn(queryInterface, 'university', 'original_link', { type: DataTypes.STRING(512), allowNull: true });
         await ensureColumn(queryInterface, 'university', 'poster_image_url', { type: DataTypes.STRING(512), allowNull: true });
