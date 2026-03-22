@@ -33,7 +33,6 @@ const clearStoredAuth = () => {
 };
 
 // Synchronously parse Google OAuth token from URL before first render
-// Synchronously parse Google OAuth token from URL before first render
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken = urlParams.get("token");
 if (urlToken) {
@@ -52,8 +51,6 @@ if (urlToken) {
     clearStoredAuth();
   }
   window.history.replaceState({}, document.title, window.location.pathname);
-} else {
-  clearStoredAuth(); 
 }
 
 export const AuthProvider = ({ children }) => {
