@@ -33,6 +33,7 @@ const clearStoredAuth = () => {
 };
 
 // Synchronously parse Google OAuth token from URL before first render
+// Synchronously parse Google OAuth token from URL before first render
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken = urlParams.get("token");
 if (urlToken) {
@@ -51,6 +52,8 @@ if (urlToken) {
     clearStoredAuth();
   }
   window.history.replaceState({}, document.title, window.location.pathname);
+} else {
+  clearStoredAuth(); 
 }
 
 export const AuthProvider = ({ children }) => {
@@ -88,14 +91,14 @@ export const AuthProvider = ({ children }) => {
       if (!token) return;
       try {
         const response = await API.get("/auth/me");
-        setUser(response.data.user);
+        setUser(response.data);
       } catch {
         logout();
       }
     };
     verifyToken();
   }, []);
-  
+
   // Persist user to localStorage whenever it changes
   useEffect(() => {
     if (user) {

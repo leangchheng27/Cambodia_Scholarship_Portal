@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getSavedUpdatedEventName, readSavedItems } from '../../utils/savedItems.js';
+import { getSavedItems } from '../../api/savedApi.js';
 import './header.css';
 import logo from '../../assets/Header/logo.png';
 import blur from '../../assets/Header/blur.png';
@@ -10,35 +10,47 @@ import profileIcon from '../../assets/Header/profile.png';
 
 export default function Header()  {
     const { user, isAuthenticated } = useAuth();
-    const userId = user?.id || 'guest';
     const [savedCount, setSavedCount] = useState(0);
     const dragRef = useRef(null);
     const isDraggingRef = useRef(false);
     const profileHref = isAuthenticated ? '/profile' : '/login?redirect=%2Fprofile';
 
     useEffect(() => {
-        setSavedCount(readSavedItems(userId).length);
-
-        const handleSavedUpdate = (event) => {
-            if (event?.detail?.userId && event.detail.userId !== userId) {
+        const loadSavedCount = async () => {
+            if (!user) {
+                setSavedCount(0);
                 return;
             }
-            setSavedCount(readSavedItems(userId).length);
+            try {
+                const items = await getSavedItems();
+                setSavedCount(items?.length || 0);
+            } catch (error) {
+                console.error('Error loading saved count:', error);
+                setSavedCount(0);
+            }
         };
 
-        const handleStorage = (event) => {
-            if (!event.key || !event.key.startsWith('csp_saved_items:')) return;
-            setSavedCount(readSavedItems(userId).length);
-        };
+        loadSavedCount();
 
-        window.addEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
-        window.addEventListener('storage', handleStorage);
+        // Listen for updates from other components
+        const handleUpdate = (event) => {
+            // If count is provided in the event, use it immediately
+            if (event.detail?.count !== undefined) {
+                setSavedCount(event.detail.count);
+            } 
+            // If only action is provided (increment/decrement), update count
+            else if (event.detail?.action === 'increment') {
+                setSavedCount(prev => prev + 1);
+            } else if (event.detail?.action === 'decrement') {
+                setSavedCount(prev => Math.max(0, prev - 1));
+            }
+        };
+        window.addEventListener('saved:updated', handleUpdate);
 
         return () => {
-            window.removeEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
-            window.removeEventListener('storage', handleStorage);
+            window.removeEventListener('saved:updated', handleUpdate);
         };
-    }, [userId]);
+    }, [user]);
 
     useEffect(() => {
         const el = dragRef.current;

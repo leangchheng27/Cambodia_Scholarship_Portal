@@ -252,7 +252,7 @@ if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
             );
 
             const frontendBaseUrl = config.FRONTEND_URL || 'http://localhost:5173';
-            const targetPath = redirectPath || '/profile-setup';
+            const targetPath = redirectPath || '/home';
             const separator = targetPath.includes('?') ? '&' : '?';
 
             res.redirect(`${frontendBaseUrl}${targetPath}${separator}token=${token}`);

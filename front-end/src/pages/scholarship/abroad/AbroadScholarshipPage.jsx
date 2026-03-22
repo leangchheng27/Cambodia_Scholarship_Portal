@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
-import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
+import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getScholarships } from '../../../api/scholarshipApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { getAIRecommendations } from '../../../utils/profileUtils.js';
@@ -187,7 +187,7 @@ export default function AbroadScholarshipPage() {
 
         <div className="scholarship-grid">
           {currentScholarships.map((scholarship) => (
-            <ScholarshipCard
+            <PosterCard
               key={scholarship.id}
               scholarship={scholarship}
               basePath="/scholarships/abroad"

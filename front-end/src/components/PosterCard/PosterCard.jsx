@@ -1,18 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { buildSavedItemKey, isSavedItem, toggleSavedItem } from '../../utils/savedItems.js';
+import { saveItem, unsaveItem, getSavedItems } from '../../api/savedApi.js'; // ✅
 import saveIcon from '../../assets/Header/save.png';
 import { recordFeedback } from '../../api/feedbackApi.js';
-import './ScholarshipCard.css';
+import './PosterCard.css';
 
-const ScholarshipCard = ({ 
+const PosterCard = ({ 
   scholarship, 
   showMatchScore = false, 
   basePath = '/scholarships/cambodia' 
 }) => {
   const { user } = useAuth();
-  const userId = user?.id || 'guest';
   const navigate = useNavigate();
 
   const itemType = useMemo(() => {
@@ -21,16 +20,21 @@ const ScholarshipCard = ({
     return 'scholarship-cambodia';
   }, [basePath]);
 
-  const itemKey = useMemo(
-    () => buildSavedItemKey(itemType, scholarship.id),
-    [itemType, scholarship.id]
-  );
-
-  const [saved, setSaved] = useState(() => isSavedItem(itemKey, userId));
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    setSaved(isSavedItem(itemKey, userId));
-  }, [itemKey, userId]);
+    const checkSaved = async () => {
+      if (!user) return;
+      try {
+        const items = await getSavedItems();
+        const isSaved = items.some(item => item.itemId === String(scholarship.id));
+        setSaved(isSaved);
+      } catch (err) {
+        console.error('Failed to check saved status:', err);
+      }
+    };
+    checkSaved();
+  }, [user, scholarship.id]);
 
   const handleCardClick = () => {
     recordFeedback({
@@ -50,28 +54,53 @@ const ScholarshipCard = ({
     return '#6b7280';
   };
 
-  const handleSaveClick = (event) => {
+  const handleSaveClick = async (event) => {
     event.stopPropagation();
     event.preventDefault();
 
-    const payload = {
-      key: itemKey,
-      id: scholarship.id,
-      type: itemType,
-      title: scholarship.title || scholarship.name || 'Untitled',
-      description: scholarship.description || '',
-      image: scholarship.image || '',
-      detailPath: `${basePath}/detail/${scholarship.id}`,
-    };
+    if (!user) {
+      navigate('/login');
+      return;
+    }
 
-    const result = toggleSavedItem(payload, userId);
-    setSaved(result.saved);
-    recordFeedback({
-      scholarshipId: scholarship.id,
-      scholarshipType: itemType,
-      action: result.saved ? 'save' : 'dismiss',
-      scholarshipSnapshot: { title: scholarship.title || scholarship.name, description: scholarship.description },
-    });
+    // Optimistic UI update
+    const newSavedState = !saved;
+    setSaved(newSavedState);
+    
+    // Dispatch event with info for header and other components
+    // We'll send 'increment' or 'decrement' since we don't know total count here
+    window.dispatchEvent(new CustomEvent('saved:updated', { detail: { action: newSavedState ? 'increment' : 'decrement' } }));
+
+    try {
+      if (saved) {
+        await unsaveItem(String(scholarship.id));
+        recordFeedback({
+          scholarshipId: scholarship.id,
+          scholarshipType: itemType,
+          action: 'dismiss',
+          scholarshipSnapshot: { title: scholarship.title || scholarship.name, description: scholarship.description },
+        });
+      } else {
+        await saveItem({
+          itemId: String(scholarship.id),
+          itemType,
+          title: scholarship.title || scholarship.name || 'Untitled',
+          description: scholarship.description || '',
+          image: scholarship.image || '',
+          detailPath: `${basePath}/detail/${scholarship.id}`,
+        });
+        recordFeedback({
+          scholarshipId: scholarship.id,
+          scholarshipType: itemType,
+          action: 'save',
+          scholarshipSnapshot: { title: scholarship.title || scholarship.name, description: scholarship.description },
+        });
+      }
+    } catch (err) {
+      console.error('Failed to toggle save:', err);
+      // Revert optimistic update on error
+      setSaved(!newSavedState);
+    }
   };
 
   return (
@@ -110,4 +139,4 @@ const ScholarshipCard = ({
   );
 };
 
-export default ScholarshipCard;
+export default PosterCard;

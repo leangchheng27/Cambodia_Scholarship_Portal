@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
-import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
+import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getInternships } from '../../../api/internshipApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { getAIRecommendations } from '../../../utils/profileUtils.js';
@@ -150,7 +150,7 @@ export default function InternshipPage() {
         </div>
         <div className="scholarship-grid">
           {currentInternships.map((internship) => (
-            <ScholarshipCard
+            <PosterCard
               key={internship.id}
               scholarship={internship}
               basePath="/scholarships/internship"

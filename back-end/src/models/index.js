@@ -12,6 +12,8 @@ import ScholarshipDeadline from './scholarship/ScholarshipDeadline.js';
 import ScholarshipEligibility from './scholarship/ScholarshipEligibility.js';
 import ScholarshipFieldOfStudy from './scholarship/ScholarshipFieldOfStudy.js';
 
+import Saved from './saved/saved.js';
+
 // Initialize all associations
 const initializeModels = () => {
   // University associations
@@ -28,6 +30,8 @@ const initializeModels = () => {
   UniversityCampus.belongsTo(University, { foreignKey: 'university_id' });
   UniversityNews.belongsTo(University, { foreignKey: 'university_id' });
   UniversityStudentAchievement.belongsTo(University, { foreignKey: 'university_id' });
+
+  // Saved — no associations needed for now
 };
 
 export {
@@ -43,5 +47,6 @@ export {
   ScholarshipDeadline,
   ScholarshipEligibility,
   ScholarshipFieldOfStudy,
+  Saved,
   initializeModels,
 };

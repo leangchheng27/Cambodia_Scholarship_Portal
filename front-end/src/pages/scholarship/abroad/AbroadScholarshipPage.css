@@ -1,5 +1,5 @@
 /* Import Shared Scholarship Card Styles */
-@import '../../../components/ScholarshipCard/ScholarshipCard.css';
+@import '../../../components/PosterCard/PosterCard.css';
 @import '../../../styles/PremiumResourceTheme.css';
 
 .abroad-list-page {
