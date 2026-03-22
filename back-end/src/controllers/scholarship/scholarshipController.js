@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import {
   Scholarship,
   ScholarshipBenefit,
@@ -10,7 +11,13 @@ const scholarshipController = {
   // Get all scholarships
   async getAll(req, res) {
     try {
-      const scholarships = await Scholarship.findAll();
+      const { search, type } = req.query;
+      const where = {};
+
+      if (type) where.type = type;
+      if (search) where.name = { [Op.like]: `%${search}%` };
+
+      const scholarships = await Scholarship.findAll({ where });
       res.json(scholarships);
     } catch (error) {
       res.status(500).json({ error: error.message });

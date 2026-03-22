@@ -3,9 +3,14 @@ import "./UniversityList.css";
 import { getUniversities } from "../../../../api/universityApi";
 import LoadingText from "../../../../components/ui/LoadingText/LoadingText.jsx";
 import { useAuth } from "../../../../context/AuthContext.jsx";
-import { saveItem, unsaveItem, getSavedItems } from "../../../../api/savedApi.js";
+import {
+  saveItem,
+  unsaveItem,
+  getSavedItems,
+} from "../../../../api/savedApi.js";
 import saveIcon from "../../../../assets/Header/save.png";
 import { useNavigate } from "react-router-dom";
+import SearchInput from "../../../../components/SearchInput/SearchInput.jsx";
 
 const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   const { user } = useAuth();
@@ -13,30 +18,27 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [savedItems, setSavedItems] = useState([]);
+  const [savedIds, setSavedIds] = useState(new Set());
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const loadSavedItems = async () => {
-      if (!user) {
-        setSavedItems([]);
-        return;
-      }
+    const loadSaved = async () => {
+      if (!user) return;
       try {
         const items = await getSavedItems();
-        setSavedItems(items || []);
+        setSavedIds(new Set(items.map((item) => item.itemId)));
       } catch (err) {
-        console.error("Error loading saved items:", err);
-        setSavedItems([]);
+        console.error("Failed to load saved items:", err);
       }
     };
-    loadSavedItems();
+    loadSaved();
   }, [user]);
 
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
         setLoading(true);
-        const data = await getUniversities();
+        const data = await getUniversities(search); // ✅ pass search
         setUniversities(data);
         setError(null);
       } catch (err) {
@@ -47,8 +49,9 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
       }
     };
 
-    fetchUniversities();
-  }, []);
+    const debounceTimer = setTimeout(() => fetchUniversities(), 300);
+    return () => clearTimeout(debounceTimer);
+  }, [search]); // ✅ re-fetch on search change
 
   const filtered = selectedProvince
     ? universities.filter(
@@ -57,110 +60,118 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
       )
     : universities;
 
-  if (loading)
-    return (
-      <div className="university-list-container">
-        <LoadingText text="Loading universities..." />
-      </div>
-    );
-  if (error)
-    return (
-      <div className="university-list-container">
-        <p className="error">{error}</p>
-      </div>
-    );
-
   const handleToggleSave = async (event, university) => {
     event.stopPropagation();
-
     if (!user) {
       navigate("/login?redirect=/university");
       return;
     }
 
-    const isSaved = savedItems.some(item => item.itemId === String(university.id));
-    
-    // Optimistic UI update - update immediately
-    let newCount;
+    const itemId = String(university.id);
+    const isSaved = savedIds.has(itemId);
+
+    // ✅ optimistic update — update UI immediately
     if (isSaved) {
-      newCount = savedItems.length - 1;
-      setSavedItems(savedItems.filter(item => item.itemId !== String(university.id)));
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(itemId);
+        return next;
+      });
     } else {
-      newCount = savedItems.length + 1;
-      setSavedItems([...savedItems, {
-        itemId: String(university.id),
-        itemType: "university",
-        title: university.name || "University",
-      }]);
+      setSavedIds((prev) => new Set([...prev, itemId]));
     }
 
-    // Dispatch event with count for header and other components
-    window.dispatchEvent(new CustomEvent('saved:updated', { detail: { count: newCount } }));
+    // ✅ dispatch event for header
+    window.dispatchEvent(
+      new CustomEvent("saved:updated", {
+        detail: { action: isSaved ? "decrement" : "increment" },
+      }),
+    );
 
     try {
       if (isSaved) {
-        await unsaveItem(String(university.id));
+        await unsaveItem(itemId);
       } else {
         await saveItem({
-          itemId: String(university.id),
+          itemId,
           itemType: "university",
           title: university.name || "University",
-          description: `${university.location || university.province || "N/A"}`,
+          description: `${university.location || university.province || "N/A"} • ${university.location || "N/A"}`,
           image: "",
           detailPath: `/universities/${university.id}`,
         });
       }
     } catch (err) {
-      console.error("Error toggling save:", err);
-      // Revert optimistic update on error
-      const updatedItems = await getSavedItems();
-      setSavedItems(updatedItems || []);
+      console.error("Failed to toggle save:", err);
+      // ✅ revert on error
+      if (isSaved) {
+        setSavedIds((prev) => new Set([...prev, itemId]));
+      } else {
+        setSavedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(itemId);
+          return next;
+        });
+      }
     }
   };
 
   return (
     <div className="university-list-container">
-      <table className="university-list-table">
-        <thead>
-          <tr>
-            <th>SCHOOL NAME</th>
-            <th>PROVINCE</th>
-            <th>CITY</th>
-            <th>SAVE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((university) => (
-            <tr
-              key={university.id}
-              className="clickable-row"
-              onClick={() => {
-                if (onUniversityClick) {
-                  onUniversityClick(university.id);
-                }
-              }}
-            >
-              <td>{university.name}</td>
-              <td>{university.location || university.province || "N/A"}</td>
-              <td>{university.location || "N/A"}</td>
-              <td>
-                <button
-                  type="button"
-                  className={`university-save-btn ${savedItems.some(item => item.itemId === String(university.id)) ? "saved" : ""}`}
-                  onClick={(event) => handleToggleSave(event, university)}
-                  aria-label={
-                    savedItems.some(item => item.itemId === String(university.id))
-                      ? "Remove university from saved list"
-                      : "Save university"
-                  }
-                >
-                  <img src={saveIcon} alt="" aria-hidden="true" />
-                </button>
-              </td>
+      <SearchInput
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setCurrentPage(1);
+        }}
+        placeholder="Search internships by name..."
+      />
+
+      {loading ? (
+        <LoadingText text="Loading universities..." />
+      ) : error ? (
+        <p className="error">{error}</p>
+      ) : (
+        <table className="university-list-table">
+          <thead>
+            <tr>
+              <th>SCHOOL NAME</th>
+              <th>PROVINCE</th>
+              <th>CITY</th>
+              <th>SAVE</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((university) => (
+              <tr
+                key={university.id}
+                className="clickable-row"
+                onClick={() => {
+                  if (onUniversityClick) onUniversityClick(university.id);
+                }}
+              >
+                <td>{university.name}</td>
+                <td>{university.location || university.province || "N/A"}</td>
+                <td>{university.location || "N/A"}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={`university-save-btn ${savedIds.has(String(university.id)) ? "saved" : ""}`}
+                    onClick={(event) => handleToggleSave(event, university)}
+                    aria-label={
+                      savedIds.has(String(university.id))
+                        ? "Remove university from saved list"
+                        : "Save university"
+                    }
+                  >
+                    <img src={saveIcon} alt="" aria-hidden="true" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

@@ -1,7 +1,9 @@
 import API from '../services/api';
 
-export async function getUniversities() {
-  const response = await API.get('/universities');
+export async function getUniversities(search = '') {
+  const response = await API.get('/universities', {
+    params: { search }
+  });
   return response.data;
 }
 

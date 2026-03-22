@@ -8,8 +8,9 @@ import { useAuth } from '../../../context/AuthContext.jsx';
 import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
+import SearchInput from '../../../components/SearchInput/SearchInput.jsx';
 
-// Import banner images
+
 import banner1 from '../../../assets/banner/p1.png';
 import banner2 from '../../../assets/banner/p2.jpg';
 import banner3 from '../../../assets/banner/p3.png';
@@ -25,25 +26,22 @@ export default function InternshipPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recommendationsAvailable, setRecommendationsAvailable] = useState(false);
+  const [search, setSearch] = useState('');
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
-  
+
   useEffect(() => {
     const fetchInternships = async () => {
       try {
         setLoading(true);
-        const data = await getInternships();
+        const data = await getInternships(search);
         setAllInternships(data);
 
         const effectiveProfile = { ...(user || {}), ...(profile || {}) };
         const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
-        const hasGrades = Boolean(effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0);
         const hasUniversityField = Boolean(effectiveProfile.universityField);
-
-        // Only college/graduate students get AI recommendations
         const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
-        
+
         if (isUniversityStudent && hasUniversityField) {
-          // Get AI recommendations for college students
           const recommendations = await getAIRecommendations(
             { ...effectiveProfile, studentType },
             data,
@@ -53,12 +51,10 @@ export default function InternshipPage() {
           setRecommendationsAvailable(true);
           setViewMode('recommended');
         } else {
-          // High school students: show all internships, no recommendations
           setRecommendedInternships([]);
           setRecommendationsAvailable(false);
           setViewMode('all');
         }
-
         setError(null);
       } catch (err) {
         console.error('Error fetching internships:', err);
@@ -68,20 +64,17 @@ export default function InternshipPage() {
       }
     };
 
-    fetchInternships();
-  }, [user, profile]);
-  
+    const debounceTimer = setTimeout(() => fetchInternships(), 300);
+    return () => clearTimeout(debounceTimer);
+  }, [user, profile, search]);
+
   const displayedInternships = viewMode === 'recommended' && recommendationsAvailable
-    ? recommendedInternships
-    : allInternships;
+    ? recommendedInternships : allInternships;
   const hasRecommendationScores = viewMode === 'recommended' && recommendationsAvailable;
-  
   const itemsPerPage = 12;
   const totalPages = Math.ceil(displayedInternships.length / itemsPerPage);
-  
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentInternships = displayedInternships.slice(startIndex, endIndex);
+  const currentInternships = displayedInternships.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -89,44 +82,14 @@ export default function InternshipPage() {
   };
 
   const handleViewModeChange = (mode) => {
-    if (mode === 'recommended' && !recommendationsAvailable) {
-      return;
-    }
-
+    if (mode === 'recommended' && !recommendationsAvailable) return;
     setViewMode(mode);
     setCurrentPage(1);
   };
 
-  if (loading) {
-    return (
-      <div className="internship-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <LoadingText text="Loading internships..." />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="internship-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <p className="error">{error}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="internship-list-page">
       <Header />
-
       <div className="resource-hero-banner-wrap">
         <HeroBanner slides={bannerSlides} />
         <div className="resource-hero-banner-overlay">
@@ -165,23 +128,18 @@ export default function InternshipPage() {
           </div>
         </section>
 
-      {/* Internship Grid */}
-      <div id="resource-posters" className="scholarship-list-container resource-posters">
-        
+        <div id="resource-posters" className="scholarship-list-container resource-posters">
+          <SearchInput
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+            placeholder="Search internships by name..."
+          />
+
           <div className="list-mode-toggle" role="group" aria-label="Internship list mode">
-            <button
-              type="button"
-              className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('all')}
-            >
+            <button type="button" className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`} onClick={() => handleViewModeChange('all')}>
               All Data ({allInternships.length})
             </button>
-            <button
-              type="button"
-              className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('recommended')}
-              disabled={!recommendationsAvailable}
-            >
+            <button type="button" className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`} onClick={() => handleViewModeChange('recommended')} disabled={!recommendationsAvailable}>
               Recommended ({recommendedInternships.length})
             </button>
           </div>
@@ -189,66 +147,43 @@ export default function InternshipPage() {
           {!recommendationsAvailable && (
             <p className="list-mode-hint">College & University students: Complete your profile to see internship recommendations matched to your field of study.</p>
           )}
-        <div className="scholarship-grid">
-          {currentInternships.map((internship) => (
-            <PosterCard
-              key={internship.id}
-              scholarship={internship}
-              basePath="/scholarships/internship"
-              showMatchScore={hasRecommendationScores}
-            />
-          ))}
-        </div>
 
-        {/* Pagination */}
-        <div className="pagination">
-          {currentPage > 1 && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              ←
-            </button>
-          )}
-          
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNumber = index + 1;
-            
-            if (
-              pageNumber === 1 ||
-              pageNumber === totalPages ||
-              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
-            ) {
-              return (
-                <button
-                  key={pageNumber}
-                  className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`}
-                  onClick={() => handlePageChange(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              );
-            } else if (
-              pageNumber === currentPage - 2 ||
-              pageNumber === currentPage + 2
-            ) {
-              return <span key={pageNumber} className="page-dots">...</span>;
-            }
-            return null;
-          })}
-          
-          {currentPage < totalPages && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              →
-            </button>
+          <div className="scholarship-grid">
+            {loading ? (
+              <LoadingText text="Loading internships..." />
+            ) : error ? (
+              <p className="error">{error}</p>
+            ) : currentInternships.length === 0 ? (
+              <p className="list-empty-message">No internships found.</p>
+            ) : (
+              currentInternships.map((internship) => (
+                <PosterCard
+                  key={internship.id}
+                  scholarship={internship}
+                  basePath="/scholarships/internship"
+                  showMatchScore={hasRecommendationScores}
+                />
+              ))
+            )}
+          </div>
+
+          {!loading && totalPages > 1 && (
+            <div className="pagination">
+              {currentPage > 1 && <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)}>←</button>}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
+                if (pageNumber === 1 || pageNumber === totalPages || (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)) {
+                  return <button key={pageNumber} className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`} onClick={() => handlePageChange(pageNumber)}>{pageNumber}</button>;
+                } else if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                  return <span key={pageNumber} className="page-dots">...</span>;
+                }
+                return null;
+              })}
+              {currentPage < totalPages && <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)}>→</button>}
+            </div>
           )}
         </div>
       </div>
-      </div>
-
       <Footer />
     </div>
   );
