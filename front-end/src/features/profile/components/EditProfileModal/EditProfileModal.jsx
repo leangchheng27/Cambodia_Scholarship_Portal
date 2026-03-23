@@ -18,6 +18,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     grades: {}, // For high school only
     universityField: '', // For college only
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   // Update form when userData changes
   useEffect(() => {
@@ -29,8 +30,10 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
       const defaultGrades = {};
       
       // Initialize grades for high school students
-      if (!isUniv && SUBJECTS[userData.academicType || 'science']) {
-        SUBJECTS[userData.academicType || 'science'].forEach(subject => {
+      // ONLY load grades for subjects in the CURRENT academic track
+      if (!isUniv && SUBJECTS[studentType]) {
+        SUBJECTS[studentType].forEach(subject => {
+          // Only load grade if it exists AND the subject is in the current track
           defaultGrades[subject] = userData.grades?.[subject] || '';
         });
       }
@@ -42,36 +45,54 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
         interests: Array.isArray(userData.interests) ? [...userData.interests] : [],
         skills: Array.isArray(userData.skills) ? [...userData.skills] : [],
         studentType: studentType,
-        academicType: userData.academicType || (isUniv ? '' : 'science'),
+        academicType: studentType === 'college' ? '' : studentType,
         grades: defaultGrades,
         universityField: userData.universityField || '',
       });
     }
   }, [userData, isOpen]);
 
-  const handleSaveProfile = () => {
-    console.log("EditProfileModal - Saving profile data:", editForm);
-    
-    const isUniv = editForm.studentType === 'college';
-    
-    // Save with appropriate fields
-    const dataToSave = {
-      ...editForm,
-      academicType: isUniv ? undefined : (editForm.studentType || 'science'),
-    };
-    
-    // Remove high school fields if university student
-    if (isUniv) {
-      dataToSave.grades = {};
-      dataToSave.academicType = undefined;
-    } else {
-      // Keep only relevant fields for high school
-      dataToSave.universityField = '';
+  const handleSaveProfile = async () => {
+    try {
+      setIsSaving(true);
+      console.log("EditProfileModal - Saving profile data:", editForm);
+      
+      const isUniv = editForm.studentType === 'college';
+      
+      // Clean up grades: only keep grades for subjects in the CURRENT track
+      let cleanedGrades = {};
+      if (!isUniv && SUBJECTS[editForm.studentType]) {
+        SUBJECTS[editForm.studentType].forEach(subject => {
+          cleanedGrades[subject] = editForm.grades[subject] || '';
+        });
+      }
+      
+      // Save with appropriate fields
+      const dataToSave = {
+        ...editForm,
+        academicType: isUniv ? '' : (editForm.studentType || 'science'),
+        grades: cleanedGrades, // Only grades for current track
+      };
+      
+      // Remove high school fields if university student
+      if (isUniv) {
+        dataToSave.grades = {};
+        dataToSave.academicType = '';
+      } else {
+        // Keep only relevant fields for high school
+        dataToSave.universityField = '';
+      }
+      
+      console.log("EditProfileModal - Final data to save:", dataToSave);
+      await onSave(dataToSave);
+      console.log("EditProfileModal - Profile saved successfully");
+      onClose();
+    } catch (error) {
+      console.error("EditProfileModal - Error saving profile:", error);
+      alert("Error saving profile. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
-    
-    console.log("EditProfileModal - Final data to save:", dataToSave);
-    onSave(dataToSave);
-    onClose();
   };
 
   const toggleInterest = (interest) => {
@@ -84,13 +105,17 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
   };
 const handleStudentTypeChange = (newType) => {
     const newGrades = {};
-    SUBJECTS[newType].forEach(subject => {
-      newGrades[subject] = editForm.grades[subject] || '';
-    });
+    // Always reset to empty grades, do NOT carry over old track grades
+    if (newType === 'science' || newType === 'society') {
+      SUBJECTS[newType].forEach(subject => {
+        newGrades[subject] = ''; // Always empty, fresh start
+      });
+    }
     
     setEditForm(prev => ({
       ...prev,
       studentType: newType,
+      academicType: newType === 'college' ? '' : newType,
       grades: newGrades
     }));
   };
@@ -144,7 +169,7 @@ const handleStudentTypeChange = (newType) => {
               <button
                 type="button"
                 className={`student-type-btn ${editForm.studentType === 'science' ? 'selected' : ''}`}
-                onClick={() => setEditForm({ ...editForm, studentType: 'science', academicType: 'science' })}
+                onClick={() => handleStudentTypeChange('science')}
               >
                 <span className="type-icon">🔬</span>
                 <span>High School (Science)</span>
@@ -152,7 +177,7 @@ const handleStudentTypeChange = (newType) => {
               <button
                 type="button"
                 className={`student-type-btn ${editForm.studentType === 'society' ? 'selected' : ''}`}
-                onClick={() => setEditForm({ ...editForm, studentType: 'society', academicType: 'society' })}
+                onClick={() => handleStudentTypeChange('society')}
               >
                 <span className="type-icon">📚</span>
                 <span>High School (Society)</span>
@@ -160,7 +185,7 @@ const handleStudentTypeChange = (newType) => {
               <button
                 type="button"
                 className={`student-type-btn ${editForm.studentType === 'college' ? 'selected' : ''}`}
-                onClick={() => setEditForm({ ...editForm, studentType: 'college' })}
+                onClick={() => handleStudentTypeChange('college')}
               >
                 <span className="type-icon">🎓</span>
                 <span>College/University</span>
@@ -270,8 +295,14 @@ const handleStudentTypeChange = (newType) => {
         </div>
 
         <div className="modal-footer">
-          <button className="cancel-btn" onClick={onClose}>Cancel</button>
-          <button className="save-btn" onClick={handleSaveProfile}>Save Changes</button>
+          <button className="cancel-btn" onClick={onClose} disabled={isSaving}>Cancel</button>
+          <button 
+            className="save-btn" 
+            onClick={handleSaveProfile}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </button>
         </div>
       </div>
     </div>

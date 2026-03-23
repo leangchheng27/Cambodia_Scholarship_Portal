@@ -61,12 +61,17 @@ const ProfilePage = () => {
     setShowEditModal(false);
   };
 
-  const handleSaveProfile = (updatedData) => {
-    console.log("ProfilePage - Received updated data:", updatedData);
-    console.log("ProfilePage - Skills to save:", updatedData.skills);
-    console.log("ProfilePage - Interests to save:", updatedData.interests);
-    updateProfile(updatedData);
-    console.log("ProfilePage - After updateProfile call");
+  const handleSaveProfile = async (updatedData) => {
+    try {
+      console.log("ProfilePage - Received updated data:", updatedData);
+      console.log("ProfilePage - Skills to save:", updatedData.skills);
+      console.log("ProfilePage - Interests to save:", updatedData.interests);
+      await updateProfile(updatedData);
+      console.log("ProfilePage - Profile saved successfully to database");
+    } catch (error) {
+      console.error("ProfilePage - Error saving profile:", error);
+      alert("Error saving profile. Please try again.");
+    }
   };
 
   return (

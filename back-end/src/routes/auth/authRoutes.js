@@ -178,11 +178,13 @@ router.put('/profile', authenticateToken, async (req, res) => {
         const user = await AuthUser.findByPk(req.user.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        const { name, phone, nationality, studentType, interests, skills, grades } = req.body;
+        const { name, phone, nationality, studentType, academicType, universityField, interests, skills, grades } = req.body;
         if (name !== undefined) user.name = name;
         if (phone !== undefined) user.phone = phone;
         if (nationality !== undefined) user.nationality = nationality;
         if (studentType !== undefined) user.studentType = studentType;
+        if (academicType !== undefined) user.academicType = academicType;
+        if (universityField !== undefined) user.universityField = universityField;
         if (interests !== undefined) user.interests = interests;
         if (skills !== undefined) user.skills = skills;
         if (grades !== undefined) user.grades = grades;
@@ -194,6 +196,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
             profile: {
                 id: user.id, name: user.name, phone: user.phone,
                 nationality: user.nationality, studentType: user.studentType,
+                academicType: user.academicType, universityField: user.universityField,
                 interests: user.interests, skills: user.skills, grades: user.grades,
             }
         });

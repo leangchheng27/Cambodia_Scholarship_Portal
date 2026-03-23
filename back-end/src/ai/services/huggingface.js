@@ -137,6 +137,10 @@ function generateAIMatchReasons(userProfile, scholarship, matchScore, aiScore) {
  */
 async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG.DEFAULT_LIMIT) {
   try {
+    console.log('🔍 getAIRecommendations - User Profile Received:', JSON.stringify(userProfile, null, 2));
+    console.log('🔍 getAIRecommendations - Grades:', userProfile.grades);
+    console.log('🔍 getAIRecommendations - Student Type:', userProfile.studentType);
+    
     // STAGE 1: Filter by hard eligibility requirements (MUST MEET)
     const eligibleScholarships = scholarships.filter(scholarship => {
       // Check GPA requirement (hard constraint)
@@ -162,6 +166,7 @@ async function getAIRecommendations(userProfile, scholarships, limit = AI_CONFIG
     
     // STAGE 2: Generate user profile embedding
     const userText = getUserProfileEmbeddingText(userProfile);
+    console.log('📝 User Embedding Text:', userText);
     const userEmbedding = await generateEmbedding(userText);
     if (!userEmbedding) {
       throw new Error('Failed to generate user embedding in AI-only mode.');

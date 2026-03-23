@@ -142,20 +142,39 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("profile");
   };
 
-  const updateProfile = (profileData) => {
-    console.log("AuthContext - Updating profile with:", profileData);
-    console.log("AuthContext - Current profile before update:", profile);
-    console.log("AuthContext - Current user before update:", user);
+  const updateProfile = async (profileData) => {
+    try {
+      console.log("AuthContext - Updating profile with:", profileData);
+      console.log("AuthContext - Current profile before update:", profile);
+      console.log("AuthContext - Current user before update:", user);
 
-    const newProfile = { ...profile, ...profileData };
-    console.log("AuthContext - New profile after merge:", newProfile);
-    setProfile(newProfile);
+      // Call backend API to save profile to database
+      const response = await API.put("/auth/profile", profileData);
+      console.log("AuthContext - Backend API response:", response.data);
 
-    // Also merge profile data into user object
-    if (user) {
-      const newUser = { ...user, ...profileData };
-      console.log("AuthContext - New user after merge:", newUser);
-      setUser(newUser);
+      // Update local state with the response data
+      const newProfile = { ...profile, ...response.data.profile };
+      console.log("AuthContext - New profile after backend save:", newProfile);
+      setProfile(newProfile);
+
+      // Also merge profile data into user object
+      if (user) {
+        const newUser = { ...user, ...response.data.profile };
+        console.log("AuthContext - New user after backend save:", newUser);
+        setUser(newUser);
+      }
+
+      console.log("✅ Profile saved to database successfully");
+    } catch (error) {
+      console.error("❌ Error saving profile to database:", error);
+      // Fallback: Update local state even if backend fails (user can retry)
+      const newProfile = { ...profile, ...profileData };
+      setProfile(newProfile);
+      if (user) {
+        const newUser = { ...user, ...profileData };
+        setUser(newUser);
+      }
+      throw error;
     }
   };
 

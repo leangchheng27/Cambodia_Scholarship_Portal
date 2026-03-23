@@ -57,6 +57,14 @@ const AuthUserModel = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
+        academicType: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        universityField: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         interests: {
             type: DataTypes.JSON,
             allowNull: true,

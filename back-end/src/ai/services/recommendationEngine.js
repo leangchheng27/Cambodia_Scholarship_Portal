@@ -203,14 +203,19 @@ function getUserProfileEmbeddingText(userProfile) {
   // HIGH SCHOOL STUDENTS: Use letter grades with descriptive phrases
   const gradeDescriptions = [];
   
+  console.log('📊 getUserProfileEmbeddingText - Processing grades:', userProfile.grades);
+  
   if (userProfile.grades && typeof userProfile.grades === 'object') {
     Object.entries(userProfile.grades)
       .filter(([_, grade]) => grade) // Only include subjects with grades
       .forEach(([subject, grade]) => {
         const descriptivePhrase = SUBJECT_DESCRIPTORS[subject] || subject;
         gradeDescriptions.push(`${descriptivePhrase} (grade ${grade})`);
+        console.log(`  ✓ Added: ${descriptivePhrase} = ${grade}`);
       });
   }
+  
+  console.log('📊 Grade descriptions collected:', gradeDescriptions);
   
   // Build profile text with academic stream + grades
   const academicStream = userProfile.studentType === 'science' ? 'Science student' : 'Society student';
@@ -218,7 +223,10 @@ function getUserProfileEmbeddingText(userProfile) {
     ? gradeDescriptions.join(', ')
     : 'academic studies';
   
-  return `${academicStream} with strengths in ${gradesText}. Seeking scholarships that match their academic profile and interests.`;
+  const finalText = `${academicStream} with strengths in ${gradesText}. Seeking scholarships that match their academic profile and interests.`;
+  console.log('📝 Final user profile text:', finalText);
+  
+  return finalText;
 }
 
 export {

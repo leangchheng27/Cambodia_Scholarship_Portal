@@ -20,6 +20,9 @@ const AIRecommendations = ({ userProfile }) => {
 
   const fetchRecommendations = async () => {
     try {
+      // Clear existing recommendations when fetching new ones
+      setRecommendedScholarships([]);
+      setRecommendedInternships([]);
       setLoading(true);
       setError(null);
 
@@ -28,6 +31,11 @@ const AIRecommendations = ({ userProfile }) => {
         ...userProfile,
         studentType: userProfile.studentType || userProfile.academicType,
       };
+
+      console.log('🔍 AIRecommendations - Enriched Profile:', enrichedProfile);
+      console.log('🔍 AIRecommendations - Grades object:', enrichedProfile.grades);
+      console.log('🔍 AIRecommendations - Grades keys:', enrichedProfile.grades ? Object.keys(enrichedProfile.grades) : 'NO GRADES');
+      console.log('🔍 AIRecommendations - Non-empty grades:', enrichedProfile.grades ? Object.entries(enrichedProfile.grades).filter(([_, g]) => g) : []);
 
       // For HIGH SCHOOL STUDENTS: Fetch scholarship recommendations
       if (isHighSchoolStudent && userProfile?.grades && Object.keys(userProfile.grades).length > 0) {
@@ -90,7 +98,7 @@ const AIRecommendations = ({ userProfile }) => {
     if (userProfile) {
       fetchRecommendations();
     }
-  }, [userProfile]);
+  }, [userProfile?.grades, userProfile?.universityField, userProfile?.studentType, userProfile?.academicType]);
 
   // Filter recommendations based on view mode
   const filteredRecommendations = viewMode === 'scholarships'
