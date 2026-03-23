@@ -1,5 +1,5 @@
 /* Import Shared Scholarship Card Styles */
-@import '../../../components/ScholarshipCard/ScholarshipCard.css';
+@import '../../../components/PosterCard/PosterCard.css';
 @import '../../../styles/PremiumResourceTheme.css';
 
 .abroad-list-page {
@@ -274,4 +274,23 @@
     height: 40px;
     font-size: 14px;
   }
+}
+
+.search-container {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #3b82f6;
 }

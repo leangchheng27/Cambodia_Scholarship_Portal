@@ -88,14 +88,14 @@ export const AuthProvider = ({ children }) => {
       if (!token) return;
       try {
         const response = await API.get("/auth/me");
-        setUser(response.data.user);
+        setUser(response.data);
       } catch {
         logout();
       }
     };
     verifyToken();
   }, []);
-  
+
   // Persist user to localStorage whenever it changes
   useEffect(() => {
     if (user) {

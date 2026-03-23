@@ -3,11 +3,8 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
-import {
-  getSavedUpdatedEventName,
-  readSavedItems,
-  removeSavedItem,
-} from '../../utils/savedItems.js';
+import LoadingText from '../../components/ui/LoadingText/LoadingText.jsx';
+import { getSavedItems, unsaveItem } from '../../api/savedApi.js';
 import './SavedListPage.css';
 
 const typeLabel = {
@@ -20,32 +17,26 @@ const typeLabel = {
 export default function SavedListPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const userId = user?.id || 'guest';
   const [savedItems, setSavedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSavedItems(readSavedItems(userId));
-
-    const handleSavedUpdate = (event) => {
-      if (event?.detail?.userId && event.detail.userId !== userId) {
-        return;
+    const loadSavedItems = async () => {
+      if (!user) return;
+      try {
+        setLoading(true);
+        const items = await getSavedItems();
+        setSavedItems(items || []);
+      } catch (error) {
+        console.error('Error loading saved items:', error);
+        setSavedItems([]);
+      } finally {
+        setLoading(false);
       }
-      setSavedItems(readSavedItems(userId));
     };
 
-    const handleStorage = (event) => {
-      if (!event.key || !event.key.startsWith('csp_saved_items:')) return;
-      setSavedItems(readSavedItems(userId));
-    };
-
-    window.addEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
-    window.addEventListener('storage', handleStorage);
-
-    return () => {
-      window.removeEventListener(getSavedUpdatedEventName(), handleSavedUpdate);
-      window.removeEventListener('storage', handleStorage);
-    };
-  }, [userId]);
+    loadSavedItems();
+  }, [user]);
 
   const grouped = useMemo(() => {
     const groups = {
@@ -56,8 +47,9 @@ export default function SavedListPage() {
     };
 
     savedItems.forEach((item) => {
-      if (groups[item.type]) {
-        groups[item.type].push(item);
+      const type = item.itemType; // API returns itemType
+      if (groups[type]) {
+        groups[type].push(item);
       }
     });
 
@@ -68,9 +60,22 @@ export default function SavedListPage() {
     return <Navigate to="/login?redirect=%2Fsaved" replace />;
   }
 
-  const handleRemove = (key) => {
-    const nextItems = removeSavedItem(key, userId);
-    setSavedItems(nextItems);
+  const handleRemove = async (itemId) => {
+    // Optimistic UI update
+    const newCount = savedItems.length - 1;
+    setSavedItems(savedItems.filter(item => item.itemId !== itemId));
+    
+    // Dispatch event with count for header and other components
+    window.dispatchEvent(new CustomEvent('saved:updated', { detail: { count: newCount } }));
+
+    try {
+      await unsaveItem(itemId);
+    } catch (error) {
+      console.error('Error removing item:', error);
+      // Revert optimistic update on error
+      const updatedItems = await getSavedItems();
+      setSavedItems(updatedItems || []);
+    }
   };
 
   return (
@@ -83,7 +88,9 @@ export default function SavedListPage() {
             <p>Review internships, scholarships, and universities you bookmarked.</p>
           </div>
 
-          {savedItems.length === 0 ? (
+          {loading ? (
+            <LoadingText text="Loading saved items..." />
+          ) : savedItems.length === 0 ? (
             <div className="saved-empty">
               <h2>No saved items yet</h2>
               <p>Save opportunities from listing pages to access them quickly later.</p>
@@ -96,7 +103,7 @@ export default function SavedListPage() {
                   <h2>{typeLabel[type] || type}</h2>
                   <div className="saved-grid">
                     {items.map((item) => (
-                      <article key={item.key} className="saved-card">
+                      <article key={item.id} className="saved-card">
                         <div className="saved-media">
                           {item.image ? (
                             <img src={item.image} alt={item.title} className="saved-media-img" />
@@ -107,7 +114,7 @@ export default function SavedListPage() {
                           )}
                         </div>
                         <div className="saved-card-head">
-                          <span>{typeLabel[item.type] || item.type}</span>
+                          <span>{typeLabel[item.itemType] || item.itemType}</span>
                         </div>
                         <h3>{item.title}</h3>
                         <p>{item.description || 'No description available.'}</p>
@@ -122,7 +129,7 @@ export default function SavedListPage() {
                           <button
                             type="button"
                             className="saved-btn"
-                            onClick={() => handleRemove(item.key)}
+                            onClick={() => handleRemove(item.itemId)}
                           >
                             Remove
                           </button>

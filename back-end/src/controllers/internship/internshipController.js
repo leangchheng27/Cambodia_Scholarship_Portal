@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import {
   Scholarship,
   ScholarshipBenefit,
@@ -7,19 +8,22 @@ import {
 } from '../../models/index.js';
 
 const internshipController = {
-  // Get all internships (from Scholarship table with type='internship')
+  // Get all internships
   async getAll(req, res) {
     try {
-      const internships = await Scholarship.findAll({
-        where: { type: 'internship' }
-      });
+      const { search } = req.query;
+      const where = { type: 'internship' };
+
+      if (search) where.name = { [Op.like]: `%${search}%` };
+
+      const internships = await Scholarship.findAll({ where });
       res.json(internships);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
 
-  // Get internship by ID (from Scholarship table)
+  // Get internship by ID
   async getById(req, res) {
     try {
       const internship = await Scholarship.findByPk(req.params.id, {
@@ -37,13 +41,10 @@ const internshipController = {
     }
   },
 
-  // Create internship (as Scholarship with type='internship')
+  // Create internship
   async create(req, res) {
     try {
-      const internship = await Scholarship.create({
-        ...req.body,
-        type: 'internship'
-      });
+      const internship = await Scholarship.create({ ...req.body, type: 'internship' });
       res.status(201).json(internship);
     } catch (error) {
       res.status(400).json({ error: error.message });

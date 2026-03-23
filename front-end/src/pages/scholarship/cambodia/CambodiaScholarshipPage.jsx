@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
-import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
+import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getScholarships } from '../../../api/scholarshipApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './CambodiaScholarshipPage.css';
+import SearchInput from '../../../components/SearchInput/SearchInput.jsx';
 
-// Import banner images
+
 import banner1 from '../../../assets/banner/p1.png';
 import banner2 from '../../../assets/banner/p2.jpg';
 import banner3 from '../../../assets/banner/p3.png';
@@ -25,14 +26,14 @@ export default function CambodiaScholarshipPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recommendationsAvailable, setRecommendationsAvailable] = useState(false);
+  const [search, setSearch] = useState('');
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
-  
+
   useEffect(() => {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
-        const all = await getScholarships();
-        // Filter scholarships to only show cambodia type
+        const all = await getScholarships(search, 'cambodia');
         const cambodiaScholarships = all.filter(s => s.type === 'cambodia' || !s.type);
         setAllScholarships(cambodiaScholarships);
 
@@ -54,7 +55,6 @@ export default function CambodiaScholarshipPage() {
           setRecommendationsAvailable(false);
           setViewMode('all');
         }
-
         setError(null);
       } catch (err) {
         console.error('Error fetching scholarships:', err);
@@ -64,20 +64,22 @@ export default function CambodiaScholarshipPage() {
       }
     };
 
-    fetchScholarships();
-  }, [user, profile]);
+    const debounceTimer = setTimeout(() => {
+      fetchScholarships();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [user, profile, search]);
 
   const displayedScholarships = viewMode === 'recommended' && recommendationsAvailable
     ? recommendedScholarships
     : allScholarships;
   const hasRecommendationScores = viewMode === 'recommended' && recommendationsAvailable;
-  
+
   const itemsPerPage = 12;
   const totalPages = Math.ceil(displayedScholarships.length / itemsPerPage);
-  
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentScholarships = displayedScholarships.slice(startIndex, endIndex);
+  const currentScholarships = displayedScholarships.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -85,44 +87,14 @@ export default function CambodiaScholarshipPage() {
   };
 
   const handleViewModeChange = (mode) => {
-    if (mode === 'recommended' && !recommendationsAvailable) {
-      return;
-    }
-
+    if (mode === 'recommended' && !recommendationsAvailable) return;
     setViewMode(mode);
     setCurrentPage(1);
   };
 
-  if (loading) {
-    return (
-      <div className="cambodia-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <LoadingText text="Loading scholarships..." />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="cambodia-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <p className="error">{error}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="cambodia-list-page">
       <Header />
-      
       <div className="resource-hero-banner-wrap">
         <HeroBanner slides={bannerSlides} />
         <div className="resource-hero-banner-overlay">
@@ -161,23 +133,18 @@ export default function CambodiaScholarshipPage() {
           </div>
         </section>
 
-      {/* Scholarship Grid */}
-      <div id="resource-posters" className="scholarship-list-container resource-posters">
+        <div id="resource-posters" className="scholarship-list-container resource-posters">
+          <SearchInput
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+            placeholder="Search internships by name..."
+          />
 
           <div className="list-mode-toggle" role="group" aria-label="Scholarship list mode">
-            <button
-              type="button"
-              className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('all')}
-            >
+            <button type="button" className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`} onClick={() => handleViewModeChange('all')}>
               All Data ({allScholarships.length})
             </button>
-            <button
-              type="button"
-              className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('recommended')}
-              disabled={!recommendationsAvailable}
-            >
+            <button type="button" className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`} onClick={() => handleViewModeChange('recommended')} disabled={!recommendationsAvailable}>
               Recommended ({recommendedScholarships.length})
             </button>
           </div>
@@ -186,70 +153,42 @@ export default function CambodiaScholarshipPage() {
             <p className="list-mode-hint">Recommendation mode unlocks when student profile and grades are available.</p>
           )}
 
-        <div className="scholarship-grid">
-          {currentScholarships.map((scholarship) => (
-            <ScholarshipCard
-              key={scholarship.id}
-              scholarship={scholarship}
-              basePath="/scholarships/cambodia"
-              showMatchScore={hasRecommendationScores}
-            />
-          ))}
+          <div className="scholarship-grid">
+            {loading ? (
+              <LoadingText text="Loading scholarships..." /> // ✅ only grid loads
+            ) : error ? (
+              <p className="error">{error}</p>
+            ) : currentScholarships.length === 0 ? (
+              <p className="list-empty-message">No scholarships found.</p>
+            ) : (
+              currentScholarships.map((scholarship) => (
+                <PosterCard
+                  key={scholarship.id}
+                  scholarship={scholarship}
+                  basePath="/scholarships/cambodia"
+                  showMatchScore={hasRecommendationScores}
+                />
+              ))
+            )}
+          </div>
+
+          {!loading && totalPages > 1 && (
+            <div className="pagination">
+              {currentPage > 1 && <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)}>←</button>}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
+                if (pageNumber === 1 || pageNumber === totalPages || (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)) {
+                  return <button key={pageNumber} className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`} onClick={() => handlePageChange(pageNumber)}>{pageNumber}</button>;
+                } else if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                  return <span key={pageNumber} className="page-dots">...</span>;
+                }
+                return null;
+              })}
+              {currentPage < totalPages && <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)}>→</button>}
+            </div>
+          )}
         </div>
-
-        {!loading && currentScholarships.length === 0 && (
-          <p className="list-empty-message">No scholarships found for this view.</p>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && <div className="pagination">
-          {currentPage > 1 && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              ←
-            </button>
-          )}
-          
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNumber = index + 1;
-            
-            if (
-              pageNumber === 1 ||
-              pageNumber === totalPages ||
-              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
-            ) {
-              return (
-                <button
-                  key={pageNumber}
-                  className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`}
-                  onClick={() => handlePageChange(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              );
-            } else if (
-              pageNumber === currentPage - 2 ||
-              pageNumber === currentPage + 2
-            ) {
-              return <span key={pageNumber} className="page-dots">...</span>;
-            }
-            return null;
-          })}
-          
-          {currentPage < totalPages && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              →
-            </button>
-          )}
-        </div>}
       </div>
-      </div>
-
       <Footer />
     </div>
   );

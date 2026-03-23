@@ -1,7 +1,9 @@
 import API from '../services/api';
 
-export async function getInternships() {
-  const response = await API.get('/internships');
+export async function getInternships(search = '') {
+  const response = await API.get('/internships', {
+    params: { search }
+  });
   return response.data;
 }
 
