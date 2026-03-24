@@ -1,6 +1,18 @@
 import PaginationControls from '../common/PaginationControls.jsx';
 
-const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete }) => {
+const CAMBODIAN_PROVINCES = [
+    'Phnom Penh', 'Battambang', 'Banteay Meanchey', 'Kampong Cham', 'Kampong Chhnang',
+    'Kampong Thom', 'Kampot', 'Kandal', 'Kep', 'Koh Kong', 'Kompong Speu', 'Kratie',
+    'Mondulkiri', 'Oddar Meanchey', 'Pailin', 'Preah Vihear', 'Prey Veng', 'Pursat',
+    'Ratanakiri', 'Siem Reap', 'Sihanoukville', 'Stung Treng', 'Svay Rieng', 'Takeo', 'Tbong Khmum'
+];
+
+const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete, selectedProvince, setSelectedProvince }) => {
+    // Filter universities by selected province
+    const filteredUniversities = selectedProvince === 'all' 
+        ? universities 
+        : universities.filter(uni => uni.location === selectedProvince);
+
     return (
         <div className="content-section">
             <div className="section-header">
@@ -9,6 +21,27 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
                     + Add University
                 </button>
             </div>
+            
+            {/* Province Filter Dropdown */}
+            <div className="filter-container">
+                <label htmlFor="province-filter">Filter by Province:</label>
+                <select 
+                    id="province-filter"
+                    value={selectedProvince} 
+                    onChange={(e) => {
+                        setSelectedProvince(e.target.value);
+                        setCurrentPage(1); // Reset to page 1 when filtering
+                    }}
+                    className="filter-select"
+                >
+                    <option value="all">All Provinces</option>
+                    {CAMBODIAN_PROVINCES.map(province => (
+                        <option key={province} value={province}>{province}</option>
+                    ))}
+                </select>
+                <span className="filter-count">({filteredUniversities.length} universities)</span>
+            </div>
+
             <div className="table-container">
                 <table className="content-table">
                     <thead>
@@ -21,7 +54,7 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
                         </tr>
                     </thead>
                     <tbody>
-                        {universities
+                        {filteredUniversities
                             .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
                             .map((university, idx) => (
                                 <tr key={university.id}>
@@ -51,7 +84,7 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
             <PaginationControls 
                 page={currentPage} 
                 setPage={setCurrentPage} 
-                total={universities.length}
+                total={filteredUniversities.length}
                 itemsPerPage={ITEMS_PER_PAGE}
             />
         </div>

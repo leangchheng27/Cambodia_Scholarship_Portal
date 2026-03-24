@@ -54,6 +54,56 @@
   box-shadow: 0 6px 20px rgba(43, 183, 223, 0.4);
 }
 
+/* Filter Container */
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-container label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.filter-select:hover {
+  border-color: #2bb7df;
+  box-shadow: 0 2px 8px rgba(43, 183, 223, 0.15);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #2bb7df;
+  box-shadow: 0 0 0 3px rgba(43, 183, 223, 0.1);
+}
+
+.filter-count {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 /* Scholarship Tabs */
 .scholarship-tabs {
   display: flex;

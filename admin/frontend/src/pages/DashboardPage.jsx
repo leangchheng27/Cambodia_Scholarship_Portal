@@ -20,6 +20,7 @@ const DashboardPage = () => {
     const [cambodiaScholarships, setCambodiaScholarships] = useState([]);
     const [abroadScholarships, setAbroadScholarships] = useState([]);
     const [scholarshipType, setScholarshipType] = useState('cambodia');
+    const [universityProvince, setUniversityProvince] = useState('all');
     const [internships, setInternships] = useState([]);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(true);
@@ -106,9 +107,10 @@ const DashboardPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Reset pages when switching tabs or scholarship type
+    // Reset pages and filters when switching tabs
     useEffect(() => { 
-        setUniversityPage(1); 
+        setUniversityPage(1);
+        setUniversityProvince('all');
         setScholarshipPage(1); 
         setInternshipPage(1); 
     }, [activeTab]);
@@ -319,6 +321,8 @@ const DashboardPage = () => {
                         ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                         onEdit={(type, item) => handleCreateOrEdit(type, item)}
                         onDelete={(id) => handleDelete('universities', id)}
+                        selectedProvince={universityProvince}
+                        setSelectedProvince={setUniversityProvince}
                     />
                 )}
 
