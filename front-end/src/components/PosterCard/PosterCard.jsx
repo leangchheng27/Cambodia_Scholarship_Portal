@@ -47,11 +47,24 @@ const PosterCard = ({
   };
 
   const getMatchColor = (score) => {
-    if (!score) return '#6b7280';
-    if (score >= 85) return '#10b981';
-    if (score >= 70) return '#3b82f6';
-    if (score >= 55) return '#f59e0b';
-    return '#6b7280';
+    // Green background for all star ratings
+    return '#10b981';
+  };
+
+  const renderStars = (score) => {
+    if (!score) return '★';
+    
+    // Handle case where score might still be 0-100, convert to 1-5
+    let normalizedScore = score;
+    if (score > 5) {
+      normalizedScore = Math.max(1, (score / 100) * 5);
+    }
+    
+    // Round to nearest whole number for full stars only
+    const fullStars = Math.min(5, Math.max(1, Math.round(normalizedScore)));
+    
+    // Display only filled stars (★★★ not ★★★☆☆)
+    return '★'.repeat(fullStars);
   };
 
   const handleSaveClick = async (event) => {
@@ -114,9 +127,12 @@ const PosterCard = ({
         {showMatchScore && scholarship.matchScore && (
           <div 
             className="match-badge-overlay"
-            style={{ backgroundColor: getMatchColor(scholarship.matchScore) }}
+            style={{ 
+              backgroundColor: getMatchColor(scholarship.matchScore),
+              color: '#FFC107'
+            }}
           >
-            {scholarship.matchScore}%
+            {renderStars(scholarship.matchScore)}
           </div>
         )}
         <button

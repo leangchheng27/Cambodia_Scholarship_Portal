@@ -122,10 +122,24 @@ const AIRecommendations = ({ userProfile }) => {
   };
 
   const getMatchColor = (score) => {
-    if (score >= 85) return '#10b981'; // green
-    if (score >= 70) return '#3b82f6'; // blue
-    if (score >= 55) return '#f59e0b'; // orange
-    return '#6b7280'; // gray
+    // Green background for all star ratings
+    return '#10b981';
+  };
+
+  const renderStarRating = (score) => {
+    if (!score) return '★';
+    
+    // Handle case where score might still be 0-100, convert to 1-5
+    let normalizedScore = score;
+    if (score > 5) {
+      normalizedScore = Math.max(1, (score / 100) * 5);
+    }
+    
+    // Round to nearest whole number for full stars only
+    const fullStars = Math.min(5, Math.max(1, Math.round(normalizedScore)));
+    
+    // Display only filled stars (★★★ not ★★★☆☆)
+    return '★'.repeat(fullStars);
   };
 
   if (loading) {
@@ -255,9 +269,12 @@ const AIRecommendations = ({ userProfile }) => {
                 />
                 <div 
                   className="match-badge"
-                  style={{ backgroundColor: getMatchColor(item.matchScore) }}
+                  style={{ 
+                    backgroundColor: getMatchColor(item.matchScore),
+                    color: '#FFC107'
+                  }}
                 >
-                  {item.matchScore}% Match
+                  {renderStarRating(item.matchScore)}
                 </div>
               </div>
 
