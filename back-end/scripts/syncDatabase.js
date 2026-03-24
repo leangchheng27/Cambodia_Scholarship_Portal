@@ -28,6 +28,8 @@ const syncDatabase = async () => {
         await ensureColumn(queryInterface, 'users', 'phone',       { type: DataTypes.STRING, allowNull: true });
         await ensureColumn(queryInterface, 'users', 'nationality',  { type: DataTypes.STRING, allowNull: true });
         await ensureColumn(queryInterface, 'users', 'studentType',  { type: DataTypes.STRING, allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'academicType', { type: DataTypes.STRING, allowNull: true });
+        await ensureColumn(queryInterface, 'users', 'universityField', { type: DataTypes.STRING, allowNull: true });
         await ensureColumn(queryInterface, 'users', 'interests',    { type: DataTypes.JSON,   allowNull: true });
         await ensureColumn(queryInterface, 'users', 'skills',       { type: DataTypes.JSON,   allowNull: true });
         await ensureColumn(queryInterface, 'users', 'grades',       { type: DataTypes.JSON,   allowNull: true });

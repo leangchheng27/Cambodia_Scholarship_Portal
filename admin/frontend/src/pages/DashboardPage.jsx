@@ -79,6 +79,28 @@ const DashboardPage = () => {
         }
     };
 
+    // Lightweight refresh for specific table after create/update
+    const refreshTableData = async (tabName) => {
+        try {
+            if (tabName === 'users') {
+                const usersRes = await getUsers();
+                setUsers(usersRes.users);
+            } else if (tabName === 'universities') {
+                const universitiesRes = await getAdminUniversities();
+                setUniversities(universitiesRes.universities || []);
+            } else if (tabName === 'scholarships') {
+                const scholarshipsRes = await getAdminScholarships();
+                setCambodiaScholarships(scholarshipsRes.cambodia || []);
+                setAbroadScholarships(scholarshipsRes.abroad || []);
+            } else if (tabName === 'internships') {
+                const internshipsRes = await getAdminInternships();
+                setInternships(internshipsRes.internships || []);
+            }
+        } catch (err) {
+            console.error(`Error refreshing ${tabName} data:`, err);
+        }
+    };
+
     useEffect(() => {
         fetchDashboardData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,7 +124,7 @@ const DashboardPage = () => {
 
         try {
             await deleteUser(userId);
-            fetchDashboardData();
+            refreshTableData('users');
         } catch (err) {
             alert('Failed to delete user: ' + (err.response?.data?.error || err.message));
         }
@@ -121,7 +143,7 @@ const DashboardPage = () => {
 
         try {
             await deleteItem(type, id);
-            fetchDashboardData();
+            refreshTableData(type);
         } catch (err) {
             alert(`Failed to delete ${typeNames[type]}: ` + (err.response?.data?.error || err.message));
         }
@@ -199,31 +221,46 @@ const DashboardPage = () => {
             }
         }
 
-        try {
-            if (activeTab === 'users') {
-                // Strip empty password so it isn't accidentally blanked on edit
-                if (!data.password) delete data.password;
-                if (currentItem) {
-                    await updateUser(currentItem.id, data);
+        // Capture current values before clearing state
+        const itemToSave = currentItem;
+        const tabName = activeTab;
+
+        // Close modal immediately - API calls happen in background
+        setShowModal(false);
+        setCurrentItem(null);
+        setFormState({});
+
+        // Handle API submission and table refresh in background
+        (async () => {
+            try {
+                if (tabName === 'users') {
+                    // Strip empty password so it isn't accidentally blanked on edit
+                    if (!data.password) delete data.password;
+                    if (itemToSave) {
+                        await updateUser(itemToSave.id, data);
+                    } else {
+                        await createUser(data);
+                    }
                 } else {
-                    await createUser(data);
+                    const endpoint = tabName;
+                    if (itemToSave) {
+                        await updateItem(endpoint, itemToSave.id, data);
+                    } else {
+                        await createItem(endpoint, data);
+                    }
                 }
-            } else {
-                const endpoint = activeTab;
-                if (currentItem) {
-                    await updateItem(endpoint, currentItem.id, data);
-                } else {
-                    await createItem(endpoint, data);
-                }
+                
+                // Refresh table data after successful save
+                refreshTableData(tabName);
+            } catch (err) {
+                console.error('Failed to save:', err);
+                alert('Failed to save: ' + (err.response?.data?.error || err.message));
+                // Optional: Re-open modal on error
+                setShowModal(true);
+                setCurrentItem(itemToSave);
+                setFormState(data);
             }
-            
-            setShowModal(false);
-            setCurrentItem(null);
-            setFormState({});
-            fetchDashboardData();
-        } catch (err) {
-            alert('Failed to save: ' + (err.response?.data?.error || err.message));
-        }
+        })();
     };
 
     const handleLogout = () => {
