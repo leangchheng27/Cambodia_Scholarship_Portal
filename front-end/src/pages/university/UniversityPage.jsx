@@ -24,10 +24,47 @@ export default function UniversityPage() {
     };
 
     return (
-      <>
+      <div className="university-page">
         <Header/>
-        <HeroBanner slides={bannerSlides} />
-        <div className="university-page-container">
+        <div className="resource-hero-banner-wrap">
+          <HeroBanner slides={bannerSlides} />
+          <div className="resource-hero-banner-overlay">
+            <div className="resource-shell">
+              <section className="resource-hero resource-hero-on-banner">
+                <h1 className="resource-hero-title">University discovery with premium SaaS clarity.</h1>
+                <p className="resource-hero-description">
+                  Compare universities, scan campuses, and move from directory discovery to full university detail pages in one smooth flow.
+                </p>
+                <div className="resource-hero-actions">
+                  <a className="resource-cta resource-cta-primary" href="#resource-directory">Browse Directory</a>
+                  <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <div className="resource-shell">
+          <section id="resource-features" className="resource-section">
+            <h2 className="resource-section-title">Directory flow that supports better decisions</h2>
+            <p className="resource-section-description">Students can explore province filters, table listings, and jump directly into details pages.</p>
+            <div className="resource-feature-grid">
+              <article className="resource-feature-card">
+                <h3>Map + filter overview</h3>
+                <p>Start with province and map context before diving into university records.</p>
+              </article>
+              <article className="resource-feature-card">
+                <h3>Structured comparison table</h3>
+                <p>Name, province, and city remain readable with premium typography and spacing.</p>
+              </article>
+              <article className="resource-feature-card">
+                <h3>One-click detail transition</h3>
+                <p>Keep the same directory-to-details interaction without changing your data flow.</p>
+              </article>
+            </div>
+          </section>
+
+        <div id="resource-directory" className="university-page-container resource-posters">
           <h1 className="university-page-title">Universities in Cambodia</h1>
           <UniversityFilterMapLayout>
             <UniversityFilter selectedProvince={selectedProvince} onProvinceSelect={setSelectedProvince} />
@@ -35,7 +72,8 @@ export default function UniversityPage() {
           </UniversityFilterMapLayout>
           <UniversityList onUniversityClick={handleFirstUniversityClick} selectedProvince={selectedProvince} />
         </div>
+        </div>
         <Footer />
-      </>
+      </div>
     );
 }

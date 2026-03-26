@@ -1,6 +1,7 @@
 /**
  * Frontend utility functions for profile calculations
  */
+import { getScholarshipRecommendations as apiGetRecommendations } from '../api/recommendationApi';
 
 /**
  * List of subjects available in the system
@@ -109,56 +110,22 @@ export async function getAIRecommendations(userProfile, scholarships, limit = 10
     limit 
   });
   
-  // Import scholarshipMatcher for fallback
-  const { getScholarshipRecommendations } = await import('./scholarshipMatcher');
-  
   try {
     console.log('Sending request to backend...');
-    const response = await fetch('http://localhost:3000/recommendations/scholarships', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({ 
-        userProfile,
-        scholarships,
-        useAI: true,
-        limit
-      })
-    });
-
-    console.log('Backend response status:', response.status);
+    const data = await apiGetRecommendations(userProfile, scholarships, limit);
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Backend error response:', errorText);
-      throw new Error(`Failed to get recommendations: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Backend recommendations response:', data);
-    
+    // Check if backend returned success
     if (data.success && data.data?.recommendations) {
-      console.log(`Received ${data.data.recommendations.length} recommendations with match scores`);
+      console.log(`✅ Backend returned ${data.data.recommendations.length} recommendations`);
       const sorted = data.data.recommendations.sort((a, b) => b.matchScore - a.matchScore);
-      sorted.forEach((rec, i) => {
-        console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
-      });
       return sorted;
     }
     
-    console.warn('Backend response format unexpected:', data);
+    // If response doesn't have the expected structure, throw error
     throw new Error('Invalid backend response format');
   } catch (error) {
-    console.error('Error getting AI recommendations:', error);
-    console.log('Falling back to local client-side matching...');
-    // Use local client-side matching as fallback
-    const localRecommendations = getScholarshipRecommendations(userProfile, scholarships, limit);
-    console.log(`Local matching generated ${localRecommendations.length} recommendations with scores`);
-    localRecommendations.forEach((rec, i) => {
-      console.log(`  ${i+1}. ${rec.title} - Match: ${rec.matchScore}%`);
-    });
-    return localRecommendations;
+    console.error('❌ AI recommendation error:', error.message);
+    // NO FALLBACK - Error propagates to caller
+    throw error;
   }
 }

@@ -4,7 +4,8 @@ import Header from "../../layouts/Header/header.jsx";
 import Footer from "../../layouts/Footer/footer.jsx";
 import HeroBanner from "../../features/home/components/HeroBanner/HeroBanner.jsx";
 import TabbedSection from "../../components/ui/TabbedSection/TabbedSection.jsx";
-import API from "../../services/api.js";
+import { getUniversityById } from "../../api/universityApi.js";
+import LoadingText from "../../components/ui/LoadingText/LoadingText.jsx";
 import "./UniversityDetailPage.css";
 import banner1 from "../../assets/banner/p1.png";
 import banner2 from "../../assets/banner/p2.jpg";
@@ -13,6 +14,17 @@ import banner4 from "../../assets/banner/p4.png";
 import banner5 from "../../assets/banner/p5.png";
 
 const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
+
+const buildBannerSlides = (item) => {
+  if (!item) {
+    return bannerSlides;
+  }
+
+  const slides = [item.poster_image_url, item.slider_image_url, item.image]
+    .filter((value, index, array) => typeof value === 'string' && value.trim() && array.indexOf(value) === index);
+
+  return slides.length > 0 ? slides : bannerSlides;
+};
 
 const tabs = ["General Information", "Majors", "Application Guide", "Tuition Fees", "Campus", "Others", "Original Link"];
 
@@ -56,7 +68,7 @@ const UniversityDetailPage = () => {
   const [error, setError] = useState(null);
 
   const renderStatePage = (message, type = 'loading') => (
-    <div>
+    <div className="university-detail-page">
       <Header />
       <div className="udet-hero">
         <HeroBanner slides={bannerSlides} />
@@ -75,8 +87,8 @@ const UniversityDetailPage = () => {
     const fetchUniversity = async () => {
       try {
         setLoading(true);
-        const response = await API.get(`/universities/${id}`);
-        setUniversity(response.data);
+        const data = await getUniversityById(id);
+        setUniversity(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching university:', err);
@@ -91,39 +103,52 @@ const UniversityDetailPage = () => {
     }
   }, [id]);
 
-  if (loading) return renderStatePage('Loading university details...', 'loading');
+  if (loading) return renderStatePage(<LoadingText text="Loading university details..." />, 'loading');
   if (error) return renderStatePage(error, 'error');
   if (!university) return renderStatePage('University not found', 'error');
+  const detailBannerSlides = buildBannerSlides(university);
 
-  // Format majors
-  const majorsContent = university.UniversityMajors && university.UniversityMajors.length > 0
-    ? university.UniversityMajors.map(major => `${major.name}${major.degree_level ? ` (${major.degree_level})` : major.specialization ? ` - ${major.specialization}` : ''}`)
-    : ["Information coming soon."];
+  // Format majors - use text field first, then fall back to related table
+  const majorsContent = university.majors && university.majors.trim()
+    ? university.majors.split('\n').map(m => m.trim()).filter(m => m)
+    : (university.UniversityMajors && university.UniversityMajors.length > 0
+      ? university.UniversityMajors.map(major => `${major.name}${major.degree_level ? ` (${major.degree_level})` : major.specialization ? ` - ${major.specialization}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format application guide
-  const appGuideContent = university.UniversityApplicationGuideSteps && university.UniversityApplicationGuideSteps.length > 0
-    ? university.UniversityApplicationGuideSteps
-        .sort((a, b) => a.step_number - b.step_number)
-        .map(step => `Step ${step.step_number}: ${step.title || ''}\n${step.description || ''}`)
-    : ["Information coming soon."];
+  // Format application guide - use text field first, then fall back to related table
+  const appGuideContent = university.application_guide && university.application_guide.trim()
+    ? university.application_guide.split('\n').map(a => a.trim()).filter(a => a)
+    : (university.UniversityApplicationGuideSteps && university.UniversityApplicationGuideSteps.length > 0
+      ? university.UniversityApplicationGuideSteps
+          .sort((a, b) => a.step_number - b.step_number)
+          .map(step => `Step ${step.step_number}: ${step.title || ''}\n${step.description || ''}`)
+      : ["Information coming soon."]);
 
-  // Format tuition fees
-  const tuitionContent = university.UniversityTuitionFees && university.UniversityTuitionFees.length > 0
-    ? university.UniversityTuitionFees.map(fee => `${fee.student_type || 'Tuition'}: ${fee.amount ? `$${fee.amount}` : 'N/A'}${fee.note ? ` - ${fee.note}` : ''}`)
-    : ["Information coming soon."];
+  // Format tuition fees - use text field first, then fall back to related table
+  const tuitionContent = university.tuition_fees && university.tuition_fees.trim()
+    ? university.tuition_fees.split('\n').map(t => t.trim()).filter(t => t)
+    : (university.UniversityTuitionFees && university.UniversityTuitionFees.length > 0
+      ? university.UniversityTuitionFees.map(fee => `${fee.student_type || 'Tuition'}: ${fee.amount ? `$${fee.amount}` : 'N/A'}${fee.note ? ` - ${fee.note}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format campus
-  const campusContent = university.UniversityCampuses && university.UniversityCampuses.length > 0
-    ? university.UniversityCampuses.map(campus => `${campus.name || 'Campus'}${campus.description ? ` - ${campus.description}` : ''}`)
-    : ["Information coming soon."];
+  // Format campus - use text field first, then fall back to related table
+  const campusContent = university.campus && university.campus.trim()
+    ? university.campus.split('\n').map(c => c.trim()).filter(c => c)
+    : (university.UniversityCampuses && university.UniversityCampuses.length > 0
+      ? university.UniversityCampuses.map(campus => `${campus.name || 'Campus'}${campus.description ? ` - ${campus.description}` : ''}`)
+      : ["Information coming soon."]);
 
-  // Format news/achievements for others section
-  const othersContent = university.UniversityNews && university.UniversityNews.length > 0
-    ? university.UniversityNews.map(news => news.title || "News")
-    : ["Information coming soon."];
+  // Format news/achievements for others section - use text field first, then fall back to related table
+  const othersContent = university.others && university.others.trim()
+    ? university.others.split('\n').map(o => o.trim()).filter(o => o)
+    : (university.UniversityNews && university.UniversityNews.length > 0
+      ? university.UniversityNews.map(news => news.title || "News")
+      : ["Information coming soon."]);
 
   const det = {
-    generalInfo: [university.description || "Information coming soon."],
+    generalInfo: university.general_information && university.general_information.trim() 
+      ? university.general_information.split('\n').map(g => g.trim()).filter(g => g)
+      : [university.description || "Information coming soon."],
     majors: majorsContent,
     applicationGuide: appGuideContent,
     tuitionFees: tuitionContent,
@@ -142,10 +167,10 @@ const UniversityDetailPage = () => {
   };
 
   return (
-    <div>
+    <div className="university-detail-page">
       <Header />
       <div className="udet-hero">
-        <HeroBanner slides={bannerSlides} />
+        <HeroBanner slides={detailBannerSlides} />
         <div className="udet-hero-overlay">
           <p className="udet-hero-name-en">{university.name}</p>
         </div>

@@ -206,9 +206,10 @@ export function calculateMatchScore(userProfile, scholarship) {
   
   const finalScore = Math.min(maxScore, Math.round(score));
   console.log(`Final score for ${scholarship.title}: ${finalScore}`);
-  const result = isNaN(finalScore) ? 50 : finalScore; // Ensure we never return NaN
-  console.log(`Returning: ${result} (isNaN check: ${isNaN(finalScore)})`);
-  return result;
+  // Convert from 0-100 to 1-5 star rating
+  const starRating = Math.max(1, Math.round((finalScore / 100) * 5 * 10) / 10);
+  console.log(`Returning: ${starRating} stars (from ${finalScore}%)`);
+  return isNaN(starRating) ? 3 : starRating; // Default to 3 stars if NaN
 }
 
 /**
@@ -229,7 +230,7 @@ export function getScholarshipRecommendations(userProfile, scholarships, limit =
   // Calculate match score for each scholarship
   const scoredScholarships = scholarships.map(scholarship => {
     const matchScore = calculateMatchScore(userProfile, scholarship);
-    console.log(`Calculated match score for ${scholarship.title}: ${matchScore}% (Category: ${scholarship.category || 'MISSING'})`);
+    console.log(`Calculated match score for ${scholarship.title}: ${matchScore}★ (Category: ${scholarship.category || 'MISSING'})`);
     return {
       ...scholarship,
       matchScore,
@@ -245,7 +246,7 @@ export function getScholarshipRecommendations(userProfile, scholarships, limit =
   
   console.log('Sorted scholarships (top 5):');
   scoredScholarships.slice(0, 5).forEach((s, i) => {
-    console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}% - Category: ${s.category || 'MISSING'}`);
+    console.log(`  ${i + 1}. ${s.title} - ${s.matchScore}★ - Category: ${s.category || 'MISSING'}`);
   });
   
   // Return top matches

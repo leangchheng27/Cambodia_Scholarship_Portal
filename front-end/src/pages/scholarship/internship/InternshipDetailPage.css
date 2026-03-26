@@ -1,3 +1,7 @@
+.internship-detail-page {
+  background: linear-gradient(180deg, #f9fafb 0%, #eef2f7 52%, #e5e7eb 100%);
+}
+
 .sdet-hero {
   position: relative;
   width: 100%;
@@ -9,7 +13,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  background: linear-gradient(transparent, rgba(17, 24, 39, 0.88));
   padding: 150px 60px 40px;
   z-index: 10;
 }
@@ -35,6 +39,14 @@
   padding: 20px 0;
 }
 
+.sdet-content.sdet-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  width: 100%;
+}
+
 .sdet-content h3 {
   font-size: 20px;
   font-weight: 600;
@@ -52,6 +64,15 @@
   color: #4b5563;
 }
 
+.sdet-content a {
+  color: #374151;
+  font-weight: 600;
+}
+
+.sdet-content a:hover {
+  color: #1f2937;
+}
+
 .sdet-content ul {
   margin: 0 0 16px 0;
   padding-left: 24px;
@@ -66,4 +87,39 @@
 .sdet-content ul ul {
   margin-top: 8px;
   margin-bottom: 8px;
+}
+
+/* Scope tabbed section styling to internship detail page only */
+.internship-detail-page .tab-section-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.12);
+}
+
+.internship-detail-page .tab-section-header h2 {
+  color: #1f2937;
+}
+
+.internship-detail-page .tabbed-section-container {
+  background: #ffffff;
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 18px 36px rgba(31, 41, 55, 0.1);
+  margin-bottom: 40px;
+}
+
+.internship-detail-page .tab-navigation {
+  border-right: 1px solid rgba(31, 41, 55, 0.12);
+}
+
+.internship-detail-page .tab {
+  color: #6b7280;
+}
+
+.internship-detail-page .tab.active {
+  color: #1f2937;
+}
+
+.internship-detail-page .tab:hover:not(.active) {
+  color: #374151;
 }

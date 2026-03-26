@@ -5,7 +5,6 @@ import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
 import EditProfileModal from '../../features/profile/components/EditProfileModal/EditProfileModal.jsx';
 import AIRecommendations from '../../features/profile/components/AIRecommendations/AIRecommendations.jsx';
-import { calculateGPA, analyzeStrongSubjects } from '../../utils/profileUtils';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -13,15 +12,15 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
 
-  // Default user data if not logged in
+  // Keep profile fields empty by default; do not synthesize a guest account.
   const defaultUser = {
-    name: 'Guest User',
+    name: '',
     email: '',
     phone: '',
-    nationality: 'Cambodian',
-    interests: [''],
-    skills: [''],
-    profileType: 'student',
+    nationality: '',
+    interests: [],
+    skills: [],
+    profileType: '',
     avatar: null,
   };
 
@@ -30,9 +29,7 @@ const ProfilePage = () => {
   
   // Ensure name is not null - use email prefix if needed
   if (!userData.name && userData.email) {
-    userData.name = userData.email.split('@')[0] || 'User';
-  } else if (!userData.name) {
-    userData.name = 'User';
+    userData.name = userData.email.split('@')[0] || '';
   }
   
   // Debug log to see what user data we have
@@ -41,29 +38,9 @@ const ProfilePage = () => {
   console.log("ProfilePage - Merged userData:", userData);
   console.log("ProfilePage - Interests:", userData.interests);
 
-  // Safe calculation helpers
-  const getGPA = () => {
-    try {
-      if (userData.grades && Object.keys(userData.grades).length > 0) {
-        return calculateGPA(userData.grades);
-      }
-      return '0.00';
-    } catch (error) {
-      console.error('Error calculating GPA:', error);
-      return '0.00';
-    }
-  };
-
-  const getStrongSubjects = () => {
-    try {
-      if (userData.grades && Object.keys(userData.grades).length > 0) {
-        return analyzeStrongSubjects(userData.grades);
-      }
-      return [];
-    } catch (error) {
-      console.error('Error analyzing strong subjects:', error);
-      return [];
-    }
+  // Check if user has academic information
+  const hasAcademicInfo = () => {
+    return (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField;
   };
 
   const handleLogout = () => {
@@ -84,12 +61,17 @@ const ProfilePage = () => {
     setShowEditModal(false);
   };
 
-  const handleSaveProfile = (updatedData) => {
-    console.log("ProfilePage - Received updated data:", updatedData);
-    console.log("ProfilePage - Skills to save:", updatedData.skills);
-    console.log("ProfilePage - Interests to save:", updatedData.interests);
-    updateProfile(updatedData);
-    console.log("ProfilePage - After updateProfile call");
+  const handleSaveProfile = async (updatedData) => {
+    try {
+      console.log("ProfilePage - Received updated data:", updatedData);
+      console.log("ProfilePage - Skills to save:", updatedData.skills);
+      console.log("ProfilePage - Interests to save:", updatedData.interests);
+      await updateProfile(updatedData);
+      console.log("ProfilePage - Profile saved successfully to database");
+    } catch (error) {
+      console.error("ProfilePage - Error saving profile:", error);
+      alert("Error saving profile. Please try again.");
+    }
   };
 
   return (
@@ -195,24 +177,6 @@ const ProfilePage = () => {
 
                       {Object.keys(userData.grades).length > 0 && (
                         <>
-                          <div className="info-item">
-                            <span className="info-label">GPA :</span>
-                            <span className="info-value gpa-badge">
-                              {getGPA()}
-                            </span>
-                          </div>
-
-                          <div className="info-item">
-                            <span className="info-label">Strong Subjects:</span>
-                            <div className="tags-container" style={{display: 'inline-flex', gap: '6px', marginLeft: '8px'}}>
-                              {getStrongSubjects().map((subject, index) => (
-                                <span key={index} className="tag strong-subject-tag">
-                                  ⭐ {subject}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
                           <div className="grades-summary">
                             <h4>Subject Grades:</h4>
                             <div className="grades-grid">
@@ -267,8 +231,11 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* AI Scholarship Recommendations */}
-          {((userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField) && (
+          {/* AI Scholarship & Internship Recommendations */}
+          {(
+            (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || 
+            userData.universityField
+          ) && (
             <AIRecommendations userProfile={userData} />
           )}
         </div>

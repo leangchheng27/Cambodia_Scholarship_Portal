@@ -4,8 +4,53 @@ import { authenticateAdmin } from '../../middlewares/auth/adminMiddleware.js';
 import University from '../../models/university/University.js';
 import Scholarship from '../../models/scholarship/Scholarship.js';
 import Internship from '../../models/internship/Internship.js';
+import { Op } from 'sequelize';
 
 const router = express.Router();
+
+const parseDetailsObject = (details) => {
+    if (!details) return {};
+    if (typeof details === 'string') {
+        try {
+            return JSON.parse(details);
+        } catch {
+            return {};
+        }
+    }
+    return typeof details === 'object' ? details : {};
+};
+
+const parseListField = (value) => {
+    if (value === undefined) return undefined;
+    if (Array.isArray(value)) return value.map((entry) => String(entry).trim()).filter(Boolean);
+
+    return String(value)
+        .split(/\r?\n|,|;|\u2022/)
+        .map((entry) => entry.trim())
+        .filter(Boolean);
+};
+
+const buildDetailsPayload = (existingDetails, payload) => {
+    const details = { ...parseDetailsObject(existingDetails) };
+    let changed = false;
+
+    if (payload.eligibility !== undefined) {
+        details.eligibility = parseListField(payload.eligibility);
+        changed = true;
+    }
+
+    if (payload.applicable_programs !== undefined) {
+        details.programs = parseListField(payload.applicable_programs);
+        changed = true;
+    }
+
+    if (payload.benefits !== undefined) {
+        details.benefits = parseListField(payload.benefits);
+        changed = true;
+    }
+
+    return changed ? details : undefined;
+};
 
 // This will be set when initializing routes
 let AuthUser;
@@ -20,6 +65,30 @@ const initAdminRoutes = (userModel) => {
 };
 
 /**
+ * POST /admin/users
+ * Create a new user
+ */
+router.post('/users', authenticateAdmin, async (req, res) => {
+    try {
+        const { name, email, password, role = 'user', isVerified = true } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'email and password are required' });
+        }
+        const exists = await AuthUser.findOne({ where: { email } });
+        if (exists) {
+            return res.status(409).json({ error: 'Email already registered' });
+        }
+        const user = await AuthUser.create({ name, email, password, role, isVerified });
+        res.status(201).json({
+            message: 'User created successfully',
+            user: { id: user.id, email: user.email, name: user.name, role: user.role, isVerified: user.isVerified },
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create user', details: err.message });
+    }
+});
+
+/**
  * GET /admin/dashboard
  * Get dashboard statistics
  */
@@ -31,8 +100,10 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         const unverifiedUsers = await AuthUser.count({ where: { isVerified: false, role: 'user' } });
         
         const totalUniversities = await University.count();
-        const totalScholarships = await Scholarship.count();
-        const totalInternships = await Internship.count();
+        const totalScholarships = await Scholarship.count({ 
+            where: { type: { [Op.in]: ['cambodia', 'abroad'] } } 
+        });
+        const totalInternships = await Scholarship.count({ where: { type: 'internship' } });
 
         res.json({
             stats: {
@@ -93,7 +164,7 @@ router.get('/users/:id', authenticateAdmin, async (req, res) => {
  */
 router.put('/users/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, email, isVerified, role } = req.body;
+        const { name, email, password, isVerified, role, phone, nationality, studentType, interests, skills, grades } = req.body;
         const user = await AuthUser.findByPk(req.params.id);
         
         if (!user) {
@@ -107,19 +178,23 @@ router.put('/users/:id', authenticateAdmin, async (req, res) => {
 
         if (name !== undefined) user.name = name;
         if (email !== undefined) user.email = email;
-        if (isVerified !== undefined) user.isVerified = isVerified;
+        if (password) user.password = password; // only update if provided (model hashes it via beforeUpdate)
+        if (isVerified !== undefined) user.isVerified = isVerified === true || isVerified === 'true';
         if (role !== undefined) user.role = role;
+        if (phone !== undefined) user.phone = phone;
+        if (nationality !== undefined) user.nationality = nationality;
+        if (studentType !== undefined) user.studentType = studentType;
+        if (interests !== undefined) user.interests = interests;
+        if (skills !== undefined) user.skills = skills;
+        if (grades !== undefined) user.grades = grades;
 
         await user.save();
         
         res.json({ 
             message: 'User updated successfully',
             user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-                isVerified: user.isVerified,
+                id: user.id, email: user.email, name: user.name,
+                role: user.role, isVerified: user.isVerified,
             }
         });
     } catch (err) {
@@ -178,14 +253,18 @@ router.get('/profile', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/universities
- * Get all universities
+ * Get all universities sorted by ID ascending
  */
 router.get('/universities', authenticateAdmin, async (req, res) => {
     try {
         const universities = await University.findAll({
-            order: [['id', 'DESC']],
+            order: [['id', 'ASC']],
+            raw: true,
         });
-        res.json({ universities });
+        
+        res.json({ 
+            universities
+        });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch universities', details: err.message });
     }
@@ -213,7 +292,7 @@ router.get('/universities/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/universities', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url, general_information, majors, application_guide, tuition_fees, campus, others } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? website;
         
@@ -229,6 +308,12 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
             slider_image_url,
             original_link: resolvedOriginalLink,
             website,
+            general_information,
+            majors,
+            application_guide,
+            tuition_fees,
+            campus,
+            others,
         });
 
         res.status(201).json({ 
@@ -246,7 +331,7 @@ router.post('/universities', authenticateAdmin, async (req, res) => {
  */
 router.put('/universities/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url } = req.body;
+        const { name, description, location, image_url, website, original_link, poster_image_url, slider_image_url, general_information, majors, application_guide, tuition_fees, campus, others } = req.body;
         const university = await University.findByPk(req.params.id);
         
         if (!university) {
@@ -262,6 +347,12 @@ router.put('/universities/:id', authenticateAdmin, async (req, res) => {
         if (slider_image_url !== undefined) university.slider_image_url = slider_image_url;
         if (original_link !== undefined) university.original_link = original_link;
         if (website !== undefined) university.website = website;
+        if (general_information !== undefined) university.general_information = general_information;
+        if (majors !== undefined) university.majors = majors;
+        if (application_guide !== undefined) university.application_guide = application_guide;
+        if (tuition_fees !== undefined) university.tuition_fees = tuition_fees;
+        if (campus !== undefined) university.campus = campus;
+        if (others !== undefined) university.others = others;
 
         await university.save();
         
@@ -300,14 +391,20 @@ router.delete('/universities/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/scholarships
- * Get all scholarships
+ * Get all scholarships sorted by ID ascending
  */
 router.get('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const scholarships = await Scholarship.findAll({
-            order: [['id', 'DESC']],
+        const [cambodia, abroad] = await Promise.all([
+            Scholarship.findAll({ where: { type: 'cambodia' }, order: [['id', 'ASC']], raw: true }),
+            Scholarship.findAll({ where: { type: 'abroad' }, order: [['id', 'ASC']], raw: true }),
+        ]);
+        
+        res.json({ 
+            scholarships: cambodia,
+            cambodia,
+            abroad,
         });
-        res.json({ scholarships });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch scholarships', details: err.message });
     }
@@ -335,9 +432,24 @@ router.get('/scholarships/:id', authenticateAdmin, async (req, res) => {
  */
 router.post('/scholarships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const {
+            name,
+            description,
+            funded_by,
+            course_duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            type,
+            eligibility,
+            applicable_programs,
+            benefits,
+        } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
+        const details = buildDetailsPayload({}, { eligibility, applicable_programs, benefits });
         
         if (!name) {
             return res.status(400).json({ error: 'Scholarship name is required' });
@@ -352,6 +464,8 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
             original_link: resolvedOriginalLink,
             poster_image_url: resolvedPoster,
             slider_image_url,
+            type: type || 'cambodia',
+            ...(details !== undefined ? { details } : {}),
         });
 
         res.status(201).json({ 
@@ -369,7 +483,23 @@ router.post('/scholarships', authenticateAdmin, async (req, res) => {
  */
 router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, funded_by, course_duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
+        const {
+            name,
+            description,
+            funded_by,
+            course_duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            type,
+            eligibility,
+            applicable_programs,
+            benefits,
+            ai_metadata,
+            aiMetadata,
+        } = req.body;
         const scholarship = await Scholarship.findByPk(req.params.id);
         
         if (!scholarship) {
@@ -382,10 +512,24 @@ router.put('/scholarships/:id', authenticateAdmin, async (req, res) => {
         if (course_duration !== undefined) scholarship.course_duration = course_duration;
         if (registration_link !== undefined) scholarship.registration_link = registration_link;
         if (original_link !== undefined) scholarship.original_link = original_link;
+        if (type !== undefined) scholarship.type = type;
         if (poster_image_url !== undefined || image_url !== undefined) {
             scholarship.poster_image_url = poster_image_url ?? image_url;
         }
         if (slider_image_url !== undefined) scholarship.slider_image_url = slider_image_url;
+
+        const details = buildDetailsPayload(scholarship.details, { eligibility, applicable_programs, benefits });
+        if (details !== undefined) scholarship.details = details;
+
+        // Update AI metadata
+        const metadataToUpdate = ai_metadata || aiMetadata;
+        if (metadataToUpdate !== undefined) {
+            if (typeof metadataToUpdate === 'string') {
+                scholarship.ai_metadata = JSON.parse(metadataToUpdate);
+            } else {
+                scholarship.ai_metadata = metadataToUpdate;
+            }
+        }
 
         await scholarship.save();
         
@@ -424,13 +568,16 @@ router.delete('/scholarships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/internships
- * Get all internships
+ * Get all internships sorted by ID ascending
  */
 router.get('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const internships = await Internship.findAll({
-            order: [['id', 'DESC']],
+        const internships = await Scholarship.findAll({
+            where: { type: 'internship' },
+            order: [['id', 'ASC']],
+            raw: true,
         });
+        
         res.json({ internships });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch internships', details: err.message });
@@ -439,11 +586,11 @@ router.get('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/internships/:id
- * Get single internship
+ * Get single internship (from Scholarship table with type='internship')
  */
 router.get('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Internship.findByPk(req.params.id);
+        const internship = await Scholarship.findByPk(req.params.id);
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
         }
@@ -455,27 +602,56 @@ router.get('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * POST /admin/internships
- * Create new internship
+ * Create new internship (as Scholarship with type='internship')
  */
 router.post('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
-        const resolvedPoster = poster_image_url ?? image_url;
-        const resolvedOriginalLink = original_link ?? registration_link;
-        
-        if (!name) {
-            return res.status(400).json({ error: 'Internship name is required' });
-        }
-
-        const internship = await Internship.create({
+        const {
             name,
             description,
             company,
             duration,
             registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            eligibility,
+            applicable_programs,
+            benefits,
+            ai_metadata,
+            aiMetadata,
+        } = req.body;
+        const resolvedPoster = poster_image_url ?? image_url;
+        const resolvedOriginalLink = original_link ?? registration_link;
+        const details = buildDetailsPayload({}, { eligibility, applicable_programs, benefits });
+        
+        if (!name) {
+            return res.status(400).json({ error: 'Internship name is required' });
+        }
+
+        // Parse AI metadata if provided
+        let parsedAiMetadata = ai_metadata || aiMetadata;
+        if (parsedAiMetadata && typeof parsedAiMetadata === 'string') {
+            try {
+                parsedAiMetadata = JSON.parse(parsedAiMetadata);
+            } catch (e) {
+                parsedAiMetadata = undefined;
+            }
+        }
+
+        const internship = await Scholarship.create({
+            name,
+            description,
+            funded_by: company,
+            course_duration: duration,
+            registration_link,
             original_link: resolvedOriginalLink,
             poster_image_url: resolvedPoster,
             slider_image_url,
+            type: 'internship',
+            ...(details !== undefined ? { details } : {}),
+            ...(parsedAiMetadata !== undefined ? { ai_metadata: parsedAiMetadata } : {}),
         });
 
         res.status(201).json({ 
@@ -489,12 +665,27 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * PUT /admin/internships/:id
- * Update internship
+ * Update internship (as Scholarship with type='internship')
  */
 router.put('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { name, description, company, duration, registration_link, image_url, original_link, poster_image_url, slider_image_url } = req.body;
-        const internship = await Internship.findByPk(req.params.id);
+        const {
+            name,
+            description,
+            company,
+            duration,
+            registration_link,
+            image_url,
+            original_link,
+            poster_image_url,
+            slider_image_url,
+            eligibility,
+            applicable_programs,
+            benefits,
+            ai_metadata,
+            aiMetadata,
+        } = req.body;
+        const internship = await Scholarship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
@@ -502,14 +693,27 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
         if (name !== undefined) internship.name = name;
         if (description !== undefined) internship.description = description;
-        if (company !== undefined) internship.company = company;
-        if (duration !== undefined) internship.duration = duration;
+        if (company !== undefined) internship.funded_by = company;
+        if (duration !== undefined) internship.course_duration = duration;
         if (registration_link !== undefined) internship.registration_link = registration_link;
         if (original_link !== undefined) internship.original_link = original_link;
         if (poster_image_url !== undefined || image_url !== undefined) {
             internship.poster_image_url = poster_image_url ?? image_url;
         }
         if (slider_image_url !== undefined) internship.slider_image_url = slider_image_url;
+
+        const details = buildDetailsPayload(internship.details, { eligibility, applicable_programs, benefits });
+        if (details !== undefined) internship.details = details;
+
+        // Update AI metadata if provided
+        const metadataToUpdate = ai_metadata || aiMetadata;
+        if (metadataToUpdate !== undefined) {
+            if (typeof metadataToUpdate === 'string') {
+                internship.ai_metadata = JSON.parse(metadataToUpdate);
+            } else {
+                internship.ai_metadata = metadataToUpdate;
+            }
+        }
 
         await internship.save();
         
@@ -524,11 +728,11 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * DELETE /admin/internships/:id
- * Delete internship
+ * Delete internship (from Scholarship table)
  */
 router.delete('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Internship.findByPk(req.params.id);
+        const internship = await Scholarship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
@@ -562,7 +766,7 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
         const feedbackByAction = await UserFeedback.findAll({
             attributes: [
                 'action',
-                ['count(*)', 'count']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'count']
             ],
             group: 'action',
             raw: true,
@@ -572,11 +776,11 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
         const topScholarships = await UserFeedback.findAll({
             attributes: [
                 'scholarshipId',
-                ['count(*)', 'interactions'],
-                ['sum(score)', 'popularity']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'interactions'],
+                [UserFeedback.sequelize.fn('SUM', UserFeedback.sequelize.col('score')), 'popularity']
             ],
             group: 'scholarshipId',
-            order: [[UserFeedback.sequelize.literal('sum(score)'), 'DESC']],
+            order: [[UserFeedback.sequelize.fn('SUM', UserFeedback.sequelize.col('score')), 'DESC']],
             limit: 10,
             raw: true,
         });
@@ -587,12 +791,12 @@ router.get('/ai-analytics', authenticateAdmin, async (req, res) => {
             attributes: [
                 [UserFeedback.sequelize.fn('DATE', UserFeedback.sequelize.col('createdAt')), 'date'],
                 'action',
-                [UserFeedback.sequelize.fn('COUNT', '*'), 'count']
+                [UserFeedback.sequelize.fn('COUNT', UserFeedback.sequelize.literal('*')), 'count']
             ],
             where: {
                 createdAt: { [Op.gte]: sevenDaysAgo }
             },
-            group: ['DATE(createdAt)', 'action'],
+            group: [UserFeedback.sequelize.literal('DATE(createdAt)'), 'action'],
             order: [[UserFeedback.sequelize.literal('DATE(createdAt)'), 'ASC']],
             raw: true,
         });

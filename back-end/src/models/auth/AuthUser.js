@@ -45,6 +45,38 @@ const AuthUserModel = (sequelize) => {
             type: DataTypes.DATE,
             allowNull: true,
         },
+        phone: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        nationality: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        studentType: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        academicType: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        universityField: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        interests: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
+        skills: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
+        grades: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
     }, {
         tableName: 'users',
     });

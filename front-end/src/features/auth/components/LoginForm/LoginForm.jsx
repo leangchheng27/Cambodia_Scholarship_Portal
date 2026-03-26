@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import './LoginForm.css';
 import { useLogin } from '../../hooks/useLogin';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
+
+  const signupTarget = location.search ? `/signup${location.search}` : '/signup';
 
   const { handleLogin, handleGoogleLogin, loading, error } = useLogin();
 
@@ -60,7 +63,7 @@ const LoginForm = () => {
         </button>
         {error && <div className="form-error">{error}</div>}
       </form>
-      <div className="muted-text">Don't Have Account? <Link to="/signup">Sign up</Link></div>
+      <div className="muted-text">Don't Have Account? <Link to={signupTarget}>Sign up</Link></div>
     </>
   );
 };

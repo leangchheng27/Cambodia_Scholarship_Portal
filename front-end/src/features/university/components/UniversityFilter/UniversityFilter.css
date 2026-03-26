@@ -1,7 +1,8 @@
 .university-filter {
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(31, 41, 55, 0.12);
+  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
   width: 340px;
   flex-shrink: 0;
   max-height: 600px;
@@ -14,7 +15,7 @@
   padding: 16px;
 }
 .filter-header {
-  background: #2bb7df;
+  background: #374151;
   color: #fff;
   font-weight: 600;
   font-size: 16px;
@@ -50,14 +51,14 @@
 }
 
 .filter-item:hover {
-  color: #2bb7df;
-  background: #f5fafd;
-  border-left-color: #2bb7df;
+  color: #374151;
+  background: #f3f4f6;
+  border-left-color: #4b5563;
 }
 
 .filter-item.active {
-  color: #2bb7df;
-  background: #f5fafd;
-  border-left: 3px solid #2bb7df;
+  color: #1f2937;
+  background: #f3f4f6;
+  border-left: 3px solid #4b5563;
   font-weight: 600;
 }

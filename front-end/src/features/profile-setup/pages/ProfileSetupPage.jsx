@@ -8,7 +8,7 @@ import AcademicTypeSelector from '../components/AcademicTypeSelector/AcademicTyp
 import GradeEntryForm from '../components/GradeEntryForm/GradeEntryForm';
 import FieldSelector from '../components/FieldSelector/FieldSelector';
 import ProfileSummary from '../components/ProfileSummary/ProfileSummary';
-import { analyzeProfile } from '../../../services/recommendationApi';
+import { analyzeProfile } from '../../../api/recommendationApi';
 import './ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {

@@ -12,10 +12,11 @@ import universityRoutes from './src/routes/university/universityRoutes.js';
 import { router as authRoutes, initAuthRoutes } from './src/routes/auth/authRoutes.js';
 import { adminRouter as adminRoutes, initAdminRoutes } from './src/routes/admin/adminRoutes.js';
 import { feedbackRouter as feedbackRoutes } from './src/routes/feedback/feedbackRoutes.js';
-import recommendationRoutes from './src/routes/recommendationRoutes.js';
+import recommendationRoutes from './src/ai/recommendationRoutes.js';
 import sequelize from './src/db/database.js';
 import AuthUserModel from './src/models/auth/AuthUser.js';
 import { initializeModels } from './src/models/index.js';
+import savedRoutes from './src/routes/saved/savedRoutes.js';
 
 const AuthUser = AuthUserModel(sequelize);
 import { createGoogleStrategy } from './src/strategies/auth/googleStrategy.js';
@@ -41,8 +42,8 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Lightweight request timing to identify slow endpoints quickly
 app.use((req, res, next) => {
@@ -95,7 +96,7 @@ app.use(passport.session());
 // Configure Google strategy only if credentials are provided
 if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
   passport.use(createGoogleStrategy(AuthUser));
-  console.log('✅ Google OAuth enabled');
+  console.log('Google OAuth enabled');
 } else {
   console.log('⚠️  Google OAuth disabled (credentials not configured)');
 }
@@ -130,6 +131,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/recommendations', recommendationRoutes);
 app.use('/feedback', feedbackRoutes);
+app.use('/saved', savedRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -144,11 +146,20 @@ app.use((req, res) => {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server without database sync
-app.listen(config.PORT, () => {
-  console.log(`
+// Start server with database sync
+(async () => {
+  try {
+    await sequelize.sync(); // creates tables that don't exist, safe!
+    console.log('Database synced successfully');
+    app.listen(config.PORT, () => {
+      console.log(`
 🚀 Server running on http://localhost:${config.PORT}
 📝 Environment: ${config.NODE_ENV}
 🔐 Auth routes available at /auth
-  `);
-});
+      `);
+    });
+  } catch (error) {
+    console.error('Failed to sync database:', error);
+    process.exit(1);
+  }
+})();

@@ -9,6 +9,13 @@ import { sendOTPEmail, sendPasswordResetEmail } from '../../utils/mailer.js';
 
 const router = express.Router();
 
+const sanitizeRedirectPath = (value) => {
+    if (!value || typeof value !== 'string') return null;
+    if (!value.startsWith('/')) return null;
+    if (value.startsWith('//')) return null;
+    return value;
+};
+
 // This will be set when initializing routes
 let AuthUser;
 
@@ -153,12 +160,48 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await AuthUser.findByPk(req.user.id, {
-            attributes: ['id', 'email', 'name', 'picture', 'isVerified']
+            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'studentType', 'interests', 'skills', 'grades']
         });
         if (!user) return res.status(404).json({ error: 'User not found' });
         res.json(user);
     } catch (err) {
         res.status(500).json({ error: 'Failed to get user' });
+    }
+});
+
+/**
+ * PUT /auth/profile
+ * Update current user's profile data (grades, interests, skills, etc.)
+ */
+router.put('/profile', authenticateToken, async (req, res) => {
+    try {
+        const user = await AuthUser.findByPk(req.user.id);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const { name, phone, nationality, studentType, academicType, universityField, interests, skills, grades } = req.body;
+        if (name !== undefined) user.name = name;
+        if (phone !== undefined) user.phone = phone;
+        if (nationality !== undefined) user.nationality = nationality;
+        if (studentType !== undefined) user.studentType = studentType;
+        if (academicType !== undefined) user.academicType = academicType;
+        if (universityField !== undefined) user.universityField = universityField;
+        if (interests !== undefined) user.interests = interests;
+        if (skills !== undefined) user.skills = skills;
+        if (grades !== undefined) user.grades = grades;
+
+        await user.save();
+
+        res.json({
+            message: 'Profile updated successfully',
+            profile: {
+                id: user.id, name: user.name, phone: user.phone,
+                nationality: user.nationality, studentType: user.studentType,
+                academicType: user.academicType, universityField: user.universityField,
+                interests: user.interests, skills: user.skills, grades: user.grades,
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update profile', details: err.message });
     }
 });
 
@@ -182,7 +225,14 @@ router.get('/users', authenticateToken, async (req, res) => {
  * Redirect to Google login (only if Google OAuth is configured)
  */
 if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
-    router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+    router.get('/google', (req, res, next) => {
+        const redirectPath = sanitizeRedirectPath(req.query.redirect);
+
+        passport.authenticate('google', {
+            scope: ['profile', 'email'],
+            state: redirectPath || '',
+        })(req, res, next);
+    });
 
     /**
      * GET /auth/google/callback
@@ -193,14 +243,22 @@ if (config.GOOGLE_CLIENT_ID && config.GOOGLE_CLIENT_SECRET) {
         passport.authenticate('google', { failureRedirect: '/auth/login' }),
         (req, res) => {
             // User is authenticated, generate JWT
+            const redirectPath = sanitizeRedirectPath(req.query.state);
             const token = jwt.sign(
-                { id: req.user.id, email: req.user.email },
+                {
+                    id: req.user.id,
+                    email: req.user.email,
+                    role: req.user.role || 'user',
+                },
                 config.JWT_SECRET,
                 { expiresIn: config.JWT_EXPIRE || '1d' }
             );
 
-            // Redirect to frontend profile setup - ProtectedRoute will handle if they already have a profile
-            res.redirect(`${config.FRONTEND_URL || 'http://localhost:5173'}/profile-setup?token=${token}`);
+            const frontendBaseUrl = config.FRONTEND_URL || 'http://localhost:5173';
+            const targetPath = redirectPath || '/home';
+            const separator = targetPath.includes('?') ? '&' : '?';
+
+            res.redirect(`${frontendBaseUrl}${targetPath}${separator}token=${token}`);
         }
     );
 } else {

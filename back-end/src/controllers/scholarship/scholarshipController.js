@@ -1,10 +1,23 @@
-import Scholarship from '../../models/scholarship/Scholarship.js';
+import { Op } from 'sequelize';
+import {
+  Scholarship,
+  ScholarshipBenefit,
+  ScholarshipDeadline,
+  ScholarshipEligibility,
+  ScholarshipFieldOfStudy,
+} from '../../models/index.js';
 
 const scholarshipController = {
   // Get all scholarships
   async getAll(req, res) {
     try {
-      const scholarships = await Scholarship.findAll();
+      const { search, type } = req.query;
+      const where = {};
+
+      if (type) where.type = type;
+      if (search) where.name = { [Op.like]: `%${search}%` };
+
+      const scholarships = await Scholarship.findAll({ where });
       res.json(scholarships);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -14,7 +27,14 @@ const scholarshipController = {
   // Get scholarship by ID
   async getById(req, res) {
     try {
-      const scholarship = await Scholarship.findByPk(req.params.id);
+      const scholarship = await Scholarship.findByPk(req.params.id, {
+        include: [
+          { model: ScholarshipEligibility },
+          { model: ScholarshipFieldOfStudy },
+          { model: ScholarshipBenefit },
+          { model: ScholarshipDeadline },
+        ],
+      });
       if (!scholarship) return res.status(404).json({ error: 'Scholarship not found' });
       res.json(scholarship);
     } catch (error) {

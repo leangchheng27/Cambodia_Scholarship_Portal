@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
-import API from '../../../../services/api.js';
+import { getScholarships } from '../../../../api/scholarshipApi';
+import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import './AIScholarshipSection.css';
 
 const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limit = 6, linkTo }) => {
@@ -17,8 +18,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
       setIsLoading(true);
       try {
         // Fetch scholarships from API
-        const response = await API.get('/scholarships');
-        let scholarshipList = response.data;
+        let scholarshipList = await getScholarships();
 
         // Filter by type if specified
         if (type === 'cambodia') {
@@ -64,11 +64,24 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
   };
 
   const getMatchColor = (score) => {
-    if (!score) return '#6b7280';
-    if (score >= 85) return '#10b981';
-    if (score >= 70) return '#3b82f6';
-    if (score >= 55) return '#f59e0b';
-    return '#6b7280';
+    // Green background for all star ratings
+    return '#10b981';
+  };
+
+  const renderStars = (score) => {
+    if (!score) return '★';
+    
+    // Handle case where score might still be 0-100, convert to 1-5
+    let normalizedScore = score;
+    if (score > 5) {
+      normalizedScore = Math.max(1, (score / 100) * 5);
+    }
+    
+    // Round to nearest whole number for full stars only
+    const fullStars = Math.min(5, Math.max(1, Math.round(normalizedScore)));
+    
+    // Display only filled stars (★★★ not ★★★☆☆)
+    return '★'.repeat(fullStars);
   };
 
   return (
@@ -90,7 +103,7 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
         {isLoading ? (
           <div className="scholarship-grid">
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
-              Loading recommendations...
+              <LoadingText text="Loading recommendations..." />
             </div>
           </div>
         ) : (
@@ -110,9 +123,12 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
                   {scholarship.matchScore && (
                     <div 
                       className="match-badge-overlay"
-                      style={{ backgroundColor: getMatchColor(scholarship.matchScore) }}
+                      style={{ 
+                        backgroundColor: getMatchColor(scholarship.matchScore),
+                        color: '#FFC107'
+                      }}
                     >
-                      {scholarship.matchScore}%
+                      {renderStars(scholarship.matchScore)}
                     </div>
                   )}
                 </div>

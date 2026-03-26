@@ -9,7 +9,7 @@
   flex: 1;
   max-width: 100%;
   margin: 0 auto;
-  padding: 280px 20px 40px 20px;
+  padding: 200px 20px 40px 20px;
   width: 100%;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .logout-btn {
-  background: #000;
+  background-color: #718096;
   color: #fff;
   border: none;
   padding: 12px 32px;
@@ -83,7 +83,7 @@
 .avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: black;
+  background-color: #718096;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +110,7 @@
 }
 
 .edit-profile-btn {
-  background: #000;
+  background-color: #718096;
   color: #fff;
   border: none;
   padding: 10px 24px;
@@ -251,7 +251,7 @@
 }
 
 .skill-tag {
-  background: #000;
+  background-color: #718096;
 }
 
 .tag-icon {
@@ -286,7 +286,7 @@
 }
 
 .gpa-badge {
-  background: black;
+  background-color: #718096;
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -296,7 +296,7 @@
 }
 
 .strong-subject-tag {
-  background: #2FA6C4;
+  background-color: #718096;
   color: white;
   padding: 6px 12px;
   border-radius: 16px;
@@ -432,6 +432,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .profile-content {
+    padding: 150px 16px 32px 16px;
+  }
+
   .profile-header {
     flex-direction: column;
     gap: 20px;

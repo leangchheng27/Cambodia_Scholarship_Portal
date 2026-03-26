@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
-import ScholarshipCard from '../../../components/ScholarshipCard/ScholarshipCard';
-import API from '../../../services/api.js';
+import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
+import { getInternships } from '../../../api/internshipApi.js';
+import { useAuth } from '../../../context/AuthContext.jsx';
+import { getAIRecommendations } from '../../../utils/profileUtils.js';
+import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
+import SearchInput from '../../../components/SearchInput/SearchInput.jsx';
 
-// Import banner images
+
 import banner1 from '../../../assets/banner/p1.png';
 import banner2 from '../../../assets/banner/p2.jpg';
 import banner3 from '../../../assets/banner/p3.png';
@@ -15,18 +18,43 @@ import banner4 from '../../../assets/banner/p4.png';
 import banner5 from '../../../assets/banner/p5.png';
 
 export default function InternshipPage() {
+  const { user, profile } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const [internships, setInternships] = useState([]);
+  const [allInternships, setAllInternships] = useState([]);
+  const [recommendedInternships, setRecommendedInternships] = useState([]);
+  const [viewMode, setViewMode] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [recommendationsAvailable, setRecommendationsAvailable] = useState(false);
+  const [search, setSearch] = useState('');
   const bannerSlides = [banner1, banner2, banner3, banner4, banner5];
-  
+
   useEffect(() => {
     const fetchInternships = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/internships');
-        setInternships(response.data);
+        const data = await getInternships(search);
+        setAllInternships(data);
+
+        const effectiveProfile = { ...(user || {}), ...(profile || {}) };
+        const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
+        const hasUniversityField = Boolean(effectiveProfile.universityField);
+        const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
+
+        if (isUniversityStudent && hasUniversityField) {
+          const recommendations = await getAIRecommendations(
+            { ...effectiveProfile, studentType },
+            data,
+            data.length
+          );
+          setRecommendedInternships(recommendations);
+          setRecommendationsAvailable(true);
+          setViewMode('recommended');
+        } else {
+          setRecommendedInternships([]);
+          setRecommendationsAvailable(false);
+          setViewMode('all');
+        }
         setError(null);
       } catch (err) {
         console.error('Error fetching internships:', err);
@@ -36,121 +64,126 @@ export default function InternshipPage() {
       }
     };
 
-    fetchInternships();
-  }, []);
-  
+    const debounceTimer = setTimeout(() => fetchInternships(), 300);
+    return () => clearTimeout(debounceTimer);
+  }, [user, profile, search]);
+
+  const displayedInternships = viewMode === 'recommended' && recommendationsAvailable
+    ? recommendedInternships : allInternships;
+  const hasRecommendationScores = viewMode === 'recommended' && recommendationsAvailable;
   const itemsPerPage = 12;
-  const totalPages = Math.ceil(internships.length / itemsPerPage);
-  
+  const totalPages = Math.ceil(displayedInternships.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentInternships = internships.slice(startIndex, endIndex);
+  const currentInternships = displayedInternships.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (loading) {
-    return (
-      <div className="internship-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <p>Loading internships...</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="internship-list-page">
-        <Header />
-        <HeroBanner slides={bannerSlides} />
-        <div className="page-header">
-          <p className="error">{error}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  const handleViewModeChange = (mode) => {
+    if (mode === 'recommended' && !recommendationsAvailable) return;
+    setViewMode(mode);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="internship-list-page">
       <Header />
-      
-      <HeroBanner slides={bannerSlides} />
-
-      {/* Page Header */}
-      <div className="page-header">
-        <h1 className="page-title">Internship Opportunities</h1>
-        <p className="page-subtitle">
-          Find internship programs and opportunities with approaching deadlines.
-        </p>
-      </div>
-
-      {/* Internship Grid */}
-      <div className="scholarship-list-container">
-        <div className="scholarship-grid">
-          {currentInternships.map((internship) => (
-            <ScholarshipCard
-              key={internship.id}
-              scholarship={internship}
-              basePath="/scholarships/internship"
-            />
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="pagination">
-          {currentPage > 1 && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              ←
-            </button>
-          )}
-          
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNumber = index + 1;
-            
-            if (
-              pageNumber === 1 ||
-              pageNumber === totalPages ||
-              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
-            ) {
-              return (
-                <button
-                  key={pageNumber}
-                  className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`}
-                  onClick={() => handlePageChange(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              );
-            } else if (
-              pageNumber === currentPage - 2 ||
-              pageNumber === currentPage + 2
-            ) {
-              return <span key={pageNumber} className="page-dots">...</span>;
-            }
-            return null;
-          })}
-          
-          {currentPage < totalPages && (
-            <button 
-              className="page-btn"
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              →
-            </button>
-          )}
+      <div className="resource-hero-banner-wrap">
+        <HeroBanner slides={bannerSlides} />
+        <div className="resource-hero-banner-overlay">
+          <div className="resource-shell">
+            <section className="resource-hero resource-hero-on-banner">
+              <h1 className="resource-hero-title">Internship opportunities presented like a premium SaaS catalog.</h1>
+              <p className="resource-hero-description">
+                Move from poster browsing to deep opportunity details with a faster, cleaner decision flow built for students and career starters.
+              </p>
+              <div className="resource-hero-actions">
+                <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
+                <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
 
+      <div className="resource-shell">
+        <section id="resource-features" className="resource-section">
+          <h2 className="resource-section-title">Built around your real internship flow</h2>
+          <p className="resource-section-description">This page stays aligned with your current app behavior: browse posters, open details, and review key information quickly.</p>
+          <div className="resource-feature-grid">
+            <article className="resource-feature-card">
+              <h3>Poster-first browsing</h3>
+              <p>Scan internship posters in a clean grid, then open the full detail page for the opportunity you want.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Structured detail tabs</h3>
+              <p>Review Overview, Eligibility, Applicable Programs, Benefits, and Original Link in one organized detail layout.</p>
+            </article>
+            <article className="resource-feature-card">
+              <h3>Simple page navigation</h3>
+              <p>Use pagination to move through internships and keep the browsing experience fast when listings grow.</p>
+            </article>
+          </div>
+        </section>
+
+        <div id="resource-posters" className="scholarship-list-container resource-posters">
+          <SearchInput
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+            placeholder="Search internships by name..."
+          />
+
+          <div className="list-mode-toggle" role="group" aria-label="Internship list mode">
+            <button type="button" className={`list-mode-btn ${viewMode === 'all' ? 'active' : ''}`} onClick={() => handleViewModeChange('all')}>
+              All Data ({allInternships.length})
+            </button>
+            <button type="button" className={`list-mode-btn ${viewMode === 'recommended' ? 'active' : ''}`} onClick={() => handleViewModeChange('recommended')} disabled={!recommendationsAvailable}>
+              Recommended ({recommendedInternships.length})
+            </button>
+          </div>
+
+          {!recommendationsAvailable && (
+            <p className="list-mode-hint">College & University students: Complete your profile to see internship recommendations matched to your field of study.</p>
+          )}
+
+          <div className="scholarship-grid">
+            {loading ? (
+              <LoadingText text="Loading internships..." />
+            ) : error ? (
+              <p className="error">{error}</p>
+            ) : currentInternships.length === 0 ? (
+              <p className="list-empty-message">No internships found.</p>
+            ) : (
+              currentInternships.map((internship) => (
+                <PosterCard
+                  key={internship.id}
+                  scholarship={internship}
+                  basePath="/scholarships/internship"
+                  showMatchScore={hasRecommendationScores}
+                />
+              ))
+            )}
+          </div>
+
+          {!loading && totalPages > 1 && (
+            <div className="pagination">
+              {currentPage > 1 && <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)}>←</button>}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
+                if (pageNumber === 1 || pageNumber === totalPages || (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)) {
+                  return <button key={pageNumber} className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`} onClick={() => handlePageChange(pageNumber)}>{pageNumber}</button>;
+                } else if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                  return <span key={pageNumber} className="page-dots">...</span>;
+                }
+                return null;
+              })}
+              {currentPage < totalPages && <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)}>→</button>}
+            </div>
+          )}
+        </div>
+      </div>
       <Footer />
     </div>
   );

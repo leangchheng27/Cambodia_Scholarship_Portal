@@ -1,0 +1,15 @@
+.loading-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: #666;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.loading-text p {
+  margin: 0;
+  min-width: 200px;
+  text-align: center;
+}
