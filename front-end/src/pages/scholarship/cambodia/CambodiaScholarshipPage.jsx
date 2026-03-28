@@ -137,7 +137,7 @@ export default function CambodiaScholarshipPage() {
           <SearchInput
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-            placeholder="Search internships by name..."
+            placeholder="Search scholarships by name..."
           />
 
           <div className="list-mode-toggle" role="group" aria-label="Scholarship list mode">

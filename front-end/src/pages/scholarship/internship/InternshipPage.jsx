@@ -132,7 +132,7 @@ export default function InternshipPage() {
           <SearchInput
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-            placeholder="Search internships by name..."
+            placeholder="Search Internships by name..."
           />
 
           <div className="list-mode-toggle" role="group" aria-label="Internship list mode">
@@ -143,10 +143,6 @@ export default function InternshipPage() {
               Recommended ({recommendedInternships.length})
             </button>
           </div>
-
-          {!recommendationsAvailable && (
-            <p className="list-mode-hint">College & University students: Complete your profile to see internship recommendations matched to your field of study.</p>
-          )}
 
           <div className="scholarship-grid">
             {loading ? (

@@ -1,0 +1,54 @@
+.save-toggle-btn {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.save-toggle-btn.saved {
+  transform: scale(1.08);
+}
+
+.save-toggle-btn img {
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+.save-toggle-btn.saved img {
+  opacity: 1;
+  filter: sepia(100%) saturate(5200%) hue-rotate(338deg) brightness(0.96) contrast(1.08)
+    drop-shadow(0 1px 6px rgba(217, 119, 6, 0.42));
+}
+
+.save-toggle-btn--card {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 56px;
+  height: 56px;
+  z-index: 12;
+}
+
+.save-toggle-btn--card img {
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+}
+
+.save-toggle-btn--table {
+  width: 52px;
+  height: 52px;
+}
+
+.save-toggle-btn--table img {
+  width: 30px;
+  height: 30px;
+  opacity: 0.88;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+}

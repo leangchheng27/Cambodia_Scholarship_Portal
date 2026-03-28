@@ -8,9 +8,9 @@ import {
   unsaveItem,
   getSavedItems,
 } from "../../../../api/savedApi.js";
-import saveIcon from "../../../../assets/Header/save.png";
 import { useNavigate } from "react-router-dom";
 import SearchInput from "../../../../components/SearchInput/SearchInput.jsx";
+import SaveToggleButton from "../../../../components/SaveToggleButton/SaveToggleButton.jsx";
 
 const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   const { user } = useAuth();
@@ -117,22 +117,24 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   };
 
   return (
-    <div className="university-list-container">
-      <SearchInput
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setCurrentPage(1);
-        }}
-        placeholder="Search internships by name..."
-      />
+    <div className="university-list-section">
+      <div className="university-list-search">
+        <SearchInput
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          placeholder="Search University by name"
+        />
+      </div>
 
-      {loading ? (
-        <LoadingText text="Loading universities..." />
-      ) : error ? (
-        <p className="error">{error}</p>
-      ) : (
-        <table className="university-list-table">
+      <div className="university-list-container">
+        {loading ? (
+          <LoadingText text="Loading universities..." />
+        ) : error ? (
+          <p className="error">{error}</p>
+        ) : (
+          <table className="university-list-table">
           <thead>
             <tr>
               <th>SCHOOL NAME</th>
@@ -154,24 +156,20 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
                 <td>{university.location || university.province || "N/A"}</td>
                 <td>{university.location || "N/A"}</td>
                 <td>
-                  <button
-                    type="button"
-                    className={`university-save-btn ${savedIds.has(String(university.id)) ? "saved" : ""}`}
+                  <SaveToggleButton
+                    variant="table"
+                    isSaved={savedIds.has(String(university.id))}
                     onClick={(event) => handleToggleSave(event, university)}
-                    aria-label={
-                      savedIds.has(String(university.id))
-                        ? "Remove university from saved list"
-                        : "Save university"
-                    }
-                  >
-                    <img src={saveIcon} alt="" aria-hidden="true" />
-                  </button>
+                    ariaLabelSaved="Remove university from saved list"
+                    ariaLabelUnsaved="Save university"
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
-      )}
+          </table>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { saveItem, unsaveItem, getSavedItems } from '../../api/savedApi.js'; // ✅
-import saveIcon from '../../assets/Header/save.png';
+import SaveToggleButton from '../SaveToggleButton/SaveToggleButton.jsx';
 import { recordFeedback } from '../../api/feedbackApi.js';
 import './PosterCard.css';
 
@@ -47,8 +47,8 @@ const PosterCard = ({
   };
 
   const getMatchColor = (score) => {
-    // Green background for all star ratings
-    return '#10b981';
+    // Gray background for all star ratings
+    return '#718096';
   };
 
   const renderStars = (score) => {
@@ -135,14 +135,13 @@ const PosterCard = ({
             {renderStars(scholarship.matchScore)}
           </div>
         )}
-        <button
-          type="button"
-          className={`card-save-btn ${saved ? 'saved' : ''}`}
+        <SaveToggleButton
+          variant="card"
+          isSaved={saved}
           onClick={handleSaveClick}
-          aria-label={saved ? 'Remove from saved list' : 'Save this item'}
-        >
-          <img src={saveIcon} alt="" aria-hidden="true" />
-        </button>
+          ariaLabelSaved="Remove from saved list"
+          ariaLabelUnsaved="Save this item"
+        />
       </div>
       <div className="card-content">
         <h3 className="card-title">{scholarship.title}</h3>

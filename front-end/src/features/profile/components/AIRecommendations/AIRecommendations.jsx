@@ -122,8 +122,7 @@ const AIRecommendations = ({ userProfile }) => {
   };
 
   const getMatchColor = (score) => {
-    // Green background for all star ratings
-    return '#10b981';
+    return '#718096';
   };
 
   const renderStarRating = (score) => {
