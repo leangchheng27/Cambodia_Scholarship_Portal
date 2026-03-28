@@ -102,7 +102,6 @@ const Footer = () => {
           {/* Contact */}
           <div className="footer-contact">
             <h4>Contact</h4>
-            <p>Cell: +855 12 345 678</p>
             <p>Email: info@cambodiascholarship.edu.kh</p>
           </div>
 

@@ -1,13 +1,13 @@
 import React from 'react';
-import ProfileSetupLayout from '../../../features/profile-setup/Layout/ProfileSetupLayout';
-import ProfileProgressIndicator from '../../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
-import ProfileTypeSelector from '../../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
-import AcademicTypeSelector from '../../../features/profile-setup/components/AcademicTypeSelector/AcademicTypeSelector';
-import GradeEntryForm from '../../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
-import FieldSelector from '../../../features/profile-setup/components/FieldSelector/FieldSelector';
-import ProfileSummary from '../../../features/profile-setup/components/ProfileSummary/ProfileSummary';
-import { useProfileSetup } from '../../../hooks/useProfileSetup';
-import '../../../pages/profile-setup/ProfileSetupPage.css';
+import ProfileSetupLayout from '../../features/profile-setup/Layout/ProfileSetupLayout';
+import ProfileProgressIndicator from '../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
+import ProfileTypeSelector from '../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
+import AcademicTypeSelector from '../../features/profile-setup/components/AcademicTypeSelector/AcademicTypeSelector';
+import GradeEntryForm from '../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
+import FieldSelector from '../../features/profile-setup/components/FieldSelector/FieldSelector';
+import ProfileSummary from '../../features/profile-setup/components/ProfileSummary/ProfileSummary';
+import { useProfileSetup } from '../../hooks/useProfileSetup';
+import './ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
   const {

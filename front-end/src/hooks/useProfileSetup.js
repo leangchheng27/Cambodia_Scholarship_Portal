@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
-import ProfileSetupLayout from '../Layout/ProfileSetupLayout';
-import ProfileProgressIndicator from '../components/ProfileProgressIndicator/ProfileProgressIndicator';
-import ProfileTypeSelector from '../components/ProfileTypeSelector/ProfileTypeSelector';
-import AcademicTypeSelector from '../components/AcademicTypeSelector/AcademicTypeSelector';
-import GradeEntryForm from '../components/GradeEntryForm/GradeEntryForm';
-import FieldSelector from '../components/FieldSelector/FieldSelector';
-import ProfileSummary from '../components/ProfileSummary/ProfileSummary';
-import { analyzeProfile } from '../../../api/recommendationApi';
-import './ProfileSetupPage.css';
+import { useAuth } from '../context/AuthContext';
+import { analyzeProfile } from '../api/recommendationApi';
 
-const ProfileSetupPage = () => {
+export const useProfileSetup = () => {
   const navigate = useNavigate();
   const { updateProfile } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
@@ -72,7 +64,7 @@ const ProfileSetupPage = () => {
     };
 
     fetchProfileAnalysis();
-  }, [currentStep, academicType, grades, isUniversityLevel]);
+  }, [currentStep, academicType, grades, isUniversityLevel, studentType, profileType]);
 
   const handleNext = () => {
     console.log(`handleNext called - Current step: ${currentStep}`);
@@ -166,6 +158,20 @@ const ProfileSetupPage = () => {
     navigate('/home');
   };
 
+  const handleSkip = () => {
+    console.log('Skipping profile details - saving minimal profile');
+    const profileData = {
+      profileType,
+      studentType,
+      parentType,
+      skipped: true,
+      hasRecommendations: false,
+    };
+    console.log('ProfileSetupPage - Saving skipped profile:', profileData);
+    updateProfile(profileData);
+    navigate('/home');
+  };
+
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
@@ -202,93 +208,34 @@ const ProfileSetupPage = () => {
     setParentType(type);
   };
 
-  return (
-    <ProfileSetupLayout>
-      <h1 className="profile-title">Create Your Profile</h1>
-      
-      <ProfileProgressIndicator currentStep={currentStep} />
+  const handleUniversityFieldChange = (field) => {
+    setUniversityField(field);
+  };
 
-      {/* Step 1: Profile Type Selection */}
-      {currentStep === 1 && (
-        <div className="step-content">
-          <ProfileTypeSelector
-            profileType={profileType}
-            studentType={studentType}
-            parentType={parentType}
-            onProfileTypeSelect={handleProfileTypeSelect}
-            onStudentTypeSelect={handleStudentTypeSelect}
-            onParentTypeSelect={handleParentTypeSelect}
-          />
-          <div className="button-group">
-            <button className="next-btn" onClick={handleNext}>Next</button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Academic Profile & Grades */}
-      {currentStep === 2 && (
-        <div className="step-content step-2-content">
-          {isUniversityLevel ? (
-            <>
-              <h2 className="profile-section-title white-title">Your Field of Study</h2>
-              <FieldSelector
-                profileType={profileType}
-                universityField={universityField}
-                onFieldChange={setUniversityField}
-              />
-            </>
-          ) : (
-            <>
-              <h2 className="profile-section-title white-title">Your Academic Profile</h2>
-              <AcademicTypeSelector
-                academicType={academicType}
-                onAcademicTypeChange={handleAcademicTypeChange}
-              />
-              <GradeEntryForm
-                academicType={academicType}
-                grades={grades}
-                onGradeChange={handleGradeChange}
-              />
-            </>
-          )}
-
-          <div className="button-group">
-            <button className="back-btn" onClick={handleBack}>Back</button>
-            <button className="next-btn" onClick={handleNext}>Next</button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Final Step */}
-      {currentStep === 3 && (
-        <div className="step-content success-step">
-          <h2 className="success-title">Your Profile Created Successfully!</h2>
-          
-          {isAnalyzing && (
-            <div className="loading-message">Analyzing your profile...</div>
-          )}
-          
-          {!isAnalyzing && (
-            <ProfileSummary
-              profileType={profileType}
-              studentType={studentType}
-              parentType={parentType}
-              academicType={academicType}
-              universityField={universityField}
-              grades={grades}
-              gpa={profileData.gpa}
-              strongSubjects={profileData.strongSubjects}
-              recommendedFields={profileData.recommendedFields}
-            />
-          )}
-          
-          <button className="explore-btn" onClick={handleComplete} disabled={isAnalyzing}>
-            Start Exploring Scholarships
-          </button>
-        </div>
-      )}
-    </ProfileSetupLayout>
-  );
+  return {
+    // State
+    currentStep,
+    profileType,
+    studentType,
+    parentType,
+    academicType,
+    universityField,
+    grades,
+    profileData,
+    isAnalyzing,
+    analysisError,
+    isUniversityLevel,
+    
+    // Handlers
+    handleNext,
+    handleComplete,
+    handleSkip,
+    handleBack,
+    handleGradeChange,
+    handleAcademicTypeChange,
+    handleProfileTypeSelect,
+    handleStudentTypeSelect,
+    handleParentTypeSelect,
+    handleUniversityFieldChange,
+  };
 };
-
-export default ProfileSetupPage;
