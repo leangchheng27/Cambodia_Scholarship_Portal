@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import ProfileSetupLayout from '../../features/profile-setup/Layout/ProfileSetupLayout';
 import ProfileProgressIndicator from '../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
 import ProfileTypeSelector from '../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
@@ -6,32 +6,36 @@ import AcademicTypeSelector from '../../features/profile-setup/components/Academ
 import GradeEntryForm from '../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
 import FieldSelector from '../../features/profile-setup/components/FieldSelector/FieldSelector';
 import ProfileSummary from '../../features/profile-setup/components/ProfileSummary/ProfileSummary';
-import { useProfileSetup } from '../../hooks/useProfileSetup';
+import { AuthContext } from '../../context/AuthContext';
 import './ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
-  const {
-    currentStep,
-    profileType,
-    studentType,
-    parentType,
-    academicType,
-    universityField,
-    grades,
-    profileData,
-    isAnalyzing,
-    isUniversityLevel,
-    handleNext,
-    handleComplete,
-    handleSkip,
-    handleBack,
-    handleGradeChange,
-    handleAcademicTypeChange,
-    handleProfileTypeSelect,
-    handleStudentTypeSelect,
-    handleParentTypeSelect,
-    handleUniversityFieldChange,
-  } = useProfileSetup();
+  const { user } = useContext(AuthContext);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [profileType, setProfileType] = useState('');
+  const [studentType, setStudentType] = useState('');
+  const [parentType, setParentType] = useState('');
+  const [academicType, setAcademicType] = useState('');
+  const [universityField, setUniversityField] = useState('');
+  const [grades, setGrades] = useState({});
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const isUniversityLevel = studentType === 'university' || academicType === 'university';
+  
+  const handleProfileTypeSelect = (type) => setProfileType(type);
+  const handleStudentTypeSelect = (type) => setStudentType(type);
+  const handleParentTypeSelect = (type) => setParentType(type);
+  const handleAcademicTypeChange = (type) => setAcademicType(type);
+  const handleUniversityFieldChange = (field) => setUniversityField(field);
+  const handleGradeChange = (gradeObj) => setGrades(gradeObj);
+  
+  const handleNext = () => setCurrentStep(prev => prev + 1);
+  const handleBack = () => setCurrentStep(prev => prev - 1);
+  const handleSkip = () => setCurrentStep(prev => prev + 1);
+  const handleComplete = () => {
+    // Save profile data to backend through AuthContext or API
+    console.log('Profile setup complete');
+  };
 
   return (
     <ProfileSetupLayout>
