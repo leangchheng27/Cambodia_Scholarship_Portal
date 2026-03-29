@@ -12,7 +12,7 @@ import HomePage from "./pages/home/HomePage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import SignupPage from "./pages/auth/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
-import ProfileSetupPage from "./features/auth/pages/ProfileSetupPage.jsx";
+import ProfileSetupPage from "./pages/profile-setup/ProfileSetupPage.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import UniversityPage from "./pages/university/UniversityPage.jsx";
 import UniversityDetailPage from "./pages/university/UniversityDetailPage.jsx";

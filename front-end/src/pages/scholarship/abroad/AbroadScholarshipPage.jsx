@@ -195,7 +195,7 @@ export default function AbroadScholarshipPage() {
           <SearchInput
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-            placeholder="Search internships by name..."
+            placeholder="Search Scholarships by name..."
           />
 
           <div className="list-mode-toggle" role="group" aria-label="Abroad scholarship list mode">

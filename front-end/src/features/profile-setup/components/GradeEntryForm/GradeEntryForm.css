@@ -9,8 +9,10 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   max-height: 400px;
+  background-color: #3b82b9;
   overflow-y: auto;
-  padding: 8px;
+  padding: 32px;
+  border-radius: 16px;
 }
 
 .grade-input-row {
@@ -44,7 +46,7 @@
 
 .grade-select-setup:focus {
   outline: none;
-  border-color: #2bb7df;
+  border-color: #3b82b9;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 

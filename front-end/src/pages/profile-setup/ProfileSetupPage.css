@@ -11,7 +11,7 @@
 }
 
 .step-2-content {
-  background: #999;
+  background: #fff;
   border-radius: 12px;
   padding: 40px 24px;
 }
@@ -29,7 +29,7 @@
 
 .white-title {
   background: transparent;
-  color: #fff;
+  color: #2f6b9a;
   padding: 0;
   margin-bottom: 40px;
 }
@@ -43,10 +43,11 @@
 }
 
 .button-group .next-btn,
-.button-group .back-btn {
+.button-group .back-btn,
+.button-group .skip-btn {
   width: 250px;
   height: 56px;
-  background: #2bb7df;
+  background: #999;
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -63,10 +64,22 @@
 
 .button-group .next-btn:hover,
 .button-group .back-btn:hover {
-  background: #26a6c7;
+  background: #2f6b9a;
   color: #fff;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(43, 183, 223, 0.4);
+}
+
+.button-group .skip-btn {
+  background: #ccc;
+  color: #333;
+}
+
+.button-group .skip-btn:hover {
+  background: #999;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .button-group .back-btn {
@@ -86,7 +99,7 @@
 }
 
 .explore-btn {
-  background: #2bb7df;
+  background: #3b82b9;
   color: #fff;
   border: none;
   border-radius: 24px;

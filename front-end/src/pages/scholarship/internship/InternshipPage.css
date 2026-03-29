@@ -111,6 +111,20 @@
   padding: 60px 20px;
 }
 
+/* Pull posters/search section closer to the feature cards above */
+.resource-posters.scholarship-list-container {
+  padding-top: 14px;
+}
+
+.resource-posters .search-container {
+  margin-top: 0;
+  margin-bottom: 26px;
+}
+
+.resource-posters .search-input {
+  border-radius: 16px;
+}
+
 .scholarship-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

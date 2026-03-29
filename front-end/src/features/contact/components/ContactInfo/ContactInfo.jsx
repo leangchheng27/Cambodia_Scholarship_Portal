@@ -17,14 +17,6 @@ const ContactInfo = () => {
         </div>
 
         <div className="contact-item">
-          <span className="contact-icon">📱</span>
-          <div>
-            <h4>Phone</h4>
-            <p>+855 XX XXX XXX</p>
-          </div>
-        </div>
-
-        <div className="contact-item">
           <span className="contact-icon">📍</span>
           <div>
             <h4>Address</h4>

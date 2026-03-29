@@ -5,7 +5,7 @@
 .section-subtitle {
   font-size: 18px;
   font-weight: 600;
-  color: white;
+  color: #2f6b9a;
   margin-bottom: 16px;
   text-align: center;
 }
@@ -24,24 +24,22 @@
   gap: 12px;
   padding: 20px;
   background: rgba(255, 255, 255, 0.95);
-  border: 3px solid rgba(255, 255, 255, 0.4);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
   font-size: 16px;
   font-weight: 600;
-  color: #374151;
 }
 
 .academic-type-btn:hover {
   background: white;
-  border-color: #2bb7df;
+  border-color: #3b82b9;
   transform: translateY(-2px);
 }
 
 .academic-type-btn.selected {
-  background: #2bb7df;
-  border-color: #2bb7df;
+  background: #3b82b9;
+  border-color: #3b82b9;
   color: white;
 }
 

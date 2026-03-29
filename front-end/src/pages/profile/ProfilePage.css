@@ -328,7 +328,7 @@
   padding: 40px 20px;
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border-radius: 12px;
-  border: 2px dashed #3b82f6;
+  border: 2px dashed #3a424f;
 }
 
 .empty-icon {
@@ -339,7 +339,7 @@
 .empty-state h4 {
   font-size: 20px;
   font-weight: 700;
-  color: #1e40af;
+  color: #3a424f;
   margin: 0 0 12px 0;
 }
 
@@ -351,7 +351,7 @@
 }
 
 .add-grades-btn {
-  background: #3b82f6;
+  background: #3a424f;
   color: white;
   border: none;
   padding: 12px 28px;
@@ -366,7 +366,7 @@
 }
 
 .add-grades-btn:hover {
-  background: #2563eb;
+  background: #252930;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }

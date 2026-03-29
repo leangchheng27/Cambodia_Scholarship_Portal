@@ -152,10 +152,11 @@
 /* Footer Bottom */
 .footer-bottom {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 40px;
-  padding: 40px 60px 30px;
+  padding: 40px;
   border-top: 1px solid var(--footer-border);
+  align-items: start;
 }
 
 .footer-links h4,
@@ -189,10 +190,17 @@
 }
 
 /* Contact Section */
+.footer-contact {
+  text-align: left;
+  max-width: 280px;
+}
+
 .footer-contact p {
   color: var(--footer-muted);
   font-size: 14px;
   margin-bottom: 10px;
+  white-space: nowrap;
+  text-align: left;
 }
 
 /* Social Section */

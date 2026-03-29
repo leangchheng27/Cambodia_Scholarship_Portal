@@ -45,8 +45,8 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
   };
 
   const getMatchColor = (score) => {
-    // Green background for all star ratings
-    return '#10b981';
+    // Gray background for all star ratings
+    return '#718096';
   };
 
   const renderStars = (score) => {

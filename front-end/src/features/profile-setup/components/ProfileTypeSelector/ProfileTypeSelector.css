@@ -92,9 +92,9 @@
 }
 
 .student-type-btn.selected {
-  background: #000;
+  background: #3b82b9;
   color: #fff;
-  border-color: #000;
+  border-color: #3b82b9;
 }
 
 @media (max-width: 768px) {
