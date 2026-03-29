@@ -12,6 +12,12 @@ import ScholarshipDeadline from './scholarship/ScholarshipDeadline.js';
 import ScholarshipEligibility from './scholarship/ScholarshipEligibility.js';
 import ScholarshipFieldOfStudy from './scholarship/ScholarshipFieldOfStudy.js';
 
+import Internship from './internship/Internship.js';
+import InternshipBenefit from './internship/InternshipBenefit.js';
+import InternshipDeadline from './internship/InternshipDeadline.js';
+import InternshipEligibility from './internship/InternshipEligibility.js';
+import InternshipFieldOfStudy from './internship/InternshipFieldOfStudy.js';
+
 import Saved from './saved/saved.js';
 
 // Initialize all associations
@@ -31,6 +37,7 @@ const initializeModels = () => {
   UniversityNews.belongsTo(University, { foreignKey: 'university_id' });
   UniversityStudentAchievement.belongsTo(University, { foreignKey: 'university_id' });
 
+  // Note: Internship associations are already defined in their individual model files
   // Saved — no associations needed for now
 };
 
@@ -47,6 +54,11 @@ export {
   ScholarshipDeadline,
   ScholarshipEligibility,
   ScholarshipFieldOfStudy,
+  Internship,
+  InternshipBenefit,
+  InternshipDeadline,
+  InternshipEligibility,
+  InternshipFieldOfStudy,
   Saved,
   initializeModels,
 };

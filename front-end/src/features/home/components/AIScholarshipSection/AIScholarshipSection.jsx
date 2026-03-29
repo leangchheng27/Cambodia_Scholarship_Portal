@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAIRecommendations, calculateGPA } from '../../../../utils/profileUtils';
+import { calculateGPA } from '../../../../utils/profileUtils';
 import { getScholarships } from '../../../../api/scholarshipApi';
 import LoadingText from '../../../../components/ui/LoadingText/LoadingText.jsx';
 import './AIScholarshipSection.css';
@@ -13,7 +13,6 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
   useEffect(() => {
     const fetchRecommendations = async () => {
       console.log(`AIScholarshipSection [${type}] - userProfile:`, userProfile);
-      console.log(`AIScholarshipSection [${type}] - userProfile.grades:`, userProfile?.grades);
       
       setIsLoading(true);
       try {
@@ -22,34 +21,16 @@ const AIScholarshipSection = ({ title, subtitle, userProfile, type = 'all', limi
 
         // Filter by type if specified
         if (type === 'cambodia') {
-          // You may need to add category filtering logic based on your data structure
           scholarshipList = scholarshipList.slice(0, Math.ceil(scholarshipList.length / 2));
         } else if (type === 'abroad') {
           scholarshipList = scholarshipList.slice(Math.ceil(scholarshipList.length / 2));
         }
 
-        // If user has grades, get AI recommendations (sorted by match score)
-        if (userProfile?.grades && Object.keys(userProfile.grades).length > 0) {
-          console.log(`AIScholarshipSection [${type}] - User has grades, getting AI recommendations`);
-          const gpa = calculateGPA(userProfile.grades);
-          const enrichedProfile = {
-            ...userProfile,
-            gpa
-          };
-
-          const aiRecommendations = await getAIRecommendations(enrichedProfile, scholarshipList, limit);
-          console.log(`AIScholarshipSection [${type}] - Received ${aiRecommendations.length} recommendations`);
-          aiRecommendations.forEach((s, i) => {
-            console.log(`  ${i + 1}. ${s.name} - ${s.matchScore}%`);
-          });
-          setRecommendations(aiRecommendations);
-        } else {
-          // Show default scholarships for users without profile
-          console.log(`AIScholarshipSection [${type}] - No user profile or grades, showing default scholarships`);
-          setRecommendations(scholarshipList.slice(0, limit));
-        }
+        // Show default scholarships (no AI matching on home page)
+        console.log(`AIScholarshipSection [${type}] - Showing ${limit} scholarships`);
+        setRecommendations(scholarshipList.slice(0, limit));
       } catch (error) {
-        console.error('Error fetching recommendations:', error);
+        console.error('Error fetching scholarships:', error);
         setRecommendations([]);
       } finally {
         setIsLoading(false);

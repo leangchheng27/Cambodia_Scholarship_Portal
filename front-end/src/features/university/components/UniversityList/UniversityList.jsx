@@ -117,62 +117,63 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   };
 
   return (
-    <div className="university-list-container">
+    <>
       <SearchInput
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
           setCurrentPage(1);
         }}
-        placeholder="Search internships by name..."
+        placeholder="Search"
       />
-
-      {loading ? (
-        <LoadingText text="Loading universities..." />
-      ) : error ? (
-        <p className="error">{error}</p>
-      ) : (
-        <table className="university-list-table">
-          <thead>
-            <tr>
-              <th>SCHOOL NAME</th>
-              <th>PROVINCE</th>
-              <th>CITY</th>
-              <th>SAVE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((university) => (
-              <tr
-                key={university.id}
-                className="clickable-row"
-                onClick={() => {
-                  if (onUniversityClick) onUniversityClick(university.id);
-                }}
-              >
-                <td>{university.name}</td>
-                <td>{university.location || university.province || "N/A"}</td>
-                <td>{university.location || "N/A"}</td>
-                <td>
-                  <button
-                    type="button"
-                    className={`university-save-btn ${savedIds.has(String(university.id)) ? "saved" : ""}`}
-                    onClick={(event) => handleToggleSave(event, university)}
-                    aria-label={
-                      savedIds.has(String(university.id))
-                        ? "Remove university from saved list"
-                        : "Save university"
-                    }
-                  >
-                    <img src={saveIcon} alt="" aria-hidden="true" />
-                  </button>
-                </td>
+      <div className="university-list-container">
+        {loading ? (
+          <LoadingText text="Loading universities..." />
+        ) : error ? (
+          <p className="error">{error}</p>
+        ) : (
+          <table className="university-list-table">
+            <thead>
+              <tr>
+                <th>SCHOOL NAME</th>
+                <th>PROVINCE</th>
+                <th>CITY</th>
+                <th>SAVE</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+            </thead>
+            <tbody>
+              {filtered.map((university) => (
+                <tr
+                  key={university.id}
+                  className="clickable-row"
+                  onClick={() => {
+                    if (onUniversityClick) onUniversityClick(university.id);
+                  }}
+                >
+                  <td>{university.name}</td>
+                  <td>{university.location || university.province || "N/A"}</td>
+                  <td>{university.location || "N/A"}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`university-save-btn ${savedIds.has(String(university.id)) ? "saved" : ""}`}
+                      onClick={(event) => handleToggleSave(event, university)}
+                      aria-label={
+                        savedIds.has(String(university.id))
+                          ? "Remove university from saved list"
+                          : "Save university"
+                      }
+                    >
+                      <img src={saveIcon} alt="" aria-hidden="true" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </>
   );
 };
 

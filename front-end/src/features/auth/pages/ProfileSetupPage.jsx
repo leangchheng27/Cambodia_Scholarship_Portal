@@ -8,7 +8,6 @@ import AcademicTypeSelector from '../../../features/profile-setup/components/Aca
 import GradeEntryForm from '../../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
 import FieldSelector from '../../../features/profile-setup/components/FieldSelector/FieldSelector';
 import ProfileSummary from '../../../features/profile-setup/components/ProfileSummary/ProfileSummary';
-import { analyzeProfile } from '../../../api/recommendationApi';
 import '../../../features/profile-setup/pages/ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
@@ -37,39 +36,15 @@ const ProfileSetupPage = () => {
 
   // Analyze profile when reaching step 3
   useEffect(() => {
-    const fetchProfileAnalysis = async () => {
-      if (currentStep === 3 && !isUniversityLevel && Object.keys(grades).length > 0) {
-        console.log('Step 3: Fetching profile analysis...');
-        setIsAnalyzing(true);
-        setAnalysisError(null);
-        try {
-          const response = await analyzeProfile(academicType, grades);
-          console.log('API Response:', response);
-          if (response.success) {
-            setProfileData({
-              gpa: response.data.gpa,
-              strongSubjects: response.data.strongSubjects,
-              recommendedFields: response.data.recommendedFields
-            });
-            console.log('Profile data updated successfully');
-          } else {
-            setAnalysisError('Failed to analyze profile');
-          }
-        } catch (error) {
-          console.error('Error analyzing profile:', error);
-          // Silently fail - profile will show without AI recommendations
-          setProfileData({
-            gpa: 0,
-            strongSubjects: [],
-            recommendedFields: []
-          });
-        } finally {
-          setIsAnalyzing(false);
-        }
-      }
-    };
-
-    fetchProfileAnalysis();
+    if (currentStep === 3 && !isUniversityLevel && Object.keys(grades).length > 0) {
+      console.log('Step 3: Profile analysis not available in this version');
+      // Profile analysis disabled - users can still proceed with their grades
+      setProfileData({
+        gpa: 0,
+        strongSubjects: [],
+        recommendedFields: []
+      });
+    }
   }, [currentStep, academicType, grades, isUniversityLevel]);
 
   const handleNext = () => {

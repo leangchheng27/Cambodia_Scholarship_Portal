@@ -1,7 +1,6 @@
 /**
  * Frontend utility functions for profile calculations
  */
-import { getScholarshipRecommendations as apiGetRecommendations } from '../api/recommendationApi';
 
 /**
  * List of subjects available in the system
@@ -94,38 +93,4 @@ export function analyzeStrongSubjects(grades) {
   }
 
   return strongSubjects;
-}
-
-/**
- * Get AI-powered scholarship recommendations
- * @param {Object} userProfile - User profile data with grades and GPA
- * @param {Array} scholarships - List of scholarships to match against
- * @param {number} limit - Maximum number of recommendations (default: 10)
- * @returns {Promise<Array>} - Array of recommended scholarships with match scores
- */
-export async function getAIRecommendations(userProfile, scholarships, limit = 10) {
-  console.log('getAIRecommendations called with:', { 
-    userProfile, 
-    scholarshipsCount: scholarships.length, 
-    limit 
-  });
-  
-  try {
-    console.log('Sending request to backend...');
-    const data = await apiGetRecommendations(userProfile, scholarships, limit);
-    
-    // Check if backend returned success
-    if (data.success && data.data?.recommendations) {
-      console.log(`✅ Backend returned ${data.data.recommendations.length} recommendations`);
-      const sorted = data.data.recommendations.sort((a, b) => b.matchScore - a.matchScore);
-      return sorted;
-    }
-    
-    // If response doesn't have the expected structure, throw error
-    throw new Error('Invalid backend response format');
-  } catch (error) {
-    console.error('❌ AI recommendation error:', error.message);
-    // NO FALLBACK - Error propagates to caller
-    throw error;
-  }
-}
+};

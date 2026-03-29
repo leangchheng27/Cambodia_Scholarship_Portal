@@ -99,7 +99,7 @@ const PosterCard = ({
           itemType,
           title: scholarship.title || scholarship.name || 'Untitled',
           description: scholarship.description || '',
-          image: scholarship.image || '',
+          image: scholarship.poster_image_url || scholarship.image_url || scholarship.image || '',
           detailPath: `${basePath}/detail/${scholarship.id}`,
         });
         recordFeedback({
@@ -120,7 +120,7 @@ const PosterCard = ({
     <div className="scholarship-card" onClick={handleCardClick}>
       <div className="card-image-wrapper">
         <img 
-          src={scholarship.image} 
+          src={scholarship.poster_image_url || scholarship.image_url || scholarship.image} 
           alt={scholarship.title} 
           className="card-image" 
         />
@@ -145,7 +145,7 @@ const PosterCard = ({
         </button>
       </div>
       <div className="card-content">
-        <h3 className="card-title">{scholarship.title}</h3>
+        <h3 className="card-title">{scholarship.title || scholarship.name}</h3>
         <p className="card-description">{scholarship.description}</p>
         <button className="view-detail-btn">
           View more detail

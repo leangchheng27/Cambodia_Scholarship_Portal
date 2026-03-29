@@ -1,137 +1,140 @@
 /**
  * Recommendation Routes
- * API endpoints for scholarship recommendations
+ * API endpoints for scholarship recommendations using field-based filtering
  */
 
 import express from 'express';
 const router = express.Router();
 import {
-  analyzeProfile,
-  getRecommendations,
-  analyzeUniversityProfile,
-  precomputeEmbeddings
+  getScholarshipsByMajorFields
 } from './recommendationController.js';
 
 /**
- * @route   POST /api/recommendations/analyze-profile
- * @desc    Analyze user profile and return academic insights
+ * @route   POST /api/recommendations/scholarships-by-fields
+ * @desc    Get scholarships filtered by major field names
  * @access  Public
- * @body    { studentType: string, grades: Object }
- * @returns { gpa, strongSubjects, performanceLevel, recommendedFields }
+ * @body    { majorTitles: string[] }
+ * @returns { success: boolean, scholarships: Array, total: number }
  */
-router.post('/analyze-profile', analyzeProfile);
-
-/**
- * @route   POST /api/recommendations/scholarships
- * @desc    Get scholarship recommendations for a user
- * @access  Public
- * @body    { userProfile: Object, scholarships: Array, useAI?: boolean, limit?: number }
- * @returns { recommendations: Array }
- */
-router.post('/scholarships', getRecommendations);
-
-/**
- * @route   POST /api/recommendations/university-profile
- * @desc    Analyze university student profile and get internship recommendations
- * @access  Public
- * @body    { universityProfile: Object, opportunities: Array }
- * @returns { recommendations: Array }
- */
-router.post('/university-profile', analyzeUniversityProfile);
-
-/**
- * @route   POST /api/recommendations/precompute-embeddings
- * @desc    Precompute embeddings for scholarships (admin/cron job)
- * @access  Private (should be protected by auth middleware)
- * @body    { scholarships: Array }
- * @returns { cached: number, total: number }
- */
-router.post('/precompute-embeddings', precomputeEmbeddings);
+router.post('/scholarships-by-fields', getScholarshipsByMajorFields);
 
 // ============================================
-// AI-Powered Scholarship Recommendations
-// Uses tozenz/cambodia-scholarship-ai-subjects (fine-tuned model)
+// Custom Model Integration
+// Uses leangchheng27/Cambodia-Scholarship-Portal
 // ============================================
 
 import {
-  getScholarshipRecommendations,
-  getTopRecommendations,
-  getAllScholarships,
-  getScholarshipById
-} from './services/scholarshipAIService.js';
+  getCustomModelRecommendations,
+  healthCheck
+} from './services/customModelService.js';
 
-router.post('/ai/get', async (req, res) => {
+/**
+ * @route   POST /api/recommendations/custom/recommend
+ * @desc    Get scholarship recommendations using custom HF model
+ * @access  Public
+ */
+router.post('/custom/recommend', async (req, res) => {
   try {
-    const { stream, grades } = req.body;
+    const { studentProfile, scholarships, limit = 10 } = req.body;
 
-    if (!stream || !grades || Object.keys(grades).length === 0) {
-      return res.status(400).json({ success: false, error: 'Missing stream or grades' });
+    if (!studentProfile || !studentProfile.stream) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing studentProfile or stream' 
+      });
     }
 
-    const recommendations = await getScholarshipRecommendations({ stream, grades });
+    if (!Array.isArray(scholarships) || scholarships.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing or empty scholarships array' 
+      });
+    }
+
+    console.log(`📨 [API] Recommendation request: ${scholarships.length} majors`);
+
+    const recommendations = await getCustomModelRecommendations(studentProfile, scholarships);
+    const limitedRecommendations = recommendations.slice(0, limit);
+
     res.json({
       success: true,
-      studentProfile: { stream, gradesCount: Object.keys(grades).length },
-      recommendations,
-      topRecommendation: recommendations[0] || null
+      studentProfile: {
+        stream: studentProfile.stream,
+        gradesCount: studentProfile.grades ? Object.keys(studentProfile.grades).length : 0
+      },
+      recommendations: limitedRecommendations,
+      totalMatched: recommendations.length,
+      model: process.env.HF_CUSTOM_MODEL || 'leangchheng27/Cambodia-Scholarship-Portal'
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('❌ API Error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message
+    });
   }
 });
 
-router.post('/ai/top', async (req, res) => {
-  try {
-    const { stream, grades, topN = 3 } = req.body;
-
-    if (!stream || !grades) {
-      return res.status(400).json({ success: false, error: 'Missing stream or grades' });
-    }
-
-    const recommendations = await getTopRecommendations({ stream, grades }, parseInt(topN));
-    res.json({ success: true, topRecommendations: recommendations });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+/**
+ * @route   GET /api/recommendations/custom/health
+ * @desc    Check custom model service health
+ * @access  Public
+ */
+router.get('/custom/health', (req, res) => {
+  const hasApiKey = !!process.env.HUGGINGFACE_API_KEY;
+  res.json({
+    service: 'custom-model',
+    configured: hasApiKey,
+    model: process.env.HF_CUSTOM_MODEL || 'leangchheng27/Cambodia-Scholarship-Portal',
+    status: hasApiKey ? 'ready' : 'not-configured'
+  });
 });
 
-router.get('/ai/scholarships', (req, res) => {
-  try {
-    const scholarships = getAllScholarships();
-    res.json({ success: true, scholarships, total: scholarships.length });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-router.get('/ai/scholarships/:id', (req, res) => {
-  try {
-    const scholarship = getScholarshipById(parseInt(req.params.id));
-    if (!scholarship) {
-      return res.status(404).json({ success: false, error: 'Scholarship not found' });
-    }
-    res.json({ success: true, scholarship });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-router.post('/ai/test', async (req, res) => {
+/**
+ * @route   POST /api/recommendations/custom/test
+ * @desc    Test the custom model
+ * @access  Public
+ */
+router.post('/custom/test', async (req, res) => {
   try {
     const testStudent = {
       stream: 'science',
-      grades: { Math: 'A', Physics: 'A', Chemistry: 'B', Biology: 'B', 'Khmer Literature': 'C', History: 'C', English: 'B' }
+      grades: { Math: 'A', Physics: 'A', Chemistry: 'B', Biology: 'B' }
     };
-    const recommendations = await getScholarshipRecommendations(testStudent);
+
+    const MAJORS = [
+      { id: 1, title: 'IT & Computer Science', description: 'Master software, AI, and digital systems' },
+      { id: 2, title: 'Engineering', description: 'Build infrastructure and technical systems' },
+      { id: 3, title: 'Health & Medical Sciences', description: 'Healthcare, medicine, and life sciences' },
+      { id: 4, title: 'Agriculture & Environmental', description: 'Farming, ecology, and environmental protection' },
+      { id: 5, title: 'Architecture & Urban Planning', description: 'Design buildings and cities' },
+      { id: 6, title: 'Business & Economics', description: 'Lead in business, finance, and economics' },
+      { id: 7, title: 'Education', description: 'Shape the next generation of learners' },
+      { id: 8, title: 'Arts & Media', description: 'Creative arts, design, and media production' },
+      { id: 9, title: 'Law & Legal Studies', description: 'Study law, justice, and governance' },
+      { id: 10, title: 'Social Sciences', description: 'Understand society, politics, and human behavior' },
+      { id: 11, title: 'Tourism & Hospitality', description: 'Travel, tourism, and hospitality management' },
+      { id: 12, title: 'Languages & Literature', description: 'Master languages, linguistics, and literature' },
+    ];
+
+    console.log(`\n🧪 Testing custom model...`);
+
+    const recommendations = await getCustomModelRecommendations(testStudent, MAJORS);
+
     res.json({
       success: true,
-      message: '✓ AI is working correctly!',
+      message: '✅ Custom model test passed',
       testStudent,
       recommendations,
-      modelInfo: { model: 'tozenz/cambodia-scholarship-ai-subjects', trainingDate: '2026-03-15', samples: 300, testPassRate: '100%' }
+      model: process.env.HF_CUSTOM_MODEL || 'leangchheng27/Cambodia-Scholarship-Portal'
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message, message: 'AI test failed - Check HUGGINGFACE_API_KEY in .env' });
+    console.error('❌ Test failed:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Test failed',
+      error: error.message
+    });
   }
 });
 

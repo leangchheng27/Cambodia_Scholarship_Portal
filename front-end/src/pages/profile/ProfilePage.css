@@ -209,61 +209,6 @@
   color: #6b7280;
 }
 
-/* Interest and Skill Sections */
-.interest-section,
-.skill-section {
-  margin-bottom: 32px;
-}
-
-.interest-section:last-child,
-.skill-section:last-child {
-  margin-bottom: 0;
-}
-
-.interest-section h3,
-.skill-section h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  margin: 0 0 16px 0;
-}
-
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.tag {
-  background: #000;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.interest-tag {
-  background: #000;
-}
-
-.skill-tag {
-  background-color: #718096;
-}
-
-.tag-icon {
-  font-size: 16px;
-}
-
-.no-data {
-  font-size: 14px;
-  color: #9ca3af;
-  font-style: italic;
-}
-
 /* Academic Profile Section */
 .academic-section {
   margin-top: 32px;

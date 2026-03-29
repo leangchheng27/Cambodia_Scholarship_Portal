@@ -10,9 +10,6 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
   const [editForm, setEditForm] = useState({
     name: '',
     phone: '',
-    nationality: '',
-    interests: [],
-    skills: [],
     studentType: 'science', // 'science', 'society', 'college'
     academicType: 'science', // For high school only
     grades: {}, // For high school only
@@ -41,9 +38,6 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
       setEditForm({
         name: userData.name || '',
         phone: userData.phone || '',
-        nationality: userData.nationality || 'Cambodian',
-        interests: Array.isArray(userData.interests) ? [...userData.interests] : [],
-        skills: Array.isArray(userData.skills) ? [...userData.skills] : [],
         studentType: studentType,
         academicType: studentType === 'college' ? '' : studentType,
         grades: defaultGrades,
@@ -95,15 +89,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     }
   };
 
-  const toggleInterest = (interest) => {
-    setEditForm(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
-  };
-const handleStudentTypeChange = (newType) => {
+  const handleStudentTypeChange = (newType) => {
     const newGrades = {};
     // Always reset to empty grades, do NOT carry over old track grades
     if (newType === 'science' || newType === 'society') {
@@ -131,15 +117,6 @@ const handleStudentTypeChange = (newType) => {
   };
 
   
-  const toggleSkill = (skill) => {
-    setEditForm(prev => ({
-      ...prev,
-      skills: prev.skills.includes(skill)
-        ? prev.skills.filter(s => s !== skill)
-        : [...prev.skills, skill]
-    }));
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -233,65 +210,24 @@ const handleStudentTypeChange = (newType) => {
                 className="field-select"
               >
                 <option value="">Select your field of study</option>
+                <option value="IT & Computer Science">IT & Computer Science</option>
                 <option value="Engineering">Engineering</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Business">Business & Commerce</option>
-                <option value="Medicine">Medicine & Health Sciences</option>
-                <option value="Law">Law</option>
+                <option value="Health & Medical Sciences">Health & Medical Sciences</option>
+                <option value="Agriculture & Environmental">Agriculture & Environmental</option>
+                <option value="Architecture & Urban Planning">Architecture & Urban Planning</option>
+                <option value="Business & Economics">Business & Economics</option>
                 <option value="Education">Education</option>
-                <option value="Economics">Economics</option>
-                <option value="Arts">Arts & Humanities</option>
-                <option value="Science">Pure Sciences</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Architecture">Architecture & Design</option>
+                <option value="Arts & Media">Arts & Media</option>
+                <option value="Law & Legal Studies">Law & Legal Studies</option>
                 <option value="Social Sciences">Social Sciences</option>
+                <option value="Tourism & Hospitality">Tourism & Hospitality</option>
+                <option value="Languages & Literature">Languages & Literature</option>
               </select>
               <p className="field-hint">Your field of study helps match you with internships and scholarships for your career path.</p>
             </div>
           )}
 
-          {/* Nationality Input */}
-          <div className="form-group">
-            <label>Nationality</label>
-            <input
-              type="text"
-              value={editForm.nationality}
-              onChange={(e) => setEditForm({ ...editForm, nationality: e.target.value })}
-              placeholder="Enter your nationality"
-            />
-          </div>
 
-          {/* Interests Selection */}
-          <div className="form-group">
-            <label>Interests</label>
-            <div className="interests-grid">
-              {['AI', 'Hacking', 'Engineering', 'Technology', 'Art', 'Health care', 'Business', 'Marketing'].map(interest => (
-                <button
-                  key={interest}
-                  className={`interest-chip ${editForm.interests.includes(interest) ? 'selected' : ''}`}
-                  onClick={() => toggleInterest(interest)}
-                >
-                  {interest}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Skills Selection */}
-          <div className="form-group">
-            <label>Skills</label>
-            <div className="interests-grid">
-              {['JavaScript', 'Python', 'Java', 'React', 'Node.js', 'Data Analysis', 'UI/UX Design', 'Project Management'].map(skill => (
-                <button
-                  key={skill}
-                  className={`interest-chip ${editForm.skills.includes(skill) ? 'selected' : ''}`}
-                  onClick={() => toggleSkill(skill)}
-                >
-                  {skill}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="modal-footer">

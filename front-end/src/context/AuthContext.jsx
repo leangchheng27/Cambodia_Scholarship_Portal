@@ -88,7 +88,10 @@ export const AuthProvider = ({ children }) => {
       if (!token) return;
       try {
         const response = await API.get("/auth/me");
+        console.log("AuthContext - Loaded user from backend:", response.data);
         setUser(response.data);
+        // Also set profile with all the retrieved data
+        setProfile(response.data);
       } catch {
         logout();
       }

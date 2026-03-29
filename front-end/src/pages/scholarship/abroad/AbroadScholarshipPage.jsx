@@ -4,8 +4,8 @@ import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getScholarships } from '../../../api/scholarshipApi.js';
+import { getCustomModelRecommendations, getScholarshipsByMajorFields } from '../../../api/recommendationApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
-import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './AbroadScholarshipPage.css';
 import SearchInput from '../../../components/SearchInput/SearchInput.jsx';
@@ -15,6 +15,32 @@ import banner2 from '../../../assets/banner/p2.jpg';
 import banner3 from '../../../assets/banner/p3.png';
 import banner4 from '../../../assets/banner/p4.png';
 import banner5 from '../../../assets/banner/p5.png';
+
+const calculateGPA = (grades) => {
+  if (!grades || Object.keys(grades).length === 0) return 0;
+  const gradePoints = { 'A': 4.0, 'B': 3.0, 'C': 2.0, 'D': 1.0, 'F': 0.0 };
+  const values = Object.values(grades);
+  const total = values.reduce((sum, grade) => {
+    const point = typeof grade === 'string' ? (gradePoints[grade.toUpperCase()] || 0) : parseFloat(grade) || 0;
+    return sum + point;
+  }, 0);
+  return (total / values.length).toFixed(2);
+};
+
+const MAJORS = [
+  { id: 1, title: 'IT & Computer Science', description: 'Master software, AI, and digital systems' },
+  { id: 2, title: 'Engineering', description: 'Build infrastructure and technical systems' },
+  { id: 3, title: 'Health & Medical Sciences', description: 'Healthcare, medicine, and life sciences' },
+  { id: 4, title: 'Agriculture & Environmental', description: 'Farming, ecology, and environmental protection' },
+  { id: 5, title: 'Architecture & Urban Planning', description: 'Design buildings and cities' },
+  { id: 6, title: 'Business & Economics', description: 'Lead in business, finance, and economics' },
+  { id: 7, title: 'Education', description: 'Shape the next generation of learners' },
+  { id: 8, title: 'Arts & Media', description: 'Creative arts, design, and media production' },
+  { id: 9, title: 'Law & Legal Studies', description: 'Study law, justice, and governance' },
+  { id: 10, title: 'Social Sciences', description: 'Understand society, politics, and human behavior' },
+  { id: 11, title: 'Tourism & Hospitality', description: 'Travel, tourism, and hospitality management' },
+  { id: 12, title: 'Languages & Literature', description: 'Master languages, linguistics, and literature' },
+];
 
 export default function AbroadScholarshipPage() {
   const { user, profile } = useAuth();
@@ -36,19 +62,54 @@ export default function AbroadScholarshipPage() {
         const abroadScholarships = all.filter(s => s.type === 'abroad');
         setAllScholarships(abroadScholarships);
 
+        // Check if user has grades for recommendations
         const effectiveProfile = { ...(user || {}), ...(profile || {}) };
-        const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
-        const hasGrades = Boolean(effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0);
+        const hasGrades = effectiveProfile.grades && Object.keys(effectiveProfile.grades).length > 0;
+        const stream = effectiveProfile.academicType || effectiveProfile.stream || 'science';
 
-        if (studentType && hasGrades) {
-          const recommendations = await getAIRecommendations(
-            { ...effectiveProfile, studentType },
-            abroadScholarships,
-            abroadScholarships.length
+        if (hasGrades) {
+          console.log('📋 Getting AI-recommended scholarships for Abroad...');
+          // Get top 5 majors from model
+          const result = await getCustomModelRecommendations(
+            {
+              stream,
+              grades: effectiveProfile.grades,
+              gpa: effectiveProfile.gpa || calculateGPA(effectiveProfile.grades),
+              strongSubjects: Object.keys(effectiveProfile.grades).filter(
+                subject => effectiveProfile.grades[subject] === 'A' || effectiveProfile.grades[subject] === 'B'
+              )
+            },
+            MAJORS,
+            5
           );
-          setRecommendedScholarships(recommendations);
-          setRecommendationsAvailable(true);
-          setViewMode('recommended');
+
+          // Get top 5 majors
+          const top5 = (result.recommendations || [])
+            .sort((a, b) => b.matchScore - a.matchScore)
+            .slice(0, 5);
+
+          // Get scholarships for these majors
+          if (top5.length > 0) {
+            const majorTitles = top5.map(major => major.title);
+            const scholarshipsResult = await getScholarshipsByMajorFields(majorTitles);
+            
+            if (scholarshipsResult.success && scholarshipsResult.scholarships) {
+              // Filter by Abroad type only (include untyped as default/backup)
+              const abroadOnly = scholarshipsResult.scholarships.filter(
+                s => s.type === 'abroad' || !s.type
+              );
+              setRecommendedScholarships(abroadOnly);
+              setRecommendationsAvailable(abroadOnly.length > 0);
+              if (abroadOnly.length > 0) {
+                setViewMode('recommended');
+              }
+              console.log(`✅ Found ${abroadOnly.length} recommended Abroad scholarships`);
+            } else {
+              setRecommendedScholarships([]);
+              setRecommendationsAvailable(false);
+              setViewMode('all');
+            }
+          }
         } else {
           setRecommendedScholarships([]);
           setRecommendationsAvailable(false);
@@ -58,6 +119,9 @@ export default function AbroadScholarshipPage() {
       } catch (err) {
         console.error('Error fetching scholarships:', err);
         setError('Failed to load scholarships');
+        setRecommendedScholarships([]);
+        setRecommendationsAvailable(false);
+        setViewMode('all');
       } finally {
         setLoading(false);
       }

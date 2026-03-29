@@ -160,7 +160,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await AuthUser.findByPk(req.user.id, {
-            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'studentType', 'interests', 'skills', 'grades']
+            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'studentType', 'academicType', 'universityField', 'interests', 'skills', 'grades']
         });
         if (!user) return res.status(404).json({ error: 'User not found' });
         res.json(user);

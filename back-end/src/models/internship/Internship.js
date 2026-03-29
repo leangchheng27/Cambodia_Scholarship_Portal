@@ -68,11 +68,6 @@ const Internship = sequelize.define('Internship', {
       this.setDataValue('slider_image_url', normalizeNullableString(value));
     },
   },
-  ai_metadata: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    defaultValue: null,
-  },
   image: {
     type: DataTypes.VIRTUAL,
     get() {

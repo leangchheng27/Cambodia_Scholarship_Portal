@@ -4,8 +4,8 @@ import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getInternships } from '../../../api/internshipApi.js';
+import { getCustomModelRecommendations, getScholarshipsByMajorFields } from '../../../api/recommendationApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
-import { getAIRecommendations } from '../../../utils/profileUtils.js';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
 import SearchInput from '../../../components/SearchInput/SearchInput.jsx';
@@ -16,6 +16,32 @@ import banner2 from '../../../assets/banner/p2.jpg';
 import banner3 from '../../../assets/banner/p3.png';
 import banner4 from '../../../assets/banner/p4.png';
 import banner5 from '../../../assets/banner/p5.png';
+
+const calculateGPA = (grades) => {
+  if (!grades || Object.keys(grades).length === 0) return 0;
+  const gradePoints = { 'A': 4.0, 'B': 3.0, 'C': 2.0, 'D': 1.0, 'F': 0.0 };
+  const values = Object.values(grades);
+  const total = values.reduce((sum, grade) => {
+    const point = typeof grade === 'string' ? (gradePoints[grade.toUpperCase()] || 0) : parseFloat(grade) || 0;
+    return sum + point;
+  }, 0);
+  return (total / values.length).toFixed(2);
+};
+
+const MAJORS = [
+  { id: 1, title: 'IT & Computer Science', description: 'Master software, AI, and digital systems' },
+  { id: 2, title: 'Engineering', description: 'Build infrastructure and technical systems' },
+  { id: 3, title: 'Health & Medical Sciences', description: 'Healthcare, medicine, and life sciences' },
+  { id: 4, title: 'Agriculture & Environmental', description: 'Farming, ecology, and environmental protection' },
+  { id: 5, title: 'Architecture & Urban Planning', description: 'Design buildings and cities' },
+  { id: 6, title: 'Business & Economics', description: 'Lead in business, finance, and economics' },
+  { id: 7, title: 'Education', description: 'Shape the next generation of learners' },
+  { id: 8, title: 'Arts & Media', description: 'Creative arts, design, and media production' },
+  { id: 9, title: 'Law & Legal Studies', description: 'Study law, justice, and governance' },
+  { id: 10, title: 'Social Sciences', description: 'Understand society, politics, and human behavior' },
+  { id: 11, title: 'Tourism & Hospitality', description: 'Travel, tourism, and hospitality management' },
+  { id: 12, title: 'Languages & Literature', description: 'Master languages, linguistics, and literature' },
+];
 
 export default function InternshipPage() {
   const { user, profile } = useAuth();
@@ -35,30 +61,76 @@ export default function InternshipPage() {
         setLoading(true);
         const data = await getInternships(search);
         setAllInternships(data);
+        setError(null);
 
+        // Check if user has profile
         const effectiveProfile = { ...(user || {}), ...(profile || {}) };
         const studentType = effectiveProfile.studentType || effectiveProfile.academicType;
-        const hasUniversityField = Boolean(effectiveProfile.universityField);
-        const isUniversityStudent = studentType === 'college' || studentType === 'graduate';
 
-        if (isUniversityStudent && hasUniversityField) {
-          const recommendations = await getAIRecommendations(
-            { ...effectiveProfile, studentType },
-            data,
-            data.length
-          );
-          setRecommendedInternships(recommendations);
-          setRecommendationsAvailable(true);
-          setViewMode('recommended');
-        } else {
+        // Case 1: University students with field of study
+        if (studentType === 'college' && effectiveProfile.universityField) {
+          console.log(`🎓 University student with field: ${effectiveProfile.universityField}`);
+          
+          // Match internships by field of study - use InternshipFieldOfStudy plural
+          const fieldMatches = data.filter(internship => {
+            const fields = internship.InternshipFieldOfStudies || internship.InternshipFieldOfStudy || [];
+            return fields.some(f => f.field_name === effectiveProfile.universityField);
+          });
+          
+          setRecommendedInternships(fieldMatches);
+          setRecommendationsAvailable(fieldMatches.length > 0);
+          if (fieldMatches.length > 0) {
+            setViewMode('recommended');
+          }
+          console.log(`✅ Found ${fieldMatches.length} internships matching ${effectiveProfile.universityField}`);
+        }
+        // Case 2: High school students with grades
+        else if ((studentType === 'science' || studentType === 'society') && effectiveProfile.grades) {
+          console.log(`📚 High school student (${studentType}), getting AI recommendations...`);
+          
+          const gpa = calculateGPA(effectiveProfile.grades);
+          if (gpa > 0) {
+            const recommendationResult = await getCustomModelRecommendations({
+              stream: studentType,
+              grades: effectiveProfile.grades,
+              gpa: gpa,
+              strongSubjects: Object.keys(effectiveProfile.grades).filter(
+                subject => effectiveProfile.grades[subject] === 'A' || effectiveProfile.grades[subject] === 'B'
+              )
+            });
+
+            if (recommendationResult.success && recommendationResult.data) {
+              const recommendations = recommendationResult.data;
+              const top5 = recommendations
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5);
+
+              if (top5.length > 0) {
+                const majorTitles = top5.map(major => major.title);
+                const internshipsResult = await getScholarshipsByMajorFields(majorTitles);
+                
+                if (internshipsResult.success && internshipsResult.scholarships) {
+                  setRecommendedInternships(internshipsResult.scholarships);
+                  setRecommendationsAvailable(internshipsResult.scholarships.length > 0);
+                  if (internshipsResult.scholarships.length > 0) {
+                    setViewMode('recommended');
+                  }
+                  console.log(`✅ Found ${internshipsResult.scholarships.length} recommended internships`);
+                }
+              }
+            }
+          }
+        }
+        // No profile or incomplete profile
+        else {
           setRecommendedInternships([]);
           setRecommendationsAvailable(false);
-          setViewMode('all');
         }
-        setError(null);
       } catch (err) {
         console.error('Error fetching internships:', err);
         setError('Failed to load internships');
+        setRecommendedInternships([]);
+        setRecommendationsAvailable(false);
       } finally {
         setLoading(false);
       }
@@ -145,7 +217,7 @@ export default function InternshipPage() {
           </div>
 
           {!recommendationsAvailable && (
-            <p className="list-mode-hint">College & University students: Complete your profile to see internship recommendations matched to your field of study.</p>
+            <p className="list-mode-hint">Complete your profile to see internship recommendations matched to your interests and field of study.</p>
           )}
 
           <div className="scholarship-grid">
