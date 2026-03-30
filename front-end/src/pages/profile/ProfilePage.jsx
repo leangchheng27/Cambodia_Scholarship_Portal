@@ -16,16 +16,49 @@ const ProfilePage = () => {
   const defaultUser = {
     name: '',
     email: '',
-    phone: '',
     nationality: '',
-    interests: [],
-    skills: [],
     profileType: '',
     avatar: null,
+    grades: null,
+    academicType: null,
+    universityField: null,
+    educationLevel: null,
+    studentType: null,
+    parentType: null,
   };
 
   // Merge user and profile data
   const userData = user ? { ...defaultUser, ...user, ...profile } : defaultUser;
+  
+  // Ensure grades is properly parsed as an object
+  if (userData.grades && typeof userData.grades === 'string') {
+    try {
+      userData.grades = JSON.parse(userData.grades);
+    } catch (e) {
+      console.warn('Failed to parse grades:', e);
+      userData.grades = null;
+    }
+  }
+  
+  // Ensure interests is properly parsed as an array
+  if (userData.interests && typeof userData.interests === 'string') {
+    try {
+      userData.interests = JSON.parse(userData.interests);
+    } catch (e) {
+      console.warn('Failed to parse interests:', e);
+      userData.interests = [];
+    }
+  }
+  
+  // Ensure skills is properly parsed as an array
+  if (userData.skills && typeof userData.skills === 'string') {
+    try {
+      userData.skills = JSON.parse(userData.skills);
+    } catch (e) {
+      console.warn('Failed to parse skills:', e);
+      userData.skills = [];
+    }
+  }
   
   // Ensure name is not null - use email prefix if needed
   if (!userData.name && userData.email) {
@@ -36,11 +69,13 @@ const ProfilePage = () => {
   console.log("ProfilePage - User data:", user);
   console.log("ProfilePage - Profile data:", profile);
   console.log("ProfilePage - Merged userData:", userData);
-  console.log("ProfilePage - Interests:", userData.interests);
+  console.log("ProfilePage - userData.grades:", userData.grades);
+  console.log("ProfilePage - userData.grades type:", typeof userData.grades);
+  console.log("ProfilePage - userData.academicType:", userData.academicType);
 
   // Check if user has academic information
   const hasAcademicInfo = () => {
-    return (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField;
+    return (userData.grades && userData.academicType && Object.keys(userData.grades).length > 0) || userData.universityField || userData.educationLevel;
   };
 
   const handleLogout = () => {
@@ -64,8 +99,6 @@ const ProfilePage = () => {
   const handleSaveProfile = async (updatedData) => {
     try {
       console.log("ProfilePage - Received updated data:", updatedData);
-      console.log("ProfilePage - Skills to save:", updatedData.skills);
-      console.log("ProfilePage - Interests to save:", updatedData.interests);
       await updateProfile(updatedData);
       console.log("ProfilePage - Profile saved successfully to database");
     } catch (error) {
@@ -118,13 +151,39 @@ const ProfilePage = () => {
                 <span className="info-label">Email :</span>
                 <span className="info-value">{userData.email}</span>
               </div>
+
+              {userData.educationLevel && (
+                <div className="info-item">
+                  <span className="info-label">Education Level :</span>
+                  <span className="info-value" style={{fontWeight: '600'}}>
+                    {userData.educationLevel === 'High School Student' && '📚 ' + userData.educationLevel}
+                    {userData.educationLevel === 'College/University Student' && '🎓 ' + userData.educationLevel}
+                    {userData.educationLevel === 'Graduate Student' && '👨‍🎓 ' + userData.educationLevel}
+                    {userData.educationLevel === 'Other' && '📖 ' + userData.educationLevel}
+                  </span>
+                </div>
+              )}
+
+              {userData.nationality && (
+                <div className="info-item">
+                  <span className="info-label">Nationality :</span>
+                  <span className="info-value">{userData.nationality}</span>
+                </div>
+              )}
+
+              {userData.phone && (
+                <div className="info-item">
+                  <span className="info-label">Phone :</span>
+                  <span className="info-value">{userData.phone}</span>
+                </div>
+              )}
             </div>
 
             {/* Academic Profile Section - Always Show */}
             <div className="academic-section">
               <h3>Academic Profile :</h3>
               
-              {(userData.grades && userData.academicType) || userData.universityField ? (
+              {(userData.grades && userData.academicType) || userData.universityField || userData.educationLevel ? (
                 <>
                   {/* High School Students - Show Academic Track and Grades */}
                   {userData.grades && userData.academicType && (
@@ -160,19 +219,6 @@ const ProfilePage = () => {
                       <span className="info-label">Field of Study :</span>
                       <span className="info-value" style={{textTransform: 'capitalize', fontWeight: '600'}}>
                         🎓 {userData.universityField}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Student Type */}
-                  {userData.studentType && (
-                    <div className="info-item">
-                      <span className="info-label">Education Level :</span>
-                      <span className="info-value" style={{textTransform: 'capitalize'}}>
-                        {userData.studentType === 'highschool' && '📚 High School'}
-                        {userData.studentType === 'college' && '🎓 College/University'}
-                        {userData.studentType === 'graduate' && '👨‍🎓 Graduate'}
-                        {userData.studentType === 'other' && '📖 Other'}
                       </span>
                     </div>
                   )}

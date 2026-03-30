@@ -82,10 +82,15 @@ export const AuthProvider = ({ children }) => {
     return savedProfile ? JSON.parse(savedProfile) : null;
   });
 
-  // Verify token with backend on app load
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  // Verify token with backend on app load or when token changes
   useEffect(() => {
     const verifyToken = async () => {
-      if (!token) return;
+      if (!token) {
+        setIsInitializing(false);
+        return;
+      }
       try {
         const response = await API.get("/auth/me");
         console.log("AuthContext - Loaded user from backend:", response.data);
@@ -94,10 +99,12 @@ export const AuthProvider = ({ children }) => {
         setProfile(response.data);
       } catch {
         logout();
+      } finally {
+        setIsInitializing(false);
       }
     };
     verifyToken();
-  }, []);
+  }, [token]);
 
   // Persist user to localStorage whenever it changes
   useEffect(() => {
@@ -131,8 +138,11 @@ export const AuthProvider = ({ children }) => {
       setToken(userData.token);
       const { token: _, ...userWithoutToken } = userData;
       setUser(userWithoutToken);
+      // Also set profile from the login response so ProtectedRoute can immediately check it
+      setProfile(userWithoutToken);
     } else {
       setUser(userData);
+      setProfile(userData);
     }
   };
 
@@ -191,6 +201,7 @@ export const AuthProvider = ({ children }) => {
         token,
         profile,
         isAuthenticated,
+        isInitializing,
         login,
         logout,
         updateProfile,

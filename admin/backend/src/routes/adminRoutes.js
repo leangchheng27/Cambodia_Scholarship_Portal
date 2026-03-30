@@ -104,7 +104,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         const totalScholarships = await Scholarship.count({ 
             where: { type: { [Op.in]: ['cambodia', 'abroad'] } } 
         });
-        const totalInternships = await Scholarship.count({ where: { type: 'internship' } });
+        const totalInternships = await Internship.count();
 
         res.json({
             stats: {
@@ -573,8 +573,7 @@ router.delete('/scholarships/:id', authenticateAdmin, async (req, res) => {
  */
 router.get('/internships', authenticateAdmin, async (req, res) => {
     try {
-        const internships = await Scholarship.findAll({
-            where: { type: 'internship' },
+        const internships = await Internship.findAll({
             order: [['id', 'ASC']],
             raw: true,
         });
@@ -587,11 +586,11 @@ router.get('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * GET /admin/internships/:id
- * Get single internship (from Scholarship table with type='internship')
+ * Get single internship from Internship table
  */
 router.get('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Scholarship.findByPk(req.params.id);
+        const internship = await Internship.findByPk(req.params.id);
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
         }
@@ -603,7 +602,7 @@ router.get('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * POST /admin/internships
- * Create new internship (as Scholarship with type='internship')
+ * Create new internship in Internship table
  */
 router.post('/internships', authenticateAdmin, async (req, res) => {
     try {
@@ -617,29 +616,26 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
             original_link,
             poster_image_url,
             slider_image_url,
-            eligibility,
-            applicable_programs,
-            benefits,
+            ai_metadata,
         } = req.body;
         const resolvedPoster = poster_image_url ?? image_url;
         const resolvedOriginalLink = original_link ?? registration_link;
-        const details = buildDetailsPayload({}, { eligibility, applicable_programs, benefits });
         
         if (!name) {
             return res.status(400).json({ error: 'Internship name is required' });
         }
 
-        const internship = await Scholarship.create({
+        const internship = await Internship.create({
             name,
             description,
-            funded_by: company,
-            course_duration: duration,
+            company,
+            duration,
             registration_link,
             original_link: resolvedOriginalLink,
             poster_image_url: resolvedPoster,
+            image_url,
             slider_image_url,
-            type: 'internship',
-            ...(details !== undefined ? { details } : {}),
+            ai_metadata,
         });
 
         res.status(201).json({ 
@@ -653,7 +649,7 @@ router.post('/internships', authenticateAdmin, async (req, res) => {
 
 /**
  * PUT /admin/internships/:id
- * Update internship (as Scholarship with type='internship')
+ * Update internship in Internship table
  */
 router.put('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
@@ -667,11 +663,9 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
             original_link,
             poster_image_url,
             slider_image_url,
-            eligibility,
-            applicable_programs,
-            benefits,
+            ai_metadata,
         } = req.body;
-        const internship = await Scholarship.findByPk(req.params.id);
+        const internship = await Internship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });
@@ -679,17 +673,14 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
         if (name !== undefined) internship.name = name;
         if (description !== undefined) internship.description = description;
-        if (company !== undefined) internship.funded_by = company;
-        if (duration !== undefined) internship.course_duration = duration;
+        if (company !== undefined) internship.company = company;
+        if (duration !== undefined) internship.duration = duration;
         if (registration_link !== undefined) internship.registration_link = registration_link;
         if (original_link !== undefined) internship.original_link = original_link;
-        if (poster_image_url !== undefined || image_url !== undefined) {
-            internship.poster_image_url = poster_image_url ?? image_url;
-        }
+        if (image_url !== undefined) internship.image_url = image_url;
+        if (poster_image_url !== undefined) internship.poster_image_url = poster_image_url;
         if (slider_image_url !== undefined) internship.slider_image_url = slider_image_url;
-
-        const details = buildDetailsPayload(internship.details, { eligibility, applicable_programs, benefits });
-        if (details !== undefined) internship.details = details;
+        if (ai_metadata !== undefined) internship.ai_metadata = ai_metadata;
 
         await internship.save();
         
@@ -704,11 +695,11 @@ router.put('/internships/:id', authenticateAdmin, async (req, res) => {
 
 /**
  * DELETE /admin/internships/:id
- * Delete internship (from Scholarship table)
+ * Delete internship from Internship table
  */
 router.delete('/internships/:id', authenticateAdmin, async (req, res) => {
     try {
-        const internship = await Scholarship.findByPk(req.params.id);
+        const internship = await Internship.findByPk(req.params.id);
         
         if (!internship) {
             return res.status(404).json({ error: 'Internship not found' });

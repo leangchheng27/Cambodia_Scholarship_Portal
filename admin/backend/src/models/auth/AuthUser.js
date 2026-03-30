@@ -1,6 +1,6 @@
 // src/models/AuthUser.js
 // User model for authentication using Sequelize
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 
 const AuthUserModel = (sequelize) => {
@@ -8,7 +8,6 @@ const AuthUserModel = (sequelize) => {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
             validate: { isEmail: true },
         },
         password: {
@@ -17,7 +16,6 @@ const AuthUserModel = (sequelize) => {
         },
         googleId: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: true,
         },
         name: {
@@ -71,6 +69,10 @@ const AuthUserModel = (sequelize) => {
         },
     }, {
         tableName: 'users',
+        indexes: [
+            { fields: ['email'], unique: true, name: 'idx_users_email' },
+            { fields: ['googleId'], unique: true, name: 'idx_users_googleId', where: { googleId: { [Op.not]: null } } },
+        ],
     });
 
     // Hash password before create

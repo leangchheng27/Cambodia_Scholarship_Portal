@@ -71,3 +71,24 @@ export const getScholarshipsByMajorFields = async (majorTitles) => {
     throw error;
   }
 };
+
+/**
+ * Get internship recommendations for a university student based on field of study
+ * @param {string} userField - Student's field of study (e.g., "IT & Computer Science")
+ * @param {number} limit - Maximum number of recommendations to return (default: 10)
+ * @returns {Promise<Object>} - { success, recommendations: Array, total: number, userField: string }
+ */
+export const getInternshipRecommendations = async (userField, limit = 10) => {
+  try {
+    console.log('🎯 [Frontend] Getting internship recommendations for field:', userField);
+    const response = await API.post('/internships/recommendations', {
+      userField,
+      limit,
+    });
+    console.log('✅ [Frontend] Internship recommendations received:', response.data.recommendations?.length || 0);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error getting internship recommendations:', error);
+    throw error;
+  }
+};

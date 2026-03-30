@@ -57,6 +57,10 @@ const AuthUserModel = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
+        parentType: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         academicType: {
             type: DataTypes.STRING,
             allowNull: true,
@@ -76,6 +80,16 @@ const AuthUserModel = (sequelize) => {
         grades: {
             type: DataTypes.JSON,
             allowNull: true,
+        },
+        profileType: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            comment: 'student, parent, staff, admin',
+        },
+        educationLevel: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            comment: 'High School Student, College/University Student, Graduate Student, Other',
         },
     }, {
         tableName: 'users',

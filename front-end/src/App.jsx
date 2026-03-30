@@ -39,7 +39,7 @@ const RequireAuthRoute = ({ children }) => {
 };
 
 const ProtectedRoute = ({ children, requireProfile = true }) => {
-  const { isAuthenticated, profile } = useAuth();
+  const { isAuthenticated, profile, isInitializing } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
@@ -47,16 +47,22 @@ const ProtectedRoute = ({ children, requireProfile = true }) => {
     return <Navigate to={`/login?redirect=${encodeURIComponent(redirectTarget)}`} replace />;
   }
 
+  // While initializing (loading profile from backend), don't redirect yet
+  if (isInitializing && location.pathname === '/home') {
+    return <div style={{ display: 'none' }} />; // Silent wait for profile to load
+  }
+
   // Only check profile completion for homepage access
   // Allow users with any profile data to access the site
   if (requireProfile && location.pathname === '/home') {
-    // Check if profile has ANY data at all (lenient check for existing users)
+    // Check if profile has ANY data at all (backward compatible check for existing users)
     const hasProfileData = profile && (
       profile.profileType || 
       profile.grades || 
       profile.studentType || 
+      profile.academicType ||
       profile.universityField ||
-      Object.keys(profile).length > 0
+      profile.educationLevel
     );
     
     if (!hasProfileData) {
@@ -87,7 +93,11 @@ const App = () => {
           />
           <Route
             path="/home"
-            element={<HomePage />}
+            element={
+              <ProtectedRoute requireProfile={true}>
+                <HomePage />
+              </ProtectedRoute>
+            }
           />
           <Route path="/university" element={<UniversityPage />} />
           <Route

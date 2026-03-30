@@ -32,36 +32,30 @@ export function useLogin() {
       }
       
       console.log('Login successful:', user);
+      console.log('User profileType:', user.profileType);
+      console.log('User role:', user.role);
+      console.log('User grades:', user.grades);
+      console.log('User academicType:', user.academicType);
+      console.log('User educationLevel:', user.educationLevel);
       
       // Navigate based on user role
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        // For regular users, check if they have any profile data
-        const savedProfile = localStorage.getItem('profile');
+        // Check if user has profile data (backward compatible with existing users)
+        // New users need profileType, existing users may only have grades/academicType/etc
+        const hasProfileData = user.profileType || 
+                               user.grades || 
+                               user.academicType || 
+                               user.universityField || 
+                               user.studentType || 
+                               user.educationLevel;
         
-        if (savedProfile) {
-          // If profile exists, parse and check it has meaningful data
-          try {
-            const profile = JSON.parse(savedProfile);
-            console.log('Existing profile found:', profile);
-            
-            // If profile has any meaningful data, go to homepage
-            // This allows existing users to access the site
-            if (profile && (profile.profileType || profile.grades || profile.studentType)) {
-              console.log('Profile has data, redirecting to homepage');
-              navigate('/home');
-            } else {
-              console.log('Profile exists but empty, redirecting to setup');
-              navigate('/profile-setup');
-            }
-          } catch (e) {
-            console.error('Error parsing profile:', e);
-            navigate('/profile-setup');
-          }
+        if (hasProfileData) {
+          console.log('✅ User profile complete in database, redirecting to homepage');
+          navigate('/home');
         } else {
-          // No profile at all - definitely new user
-          console.log('No profile found, redirecting to setup');
+          console.log('⚠️ New user without profile, redirecting to setup');
           navigate('/profile-setup');
         }
       }

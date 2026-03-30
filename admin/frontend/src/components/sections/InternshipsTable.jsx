@@ -1,6 +1,12 @@
 import PaginationControls from '../common/PaginationControls.jsx';
 
-const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete }) => {
+const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete, search = '', onSearchChange = () => {} }) => {
+    // Filter internships by search
+    const filteredInternships = internships.filter(internship =>
+        internship.name.toLowerCase().includes(search.toLowerCase()) ||
+        (internship.company || '').toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <div className="content-section">
             <div className="section-header">
@@ -8,6 +14,15 @@ const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_
                 <button onClick={() => onEdit('internships')} className="add-btn">
                     + Add Internship
                 </button>
+            </div>
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by name or company..."
+                    value={search}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    className="search-input"
+                />
             </div>
             <div className="table-container">
                 <table className="content-table">
@@ -21,14 +36,14 @@ const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_
                         </tr>
                     </thead>
                     <tbody>
-                        {internships
+                        {filteredInternships
                             .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
                             .map((internship, idx) => (
                                 <tr key={internship.id}>
                                     <td>{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
                                     <td>{internship.name}</td>
-                                    <td>{internship.funded_by || 'N/A'}</td>
-                                    <td>{internship.course_duration || 'N/A'}</td>
+                                    <td>{internship.company || 'N/A'}</td>
+                                    <td>{internship.duration || 'N/A'}</td>
                                     <td>
                                         <button 
                                             onClick={() => onEdit('internships', internship)}
@@ -51,7 +66,7 @@ const InternshipsTable = ({ internships, currentPage, setCurrentPage, ITEMS_PER_
             <PaginationControls 
                 page={currentPage} 
                 setPage={setCurrentPage} 
-                total={internships.length}
+                total={filteredInternships.length}
                 itemsPerPage={ITEMS_PER_PAGE}
             />
         </div>

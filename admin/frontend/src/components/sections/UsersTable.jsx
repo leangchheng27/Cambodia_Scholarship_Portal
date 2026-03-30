@@ -1,11 +1,26 @@
 import PaginationControls from '../common/PaginationControls.jsx';
 
-const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete }) => {
+const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete, search = '', onSearchChange = () => {} }) => {
+    // Filter users by search
+    const filteredUsers = users.filter(user =>
+        (user.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <div className="users-section">
             <div className="section-header">
                 <h2>All Users</h2>
                 <button onClick={() => onEdit('users')} className="add-btn">+ Add User</button>
+            </div>
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by name or email..."
+                    value={search}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    className="search-input"
+                />
             </div>
             <div className="table-container">
                 <table className="users-table">
@@ -21,7 +36,7 @@ const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit
                         </tr>
                     </thead>
                     <tbody>
-                        {users
+                        {filteredUsers
                             .sort((a, b) => a.id - b.id)
                             .slice(
                                 (currentPage - 1) * ITEMS_PER_PAGE,
@@ -67,7 +82,7 @@ const UsersTable = ({ users, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit
             <PaginationControls 
                 page={currentPage} 
                 setPage={setCurrentPage} 
-                total={users.length}
+                total={filteredUsers.length}
                 itemsPerPage={ITEMS_PER_PAGE}
             />
         </div>

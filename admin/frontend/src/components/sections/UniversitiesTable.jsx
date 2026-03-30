@@ -7,11 +7,17 @@ const CAMBODIAN_PROVINCES = [
     'Ratanakiri', 'Siem Reap', 'Sihanoukville', 'Stung Treng', 'Svay Rieng', 'Takeo', 'Tbong Khmum'
 ];
 
-const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete, selectedProvince, setSelectedProvince }) => {
+const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PER_PAGE, onEdit, onDelete, selectedProvince, setSelectedProvince, search = '', onSearchChange = () => {} }) => {
     // Filter universities by selected province
-    const filteredUniversities = selectedProvince === 'all' 
+    const filteredByProvince = selectedProvince === 'all' 
         ? universities 
         : universities.filter(uni => uni.location === selectedProvince);
+
+    // Filter by search
+    const filteredUniversities = filteredByProvince.filter(uni =>
+        uni.name.toLowerCase().includes(search.toLowerCase()) ||
+        (uni.location || '').toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <div className="content-section">
@@ -40,6 +46,16 @@ const UniversitiesTable = ({ universities, currentPage, setCurrentPage, ITEMS_PE
                     ))}
                 </select>
                 <span className="filter-count">({filteredUniversities.length} universities)</span>
+            </div>
+
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by name or location..."
+                    value={search}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    className="search-input"
+                />
             </div>
 
             <div className="table-container">

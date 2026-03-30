@@ -9,9 +9,17 @@ const ScholarshipsTable = ({
     setCurrentPage, 
     ITEMS_PER_PAGE, 
     onEdit, 
-    onDelete 
+    onDelete,
+    search = '',
+    onSearchChange = () => {}
 }) => {
     const displayedScholarships = scholarshipType === 'cambodia' ? cambodiaScholarships : abroadScholarships;
+    
+    // Filter scholarships by search
+    const filteredScholarships = displayedScholarships.filter(scholarship =>
+        scholarship.name.toLowerCase().includes(search.toLowerCase()) ||
+        (scholarship.funded_by || '').toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <div className="content-section">
@@ -20,6 +28,15 @@ const ScholarshipsTable = ({
                 <button onClick={() => onEdit('scholarships')} className="add-btn">
                     + Add Scholarship
                 </button>
+            </div>
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by name or funded by..."
+                    value={search}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    className="search-input"
+                />
             </div>
             <div className="scholarship-tabs">
                 <button 
@@ -48,7 +65,7 @@ const ScholarshipsTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {displayedScholarships
+                        {filteredScholarships
                             .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
                             .map((scholarship, idx) => (
                                 <tr key={scholarship.id}>
@@ -79,7 +96,7 @@ const ScholarshipsTable = ({
             <PaginationControls 
                 page={currentPage} 
                 setPage={setCurrentPage} 
-                total={displayedScholarships.length}
+                total={filteredScholarships.length}
                 itemsPerPage={ITEMS_PER_PAGE}
             />
         </div>

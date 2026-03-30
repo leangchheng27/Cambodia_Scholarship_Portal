@@ -2,21 +2,18 @@ import React from 'react';
 import './FieldSelector.css';
 
 const UNIVERSITY_FIELDS = [
-  'Computer Science',
+  'IT & Computer Science',
   'Engineering',
-  'Business Administration',
-  'Medicine',
-  'Law',
-  'Economics',
+  'Health & Medical Sciences',
+  'Agriculture & Environmental',
+  'Architecture & Urban Planning',
+  'Business & Economics',
   'Education',
-  'Agriculture',
-  'Architecture',
-  'Pharmacy',
-  'Nursing',
-  'Psychology',
-  'Accounting',
-  'Marketing',
-  'Other'
+  'Arts & Media',
+  'Law & Legal Studies',
+  'Social Sciences',
+  'Tourism & Hospitality',
+  'Languages & Literature'
 ];
 
 const FieldSelector = ({ profileType, universityField, onFieldChange }) => {

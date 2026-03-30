@@ -7,11 +7,20 @@ const SUBJECTS = {
 };
 
 const GradeEntryForm = ({ academicType, grades, onGradeChange }) => {
+  // Return empty if academicType is not selected
+  if (!academicType) {
+    return (
+      <div className="grades-section">
+        <p className="helper-text">Please select your academic stream first</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grades-section">
       <h3 className="section-subtitle">Enter Your Subject Grades (A-F)</h3>
       <div className="grades-container-setup">
-        {SUBJECTS[academicType].map(subject => (
+        {SUBJECTS[academicType]?.map(subject => (
           <div key={subject} className="grade-input-row">
             <label className="subject-label">{subject}</label>
             <select

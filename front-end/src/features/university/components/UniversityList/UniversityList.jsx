@@ -97,7 +97,7 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
           itemType: "university",
           title: university.name || "University",
           description: `${university.location || university.province || "N/A"} • ${university.location || "N/A"}`,
-          image: "",
+          image: university.poster_image_url || university.image_url || "",
           detailPath: `/universities/${university.id}`,
         });
       }
@@ -118,14 +118,16 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
 
   return (
     <>
-      <SearchInput
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setCurrentPage(1);
-        }}
-        placeholder="Search"
-      />
+      <div className="university-list-search">
+        <SearchInput
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="Search"
+        />
+      </div>
       <div className="university-list-container">
         {loading ? (
           <LoadingText text="Loading universities..." />

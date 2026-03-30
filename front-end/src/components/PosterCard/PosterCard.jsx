@@ -46,27 +46,6 @@ const PosterCard = ({
     navigate(`${basePath}/detail/${scholarship.id}`);
   };
 
-  const getMatchColor = (score) => {
-    // Gray background for all star ratings
-    return '#718096';
-  };
-
-  const renderStars = (score) => {
-    if (!score) return '★';
-    
-    // Handle case where score might still be 0-100, convert to 1-5
-    let normalizedScore = score;
-    if (score > 5) {
-      normalizedScore = Math.max(1, (score / 100) * 5);
-    }
-    
-    // Round to nearest whole number for full stars only
-    const fullStars = Math.min(5, Math.max(1, Math.round(normalizedScore)));
-    
-    // Display only filled stars (★★★ not ★★★☆☆)
-    return '★'.repeat(fullStars);
-  };
-
   const handleSaveClick = async (event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -124,17 +103,6 @@ const PosterCard = ({
           alt={scholarship.title} 
           className="card-image" 
         />
-        {showMatchScore && scholarship.matchScore && (
-          <div 
-            className="match-badge-overlay"
-            style={{ 
-              backgroundColor: getMatchColor(scholarship.matchScore),
-              color: '#FFC107'
-            }}
-          >
-            {renderStars(scholarship.matchScore)}
-          </div>
-        )}
         <SaveToggleButton
           variant="card"
           isSaved={saved}

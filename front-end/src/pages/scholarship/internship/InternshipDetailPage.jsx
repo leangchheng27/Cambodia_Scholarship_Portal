@@ -70,8 +70,8 @@ const normalizeToList = (value) => {
 };
 
 const renderOverview = (internship) => {
-  const company = internship.company || internship.funded_by;
-  const duration = internship.duration || internship.course_duration;
+  const company = internship.company;
+  const duration = internship.duration;
 
   return (
     <div className="sdet-content">
@@ -134,8 +134,8 @@ const renderPrograms = (fieldOfStudies) => {
 };
 
 const getEligibilityData = (internship) => {
-  if (Array.isArray(internship.ScholarshipEligibilities) && internship.ScholarshipEligibilities.length > 0) {
-    return internship.ScholarshipEligibilities;
+  if (Array.isArray(internship.InternshipEligibilities) && internship.InternshipEligibilities.length > 0) {
+    return internship.InternshipEligibilities;
   }
 
   const fallback = [
@@ -148,8 +148,8 @@ const getEligibilityData = (internship) => {
 };
 
 const getProgramsData = (internship) => {
-  if (Array.isArray(internship.ScholarshipFieldOfStudies) && internship.ScholarshipFieldOfStudies.length > 0) {
-    return internship.ScholarshipFieldOfStudies;
+  if (Array.isArray(internship.InternshipFieldOfStudies) && internship.InternshipFieldOfStudies.length > 0) {
+    return internship.InternshipFieldOfStudies;
   }
 
   const fallback = [
@@ -162,8 +162,8 @@ const getProgramsData = (internship) => {
 };
 
 const getBenefitsData = (internship) => {
-  if (Array.isArray(internship.ScholarshipBenefits) && internship.ScholarshipBenefits.length > 0) {
-    return internship.ScholarshipBenefits;
+  if (Array.isArray(internship.InternshipBenefits) && internship.InternshipBenefits.length > 0) {
+    return internship.InternshipBenefits;
   }
 
   return normalizeToList(internship.details?.benefits);

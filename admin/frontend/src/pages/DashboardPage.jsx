@@ -33,6 +33,13 @@ const DashboardPage = () => {
     const [universityPage, setUniversityPage] = useState(1);
     const [scholarshipPage, setScholarshipPage] = useState(1);
     const [internshipPage, setInternshipPage] = useState(1);
+    
+    // Search states
+    const [userSearch, setUserSearch] = useState('');
+    const [universitySearch, setUniversitySearch] = useState('');
+    const [scholarshipSearch, setScholarshipSearch] = useState('');
+    const [internshipSearch, setInternshipSearch] = useState('');
+    
     const ITEMS_PER_PAGE = 10;
     const navigate = useNavigate();
 
@@ -309,6 +316,8 @@ const DashboardPage = () => {
                         ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                         onEdit={(type, item) => handleCreateOrEdit(type, item)}
                         onDelete={handleDeleteUser}
+                        search={userSearch}
+                        onSearchChange={setUserSearch}
                     />
                 )}
 
@@ -323,6 +332,8 @@ const DashboardPage = () => {
                         onDelete={(id) => handleDelete('universities', id)}
                         selectedProvince={universityProvince}
                         setSelectedProvince={setUniversityProvince}
+                        search={universitySearch}
+                        onSearchChange={setUniversitySearch}
                     />
                 )}
 
@@ -338,6 +349,8 @@ const DashboardPage = () => {
                         ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                         onEdit={(type, item) => handleCreateOrEdit(type, item)}
                         onDelete={(id) => handleDelete('scholarships', id)}
+                        search={scholarshipSearch}
+                        onSearchChange={setScholarshipSearch}
                     />
                 )}
 
@@ -350,6 +363,8 @@ const DashboardPage = () => {
                         ITEMS_PER_PAGE={ITEMS_PER_PAGE}
                         onEdit={(type, item) => handleCreateOrEdit(type, item)}
                         onDelete={(id) => handleDelete('internships', id)}
+                        search={internshipSearch}
+                        onSearchChange={setInternshipSearch}
                     />
                 )}
             </AdminLayout>

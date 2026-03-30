@@ -5,8 +5,6 @@
 .university-list-container {
   background: #fff;
   border-radius: 12px;
-  border: 1px solid rgba(31, 41, 55, 0.12);
-  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
   overflow: hidden;
 }
 
@@ -32,6 +30,10 @@
   border-bottom: 1px solid #e0e7ef;
 }
 
+.university-list-table td:last-child {
+  text-align: center;
+}
+
 .university-list-table tr:last-child td {
   border-bottom: none;
 }
@@ -42,9 +44,13 @@
   transition: background 0.2s;
 }
 
+.university-list-search {
+  margin-bottom: 32px;
+}
+
 .university-list-search .search-container {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .university-list-search .search-input {
@@ -59,4 +65,35 @@
 
 .university-list-search .search-input:focus {
   border-color: #3b82f6;
+}
+
+.university-save-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.university-save-btn img {
+  width: 30px;
+  height: 30px;
+  opacity: 0.88;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+  object-fit: contain;
+}
+
+.university-save-btn.saved {
+  transform: scale(1.08);
+}
+
+.university-save-btn.saved img {
+  opacity: 1;
+  filter: sepia(100%) saturate(5200%) hue-rotate(338deg) brightness(0.96) contrast(1.08)
+    drop-shadow(0 1px 6px rgba(217, 119, 6, 0.42));
 }

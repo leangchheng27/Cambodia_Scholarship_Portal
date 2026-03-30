@@ -74,6 +74,13 @@ const Internship = sequelize.define('Internship', {
       return resolveImageUrl(this.getDataValue('poster_image_url') || this.getDataValue('image_url'));
     },
   },
+  ai_metadata: DataTypes.JSON,
+  aiMetadata: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('ai_metadata');
+    },
+  },
 }, {
   tableName: 'internship',
   timestamps: false,

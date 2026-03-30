@@ -13,9 +13,15 @@ export function isProfileCompleted(profile) {
     return false;
   }
 
-  // Check if profileType exists
+  // Backward compatibility: Existing users may not have profileType set
+  // If they have educationLevel, studentType, academicType, or universityField, consider profile as completed
   if (!profile.profileType) {
-    return false;
+    // Check if user has any legacy profile data (existing users from before new fields)
+    const hasLegacyProfileData = profile.educationLevel || profile.studentType || profile.academicType || profile.universityField;
+    if (hasLegacyProfileData) {
+      return true; // Existing users with any profile data are considered complete
+    }
+    return false; // New users must set profileType
   }
 
   // For student profiles

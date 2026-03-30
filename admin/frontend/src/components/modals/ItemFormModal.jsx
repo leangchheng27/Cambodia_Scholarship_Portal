@@ -156,7 +156,7 @@ const ItemFormModal = ({
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Field Categories</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '12px' }}>
-                                        {['Engineering', 'Medicine', 'Business', 'Law', 'Arts', 'Science', 'Technology', 'Agriculture', 'Education', 'Nursing', 'Psychology', 'Architecture', 'Finance', 'Computer Science', 'Social Sciences'].map((category) => {
+                                        {['IT & Computer Science', 'Engineering', 'Health & Medical Sciences', 'Agriculture & Environmental', 'Architecture & Urban Planning', 'Business & Economics', 'Education', 'Arts & Media', 'Law & Legal Studies', 'Social Sciences', 'Tourism & Hospitality', 'Languages & Literature'].map((category) => {
                                             const categoriesArray = (formState.ai_metadata_fieldCategories || '').split(',').map(s => s.trim()).filter(s => s);
                                             const isChecked = categoriesArray.includes(category);
                                             return (
@@ -186,96 +186,6 @@ const ItemFormModal = ({
                                             );
                                         })}
                                     </div>
-                                </div>
-                                
-                                <div>
-                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Required Subjects</label>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '12px' }}>
-                                        {['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'History', 'Geography', 'Economics', 'Accounting', 'Literature', 'Computer Science', 'Statistics', 'Philosophy', 'Foreign Language', 'Psychology'].map((subject) => {
-                                            const subjectsArray = (formState.ai_metadata_requiredSubjects || '').split(',').map(s => s.trim()).filter(s => s);
-                                            const isChecked = subjectsArray.includes(subject);
-                                            return (
-                                                <label key={subject} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#cbd5e1', cursor: 'pointer' }}>
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={isChecked}
-                                                        onChange={(e) => {
-                                                            const current = (formState.ai_metadata_requiredSubjects || '').split(',').map(s => s.trim()).filter(s => s);
-                                                            let updated;
-                                                            if (e.target.checked) {
-                                                                updated = [...current, subject];
-                                                            } else {
-                                                                updated = current.filter(s => s !== subject);
-                                                            }
-                                                            onFieldChange({
-                                                                target: {
-                                                                    name: 'ai_metadata_requiredSubjects',
-                                                                    value: updated.join(', ')
-                                                                }
-                                                            });
-                                                        }}
-                                                        style={{ cursor: 'pointer' }}
-                                                    />
-                                                    {subject}
-                                                </label>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Min GPA</label>
-                                    <input 
-                                        type="number" 
-                                        name="ai_metadata_minGPA" 
-                                        placeholder="e.g., 3.2" 
-                                        step="0.1"
-                                        min="0"
-                                        max="4"
-                                        value={formState.ai_metadata_minGPA || ''} 
-                                        onChange={(e) => {
-                                            let value = parseFloat(e.target.value);
-                                            if (e.target.value === '' || isNaN(value)) {
-                                                onFieldChange(e);
-                                            } else if (value < 0) {
-                                                onFieldChange({
-                                                    target: { name: 'ai_metadata_minGPA', value: '0' }
-                                                });
-                                            } else if (value > 4) {
-                                                onFieldChange({
-                                                    target: { name: 'ai_metadata_minGPA', value: '4' }
-                                                });
-                                            } else {
-                                                onFieldChange(e);
-                                            }
-                                        }}
-                                        style={{ fontSize: '12px', marginBottom: '12px', width: '100%' }}
-                                    />
-                                    {formState.ai_metadata_minGPA && (parseFloat(formState.ai_metadata_minGPA) < 0 || parseFloat(formState.ai_metadata_minGPA) > 4) && (
-                                        <span style={{ fontSize: '10px', color: '#f87171' }}>GPA must be between 0 and 4</span>
-                                    )}
-                                </div>
-                                
-                                <div>
-                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Difficulty Level</label>
-                                    <select name="ai_metadata_difficultyLevel" value={formState.ai_metadata_difficultyLevel || ''} onChange={onFieldChange} style={{ fontSize: '12px', marginBottom: '12px', width: '100%' }}>
-                                        <option value="">-- Select Difficulty --</option>
-                                        <option value="easy">Easy</option>
-                                        <option value="moderate">Moderate</option>
-                                        <option value="competitive">Competitive</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Keywords & Tags</label>
-                                    <textarea 
-                                        name="ai_metadata_keywords" 
-                                        placeholder="engineering, design, innovation, construction&#10;(one item per line)" 
-                                        value={formState.ai_metadata_keywords || ''} 
-                                        onChange={onFieldChange} 
-                                        rows="3"
-                                        style={{ fontSize: '12px', width: '100%' }}
-                                    />
                                 </div>
                             </div>
                         </>
@@ -302,7 +212,7 @@ const ItemFormModal = ({
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Field Categories</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '12px' }}>
-                                        {['Engineering', 'Medicine', 'Business', 'Law', 'Arts', 'Science', 'Technology', 'Agriculture', 'Education', 'Nursing', 'Psychology', 'Architecture', 'Finance', 'Computer Science', 'Social Sciences'].map((category) => {
+                                        {['IT & Computer Science', 'Engineering', 'Health & Medical Sciences', 'Agriculture & Environmental', 'Architecture & Urban Planning', 'Business & Economics', 'Education', 'Arts & Media', 'Law & Legal Studies', 'Social Sciences', 'Tourism & Hospitality', 'Languages & Literature'].map((category) => {
                                             const categoriesArray = (formState.ai_metadata_fieldCategories || '').split(',').map(s => s.trim()).filter(s => s);
                                             const isChecked = categoriesArray.includes(category);
                                             return (
@@ -332,18 +242,6 @@ const ItemFormModal = ({
                                             );
                                         })}
                                     </div>
-                                </div>
-                                
-                                <div>
-                                    <label style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: '500', display: 'block', marginBottom: '6px' }}>Keywords & Tags</label>
-                                    <textarea 
-                                        name="ai_metadata_keywords" 
-                                        placeholder="technology, programming, software development&#10;(one item per line)" 
-                                        value={formState.ai_metadata_keywords || ''} 
-                                        onChange={onFieldChange} 
-                                        rows="3"
-                                        style={{ fontSize: '12px', width: '100%' }}
-                                    />
                                 </div>
                             </div>
                         </>

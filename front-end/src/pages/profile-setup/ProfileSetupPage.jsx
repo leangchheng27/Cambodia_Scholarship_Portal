@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProfileSetupLayout from '../../features/profile-setup/Layout/ProfileSetupLayout';
 import ProfileProgressIndicator from '../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
 import ProfileTypeSelector from '../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
@@ -7,10 +8,13 @@ import GradeEntryForm from '../../features/profile-setup/components/GradeEntryFo
 import FieldSelector from '../../features/profile-setup/components/FieldSelector/FieldSelector';
 import ProfileSummary from '../../features/profile-setup/components/ProfileSummary/ProfileSummary';
 import { useAuth } from '../../context/AuthContext';
+import API from '../../services/api';
 import './ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
   const { user } = useAuth();
+  const { updateProfile } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [profileType, setProfileType] = useState('');
   const [studentType, setStudentType] = useState('');
@@ -20,21 +24,61 @@ const ProfileSetupPage = () => {
   const [grades, setGrades] = useState({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const isUniversityLevel = studentType === 'university' || academicType === 'university';
+  const isUniversityLevel = studentType === 'college' || studentType === 'graduate' || parentType === 'college' || parentType === 'graduate';
   
   const handleProfileTypeSelect = (type) => setProfileType(type);
   const handleStudentTypeSelect = (type) => setStudentType(type);
   const handleParentTypeSelect = (type) => setParentType(type);
   const handleAcademicTypeChange = (type) => setAcademicType(type);
   const handleUniversityFieldChange = (field) => setUniversityField(field);
-  const handleGradeChange = (gradeObj) => setGrades(gradeObj);
+  const handleGradeChange = (subject, grade) => {
+    setGrades(prev => ({
+      ...prev,
+      [subject]: grade
+    }));
+  };
   
   const handleNext = () => setCurrentStep(prev => prev + 1);
   const handleBack = () => setCurrentStep(prev => prev - 1);
   const handleSkip = () => setCurrentStep(prev => prev + 1);
-  const handleComplete = () => {
-    // Save profile data to backend through AuthContext or API
-    console.log('Profile setup complete');
+  const handleComplete = async () => {
+    setIsAnalyzing(true);
+    
+    try {
+      // Map studentType/parentType to educationLevel
+      let educationLevel = null;
+      if (profileType === 'student') {
+        if (studentType === 'highschool') educationLevel = 'High School Student';
+        else if (studentType === 'college') educationLevel = 'College/University Student';
+        else if (studentType === 'graduate') educationLevel = 'Graduate Student';
+        else if (studentType === 'other') educationLevel = 'Other';
+      } else if (profileType === 'parent') {
+        if (parentType === 'highschool') educationLevel = 'High School Student';
+        else if (parentType === 'college') educationLevel = 'College/University Student';
+        else if (parentType === 'graduate') educationLevel = 'Graduate Student';
+        else if (parentType === 'other') educationLevel = 'Other';
+      }
+
+      // Prepare data for backend
+      const profileData = {
+        profileType,
+        studentType: profileType === 'student' ? studentType : null,
+        parentType: profileType === 'parent' ? parentType : null,
+        educationLevel,
+        academicType: educationLevel === 'High School Student' ? academicType : null,
+        universityField: educationLevel !== 'High School Student' ? universityField : null,
+        grades: educationLevel === 'High School Student' ? grades : null,
+      };
+
+      // Update profile via AuthContext (handles both API call and state update)
+      await updateProfile(profileData);
+      
+      console.log('✅ Profile setup complete:', profileData);
+      navigate('/home');
+    } catch (error) {
+      console.error('❌ Error saving profile:', error);
+      setIsAnalyzing(false);
+    }
   };
 
   return (
@@ -99,24 +143,6 @@ const ProfileSetupPage = () => {
       {currentStep === 3 && (
         <div className="step-content success-step">
           <h2 className="success-title">Your Profile Created Successfully!</h2>
-          
-          {isAnalyzing && (
-            <div className="loading-message">Analyzing your profile...</div>
-          )}
-          
-          {!isAnalyzing && (
-            <ProfileSummary
-              profileType={profileType}
-              studentType={studentType}
-              parentType={parentType}
-              academicType={academicType}
-              universityField={universityField}
-              grades={grades}
-              gpa={profileData.gpa}
-              strongSubjects={profileData.strongSubjects}
-              recommendedFields={profileData.recommendedFields}
-            />
-          )}
           
           <button className="explore-btn" onClick={handleComplete} disabled={isAnalyzing}>
             Start Exploring Scholarships

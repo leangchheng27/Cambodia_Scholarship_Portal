@@ -7,6 +7,9 @@ const router = express.Router();
 // GET /api/internships - Get all internships
 router.get('/', internshipController.getAll);
 
+// POST /api/internships/recommendations - Get internship recommendations for a user
+router.post('/recommendations', internshipController.getRecommendations);
+
 // GET /api/internships/:id - Get internship by ID
 router.get('/:id', internshipController.getById);
 

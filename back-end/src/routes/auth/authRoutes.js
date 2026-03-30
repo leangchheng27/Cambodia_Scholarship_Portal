@@ -146,6 +146,18 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 picture: user.picture,
                 role: user.role || 'user',
+                profileType: user.profileType || null,
+                educationLevel: user.educationLevel || null,
+                studentType: user.studentType || null,
+                parentType: user.parentType || null,
+                academicType: user.academicType || null,
+                universityField: user.universityField || null,
+                grades: user.grades || null,
+                interests: user.interests || null,
+                skills: user.skills || null,
+                isVerified: user.isVerified,
+                nationality: user.nationality || null,
+                phone: user.phone || null,
             } 
         });
     } catch (err) {
@@ -160,7 +172,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await AuthUser.findByPk(req.user.id, {
-            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'studentType', 'academicType', 'universityField', 'interests', 'skills', 'grades']
+            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'role', 'profileType', 'educationLevel', 'studentType', 'parentType', 'academicType', 'universityField', 'interests', 'skills', 'grades']
         });
         if (!user) return res.status(404).json({ error: 'User not found' });
         res.json(user);
@@ -178,11 +190,14 @@ router.put('/profile', authenticateToken, async (req, res) => {
         const user = await AuthUser.findByPk(req.user.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        const { name, phone, nationality, studentType, academicType, universityField, interests, skills, grades } = req.body;
+        const { name, phone, nationality, profileType, educationLevel, studentType, parentType, academicType, universityField, interests, skills, grades } = req.body;
         if (name !== undefined) user.name = name;
         if (phone !== undefined) user.phone = phone;
         if (nationality !== undefined) user.nationality = nationality;
+        if (profileType !== undefined) user.profileType = profileType;
+        if (educationLevel !== undefined) user.educationLevel = educationLevel;
         if (studentType !== undefined) user.studentType = studentType;
+        if (parentType !== undefined) user.parentType = parentType;
         if (academicType !== undefined) user.academicType = academicType;
         if (universityField !== undefined) user.universityField = universityField;
         if (interests !== undefined) user.interests = interests;
@@ -195,7 +210,8 @@ router.put('/profile', authenticateToken, async (req, res) => {
             message: 'Profile updated successfully',
             profile: {
                 id: user.id, name: user.name, phone: user.phone,
-                nationality: user.nationality, studentType: user.studentType,
+                nationality: user.nationality, profileType: user.profileType, educationLevel: user.educationLevel,
+                studentType: user.studentType, parentType: user.parentType,
                 academicType: user.academicType, universityField: user.universityField,
                 interests: user.interests, skills: user.skills, grades: user.grades,
             }

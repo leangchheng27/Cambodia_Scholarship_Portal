@@ -6,6 +6,7 @@ import {
   InternshipEligibility,
   InternshipFieldOfStudy,
 } from '../../models/index.js';
+import { getUniversityInternshipRecommendations } from '../../ai/utils/universityMatcher.js';
 
 const internshipController = {
   // Get all internships
@@ -79,6 +80,51 @@ const internshipController = {
       res.status(500).json({ error: error.message });
     }
   },
+
+  // Get internship recommendations for a user based on field of study
+  async getRecommendations(req, res) {
+    try {
+      const { userField, limit = 10 } = req.body;
+
+      if (!userField) {
+        return res.status(400).json({
+          success: false,
+          error: 'userField is required'
+        });
+      }
+
+      // Get all internships (includes ai_metadata JSON field automatically)
+      const internships = await Internship.findAll();
+
+      console.log(`🎯 [Backend] Getting internship recommendations for field: ${userField}`);
+      console.log(`📊 [Backend] Total internships available: ${internships.length}`);
+
+      // Get recommendations using the matcher (uses ai_metadata.fieldCategories)
+      const recommendations = getUniversityInternshipRecommendations(
+        internships,
+        userField,
+        null, // userGPA (optional)
+        limit
+      );
+
+      console.log(`✅ [Backend] Found ${recommendations.length} matching internships`);
+
+      return res.status(200).json({
+        success: true,
+        recommendations: recommendations || [],
+        total: recommendations.length,
+        userField: userField
+      });
+
+    } catch (error) {
+      console.error('Error getting internship recommendations:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Internal server error while getting recommendations',
+        details: error.message
+      });
+    }
+  }
 };
 
 export default internshipController;

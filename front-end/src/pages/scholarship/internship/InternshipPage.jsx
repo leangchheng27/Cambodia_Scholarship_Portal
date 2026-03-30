@@ -4,7 +4,7 @@ import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
 import PosterCard from '../../../components/PosterCard/PosterCard.jsx';
 import { getInternships } from '../../../api/internshipApi.js';
-import { getCustomModelRecommendations, getScholarshipsByMajorFields } from '../../../api/recommendationApi.js';
+import { getCustomModelRecommendations, getScholarshipsByMajorFields, getInternshipRecommendations } from '../../../api/recommendationApi.js';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import LoadingText from '../../../components/ui/LoadingText/LoadingText.jsx';
 import './InternshipPage.css';
@@ -71,18 +71,25 @@ export default function InternshipPage() {
         if (studentType === 'college' && effectiveProfile.universityField) {
           console.log(`🎓 University student with field: ${effectiveProfile.universityField}`);
           
-          // Match internships by field of study - use InternshipFieldOfStudy plural
-          const fieldMatches = data.filter(internship => {
-            const fields = internship.InternshipFieldOfStudies || internship.InternshipFieldOfStudy || [];
-            return fields.some(f => f.field_name === effectiveProfile.universityField);
-          });
-          
-          setRecommendedInternships(fieldMatches);
-          setRecommendationsAvailable(fieldMatches.length > 0);
-          if (fieldMatches.length > 0) {
-            setViewMode('recommended');
+          try {
+            // Get AI-matched recommendations based on field
+            const recommendationResult = await getInternshipRecommendations(effectiveProfile.universityField, 10);
+            
+            if (recommendationResult.success && recommendationResult.recommendations?.length > 0) {
+              setRecommendedInternships(recommendationResult.recommendations);
+              setRecommendationsAvailable(true);
+              setViewMode('recommended');
+              console.log(`✅ Found ${recommendationResult.recommendations.length} recommended internships for ${effectiveProfile.universityField}`);
+            } else {
+              console.log(`ℹ️ No internship recommendations found for ${effectiveProfile.universityField}`);
+              setRecommendedInternships([]);
+              setRecommendationsAvailable(false);
+            }
+          } catch (recommendError) {
+            console.error('Error getting internship recommendations:', recommendError);
+            setRecommendedInternships([]);
+            setRecommendationsAvailable(false);
           }
-          console.log(`✅ Found ${fieldMatches.length} internships matching ${effectiveProfile.universityField}`);
         }
         // Case 2: High school students with grades
         else if ((studentType === 'science' || studentType === 'society') && effectiveProfile.grades) {

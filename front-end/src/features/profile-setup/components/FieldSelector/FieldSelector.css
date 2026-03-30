@@ -18,7 +18,7 @@
   width: 100%;
   padding: 14px 20px;
   font-size: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid #cbd5e1;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.95);
   color: #333;
@@ -34,15 +34,16 @@
 }
 
 .field-select:hover {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: #2bb7df;
   background: white;
+  box-shadow: 0 2px 8px rgba(43, 183, 223, 0.15);
 }
 
 .field-select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #2bb7df;
   background: white;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(43, 183, 223, 0.2);
 }
 
 .field-helper-text {
