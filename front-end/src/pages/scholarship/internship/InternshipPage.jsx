@@ -97,7 +97,7 @@ export default function InternshipPage() {
               strongSubjects: Object.keys(effectiveProfile.grades).filter(
                 subject => effectiveProfile.grades[subject] === 'A' || effectiveProfile.grades[subject] === 'B'
               )
-            });
+            }, data);
 
             if (recommendationResult.success && recommendationResult.data) {
               const recommendations = recommendationResult.data;

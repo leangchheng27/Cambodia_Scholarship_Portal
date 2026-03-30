@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import ProfileSetupLayout from '../../features/profile-setup/Layout/ProfileSetupLayout';
 import ProfileProgressIndicator from '../../features/profile-setup/components/ProfileProgressIndicator/ProfileProgressIndicator';
 import ProfileTypeSelector from '../../features/profile-setup/components/ProfileTypeSelector/ProfileTypeSelector';
@@ -6,11 +6,11 @@ import AcademicTypeSelector from '../../features/profile-setup/components/Academ
 import GradeEntryForm from '../../features/profile-setup/components/GradeEntryForm/GradeEntryForm';
 import FieldSelector from '../../features/profile-setup/components/FieldSelector/FieldSelector';
 import ProfileSummary from '../../features/profile-setup/components/ProfileSummary/ProfileSummary';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import './ProfileSetupPage.css';
 
 const ProfileSetupPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [profileType, setProfileType] = useState('');
   const [studentType, setStudentType] = useState('');
