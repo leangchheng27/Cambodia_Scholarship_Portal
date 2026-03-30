@@ -144,7 +144,7 @@ export default function Header()  {
                         <Link to="/contact">Contact</Link>
                     </div>
                     <div className="language-selector">
-                        <span>🌐 KHMER</span>
+                        <span>🌐 ENGLISH</span>
                     </div>
                 </div>
             </div>

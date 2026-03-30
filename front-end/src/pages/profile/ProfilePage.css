@@ -2,25 +2,22 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: transparent;
+  background: #f8f9fa;
 }
 
 .profile-content {
   flex: 1;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 200px 20px 40px 20px;
   width: 100%;
+  padding: 122px 32px 0 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-bottom: 48px;
   position: relative;
   z-index: 5;
 }
@@ -28,50 +25,54 @@
 .profile-header h1 {
   font-size: 48px;
   font-weight: 700;
-  color: #000;
+  color: #111827;
   margin: 0;
 }
 
 .logout-btn {
-  background-color: #718096;
+  background: #374151;
   color: #fff;
   border: none;
   padding: 12px 32px;
-  border-radius: 25px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-  z-index: 10;
+  transition: all 0.2s;
 }
 
 .logout-btn:hover {
-  background: #333;
+  background: #1f2937;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.profile-main {
-  max-width: 800px;
-  margin: 0 auto;
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
 }
 
-/* User Profile Section */
-.user-profile-section {
+/* User Profile Card */
+.user-profile-card {
   display: flex;
   gap: 24px;
-  align-items: center;
-  padding-bottom: 32px;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 32px;
+  align-items: flex-start;
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .user-avatar {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  border: 3px solid #e5e7eb;
 }
 
 .user-avatar img {
@@ -83,333 +84,243 @@
 .avatar-placeholder {
   width: 100%;
   height: 100%;
-  background-color: #718096;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 700;
   color: #fff;
 }
 
 .user-info {
   flex: 1;
+  padding-top: 6px;
 }
 
 .user-info h2 {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
-  color: #000;
-  margin: 0 0 8px 0;
+  color: #111827;
+  margin: 0 0 6px 0;
 }
 
-.user-email {
-  font-size: 16px;
-  color: #6b7280;
-  margin: 0 0 16px 0;
-}
-
-.edit-profile-btn {
-  background-color: #718096;
-  color: #fff;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 10px;
+.user-role {
   font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s;
-}
-
-.edit-profile-btn:hover {
-  background: #333;
-  transform: translateY(-2px);
-}
-
-.edit-icon {
-  font-size: 16px;
-}
-
-/* Action Buttons */
-.action-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.action-btn {
-  background: #d1d5db;
-  border: none;
-  padding: 20px 24px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.action-btn:hover {
-  background: #9ca3af;
-  transform: translateY(-2px);
-}
-
-.btn-icon {
-  font-size: 24px;
-}
-
-.action-btn span:nth-child(2) {
-  flex: 1;
-}
-
-.arrow {
-  font-size: 20px;
-  font-weight: 400;
-}
-
-/* Info Detail Section */
-.info-detail-section {
-  margin-bottom: 40px;
-}
-
-.info-detail-section h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  margin: 0 0 24px 0;
-}
-
-.info-item {
-  display: flex;
-  gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.info-item:last-child {
-  border-bottom: none;
-}
-
-.info-label {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  min-width: 120px;
-}
-
-.info-value {
-  font-size: 16px;
   color: #6b7280;
+  margin: 0 0 4px 0;
 }
 
-/* Academic Profile Section */
-.academic-section {
-  margin-top: 32px;
-  padding-top: 32px;
-  border-top: 2px solid #e5e7eb;
+.user-location {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
 }
 
-.academic-section h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  margin: 0 0 20px 0;
-}
-
-.academic-section h4 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #374151;
-  margin: 20px 0 12px 0;
-}
-
-.gpa-badge {
-  background-color: #718096;
-  color: white;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 18px;
-  display: inline-block;
-}
-
-.strong-subject-tag {
-  background-color: #718096;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.grades-summary {
-  margin-top: 20px;
-  background: #f9fafb;
-  padding: 20px;
-  border-radius: 12px;
-}
-
-.grades-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.grade-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 12px 16px;
+/* Profile Sections */
+.profile-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
+  padding: 32px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.grade-item .subject {
-  font-weight: 500;
-  color: #374151;
-  font-size: 14px;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
 }
 
-.grade-item .grade {
-  font-size: 16px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 12px;
-  min-width: 40px;
-  text-align: center;
-}
-
-/* Grade Color Coding */
-.grade-A {
-  background: red;
-  color: white;
-}
-
-.grade-B {
-  background: palevioletred;
-  color: white;
-}
-
-.grade-C {
-  background: brown;
-  color: white;
-}
-
-.grade-D {
-  background: green;
-  color: white;
-}
-
-.grade-E {
-  background: lightskyblue;
-  color: white;
-}
-
-.grade-F {
-  background: black;
-  color: white;
-}
-
-/* Empty Academic State */
-.no-academic-data {
-  margin-top: 16px;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-radius: 12px;
-  border: 2px dashed #3a424f;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 16px;
-}
-
-.empty-state h4 {
+.section-header h3 {
   font-size: 20px;
   font-weight: 700;
-  color: #3a424f;
-  margin: 0 0 12px 0;
+  color: #111827;
+  margin: 0;
 }
 
-.empty-state p {
-  font-size: 15px;
-  color: #374151;
-  margin: 0 0 24px 0;
-  line-height: 1.6;
-}
-
-.add-grades-btn {
-  background: #3a424f;
+.edit-btn {
+  background: #6b7280;
   color: white;
   border: none;
-  padding: 12px 28px;
-  border-radius: 25px;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  transition: all 0.2s;
 }
 
-.add-grades-btn:hover {
-  background: #252930;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+.edit-btn:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
-.add-grades-btn .btn-icon {
-  font-size: 18px;
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.form-field p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  word-break: break-word;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Grades Display */
+.grades-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.grade-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.grade-subject {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.grade-value {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.grade-A { background: #f3f4f6 !important; color: #4b5563 !important; }
+.grade-B { background: #f3f4f6 !important; color: #4b5563 !important; }
+.grade-C { background: #f3f4f6 !important; color: #4b5563 !important; }
+.grade-D { background: #f3f4f6 !important; color: #4b5563 !important; }
+.grade-E { background: #f3f4f6 !important; color: #4b5563 !important; }
+.grade-F { background: #f3f4f6 !important; color: #4b5563 !important; }
+
+.form-field .empty-state {
+  font-size: 14px;
+  color: #9ca3af;
+  font-weight: 400;
+  margin: 0;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .profile-content {
-    padding: 150px 16px 32px 16px;
-  }
-
-  .profile-header {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
+    padding: 100px 20px 40px 20px;
   }
 
   .profile-header h1 {
-    font-size: 36px;
+    font-size: 32px;
   }
 
-  .profile-card {
+  .user-profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding: 24px;
   }
 
-  .user-profile-section {
-    flex-direction: column;
-    text-align: center;
+  .user-avatar {
+    width: 80px;
+    height: 80px;
   }
 
-  .action-buttons {
+  .avatar-placeholder {
+    font-size: 32px;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .profile-section {
+    padding: 24px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .edit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-content {
+    padding: 100px 16px 20px 16px;
+  }
+
+  .profile-header h1 {
+    font-size: 28px;
+  }
+
+  .logout-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .form-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .info-item {
-    flex-direction: column;
-    gap: 8px;
+  .section-header h3 {
+    font-size: 18px;
   }
 
-  .info-label {
-    min-width: auto;
+  .profile-section {
+    padding: 16px;
+  }
+
+  .user-profile-card {
+    padding: 16px;
   }
 }

@@ -19,23 +19,20 @@ const MajorRecommendations = ({ userProfile }) => {
       try {
         const saved = localStorage.getItem('majorRecommendations');
         const savedGradesStr = localStorage.getItem('majorRecommendationGrades');
-        
+
         if (saved && savedGradesStr) {
           const parsedSaved = JSON.parse(saved);
           const parsedGrades = JSON.parse(savedGradesStr);
-          
-          // Check if current grades match saved grades
+
           const currentGradesStr = JSON.stringify(userProfile?.grades || {});
           const savedGradesStr2 = JSON.stringify(parsedGrades);
-          
+
           if (currentGradesStr === savedGradesStr2) {
-            // Grades haven't changed, load saved recommendations
             setRecommendedMajors(parsedSaved);
             setSavedGrades(parsedGrades);
             setShowResults(true);
             console.log('✅ Loaded saved major recommendations');
           } else {
-            // Grades have changed, clear recommendations
             localStorage.removeItem('majorRecommendations');
             localStorage.removeItem('majorRecommendationGrades');
             setRecommendedMajors([]);
@@ -85,7 +82,6 @@ const MajorRecommendations = ({ userProfile }) => {
         return;
       }
 
-      // Use academicType as stream (science/social)
       const stream = userProfile.academicType || userProfile.stream || 'science';
 
       const result = await getCustomModelRecommendations(
@@ -101,7 +97,6 @@ const MajorRecommendations = ({ userProfile }) => {
         5
       );
 
-      // Sort by matchScore descending (model output) and take top 5
       const top5 = (result.recommendations || [])
         .sort((a, b) => b.matchScore - a.matchScore)
         .slice(0, 5);
@@ -111,7 +106,6 @@ const MajorRecommendations = ({ userProfile }) => {
       setShowResults(true);
       setLoading(false);
 
-      // Save to localStorage
       try {
         localStorage.setItem('majorRecommendations', JSON.stringify(top5));
         localStorage.setItem('majorRecommendationGrades', JSON.stringify(userProfile.grades));
@@ -153,10 +147,10 @@ const MajorRecommendations = ({ userProfile }) => {
   return (
     <div className="major-recommendations-section">
       <div className="recommendations-header">
-        <h2 className="recommendations-title">🎓 AI-Powered Major Recommendations</h2>
+        <h2 className="recommendations-title">AI-Powered Major Recommendations</h2>
         <p className="recommendations-subtitle">
           {showResults
-            ? savedGrades ? '✅ Saved - Based on your grades and academic profile' : 'Based on your grades and academic profile'
+            ? savedGrades ? 'Saved - Based on your grades and academic profile' : 'Based on your grades and academic profile'
             : 'Click below to get personalized major recommendations'}
         </p>
       </div>
@@ -179,7 +173,7 @@ const MajorRecommendations = ({ userProfile }) => {
                 Loading majors...
               </>
             ) : (
-              '✨ Recommend Majors'
+              'Recommend Majors'
             )}
           </button>
           {(!userProfile?.grades || Object.keys(userProfile.grades).length === 0) && (
@@ -188,20 +182,11 @@ const MajorRecommendations = ({ userProfile }) => {
         </div>
       )}
 
-      {showResults && recommendedMajors.length > 0 && (
-        <div className="recommendation-status">
-          <p className="status-text">💾 Recommendations saved - Update your grades to get new ones</p>
-        </div>
-      )}
-
       {error && (
         <div className="error-message">
           <span className="error-icon">⚠️</span>
           <p>{error}</p>
-          <button
-            className="retry-button"
-            onClick={fetchMajorRecommendations}
-          >
+          <button className="retry-button" onClick={fetchMajorRecommendations}>
             Try Again
           </button>
         </div>
@@ -209,7 +194,6 @@ const MajorRecommendations = ({ userProfile }) => {
 
       {loading && (
         <div className="loading-state">
-          <div className="loading-spinner"></div>
           <LoadingText text="Analyzing your grades and matching with majors using AI..." />
         </div>
       )}
@@ -217,7 +201,7 @@ const MajorRecommendations = ({ userProfile }) => {
       {showResults && recommendedMajors.length > 0 && (
         <div className="recommendations-list">
           {recommendedMajors.map((major, index) => (
-            <div key={major.id || index} className={`recommendation-card rank-${index + 1}`}>
+            <div key={major.id || index} className="recommendation-card">
               <div className="rank-badge">{index + 1}</div>
               <div className="card-content">
                 <h3 className="card-title">{major.title || major.name}</h3>
@@ -226,10 +210,7 @@ const MajorRecommendations = ({ userProfile }) => {
             </div>
           ))}
 
-          <button
-            className="refresh-button"
-            onClick={clearRecommendations}
-          >
+          <button className="refresh-button" onClick={clearRecommendations}>
             🗑️ Clear Recommendations
           </button>
         </div>

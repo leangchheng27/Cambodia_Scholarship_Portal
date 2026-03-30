@@ -1,5 +1,5 @@
 .university-list-section {
-  margin-top: 32px;
+  margin-top: 48px;
 }
 
 .university-list-container {
@@ -8,12 +8,18 @@
   border: 1px solid rgba(31, 41, 55, 0.12);
   box-shadow: 0 10px 24px rgba(31, 41, 55, 0.1);
   overflow: hidden;
+  margin-top: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
 }
 
 .university-list-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 16px;
+  display: table;
 }
 
 .university-list-table th {
@@ -44,7 +50,7 @@
 
 .university-list-search .search-container {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 }
 
 .university-list-search .search-input {
@@ -59,4 +65,33 @@
 
 .university-list-search .search-input:focus {
   border-color: #3b82f6;
+}
+
+.university-save-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.university-save-btn img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  filter: invert(30%) sepia(15%);
+}
+
+.university-save-btn:hover img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.university-save-btn.saved img {
+  opacity: 1;
+  filter: sepia(100%) saturate(5200%) hue-rotate(338deg) brightness(0.96) contrast(1.08);
 }

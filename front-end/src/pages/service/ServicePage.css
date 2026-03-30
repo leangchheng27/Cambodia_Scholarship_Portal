@@ -13,7 +13,7 @@
   background: linear-gradient(180deg, #f9fafb 0%, #eef2f7 52%, #e5e7eb 100%);
   color: var(--service-ink);
   min-height: 100vh;
-  padding-top: 210px;
+  padding-top: 50px;
 }
 
 .service-hero {

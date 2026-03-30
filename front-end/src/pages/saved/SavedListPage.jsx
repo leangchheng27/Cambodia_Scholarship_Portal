@@ -89,7 +89,9 @@ export default function SavedListPage() {
           </div>
 
           {loading ? (
-            <LoadingText text="Loading saved items..." />
+            <div className="saved-loading-container">
+              <LoadingText text="Loading saved items..." />
+            </div>
           ) : savedItems.length === 0 ? (
             <div className="saved-empty">
               <h2>No saved items yet</h2>

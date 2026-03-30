@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../layouts/Header/header.jsx';
 import Footer from '../../layouts/Footer/footer.jsx';
+import AIRecommendationBanner from '../../features/home/components/AIRecommendationBanner/AIRecommendationBanner.jsx';
 import './HomePage.css';
 
 const hubCards = [
@@ -158,6 +159,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <AIRecommendationBanner />
 
         <section className="home-portal-grid-shell">
           <div className="home-portal-grid">

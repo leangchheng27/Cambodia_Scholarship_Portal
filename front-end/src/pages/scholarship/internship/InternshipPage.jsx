@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
@@ -173,7 +174,7 @@ export default function InternshipPage() {
               </p>
               <div className="resource-hero-actions">
                 <a className="resource-cta resource-cta-primary" href="#resource-posters">Browse Posters</a>
-                <a className="resource-cta resource-cta-secondary" href="#resource-features">View Highlights</a>
+                <a className="resource-cta resource-cta-secondary" href="#resource-features">Get AI Recommendations</a>
               </div>
             </section>
           </div>
@@ -217,7 +218,12 @@ export default function InternshipPage() {
           </div>
 
           {!recommendationsAvailable && (
-            <p className="list-mode-hint">Complete your profile to see internship recommendations matched to your interests and field of study.</p>
+            <div className="list-mode-hint-wrapper">
+              <p className="list-mode-hint">
+                <span>Add your grades to unlock AI-powered internship recommendations</span>
+                <Link to="/profile" className="list-mode-hint-link">Get AI Recommendations Now</Link>
+              </p>
+            </div>
           )}
 
           <div className="scholarship-grid">

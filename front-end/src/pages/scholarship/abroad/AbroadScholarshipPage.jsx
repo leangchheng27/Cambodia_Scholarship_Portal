@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../../../layouts/Header/header.jsx';
 import Footer from '../../../layouts/Footer/footer.jsx';
 import HeroBanner from '../../../features/home/components/HeroBanner/HeroBanner.jsx';
@@ -208,7 +209,12 @@ export default function AbroadScholarshipPage() {
           </div>
 
           {!recommendationsAvailable && (
-            <p className="list-mode-hint">Recommendation mode unlocks when student profile and grades are available.</p>
+            <div className="list-mode-hint-wrapper">
+              <p className="list-mode-hint">
+                <span>Add your grades to unlock AI-powered scholarship recommendations</span>
+                <Link to="/profile" className="list-mode-hint-link">Get AI Recommendations Now</Link>
+              </p>
+            </div>
           )}
 
           <div className="scholarship-grid">

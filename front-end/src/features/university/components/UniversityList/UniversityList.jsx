@@ -19,26 +19,14 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [savedIds, setSavedIds] = useState(new Set());
+  const [loadingSaved, setLoadingSaved] = useState(true);
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const loadSaved = async () => {
-      if (!user) return;
-      try {
-        const items = await getSavedItems();
-        setSavedIds(new Set(items.map((item) => item.itemId)));
-      } catch (err) {
-        console.error("Failed to load saved items:", err);
-      }
-    };
-    loadSaved();
-  }, [user]);
 
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
         setLoading(true);
-        const data = await getUniversities(search); // ✅ pass search
+        const data = await getUniversities(search);
         setUniversities(data);
         setError(null);
       } catch (err) {
@@ -51,7 +39,26 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
 
     const debounceTimer = setTimeout(() => fetchUniversities(), 300);
     return () => clearTimeout(debounceTimer);
-  }, [search]); // ✅ re-fetch on search change
+  }, [search]);
+
+  useEffect(() => {
+    const loadSaved = async () => {
+      if (!user) {
+        setSavedIds(new Set());
+        setLoadingSaved(false);
+        return;
+      }
+      try {
+        const items = await getSavedItems();
+        setSavedIds(new Set(items.map((item) => item.itemId)));
+      } catch (err) {
+        console.error("Failed to load saved items:", err);
+      } finally {
+        setLoadingSaved(false);
+      }
+    };
+    loadSaved();
+  }, [user]);
 
   const filtered = selectedProvince
     ? universities.filter(
@@ -127,7 +134,7 @@ const UniversityList = ({ onUniversityClick, selectedProvince }) => {
         placeholder="Search"
       />
       <div className="university-list-container">
-        {loading ? (
+        {loading || loadingSaved ? (
           <LoadingText text="Loading universities..." />
         ) : error ? (
           <p className="error">{error}</p>

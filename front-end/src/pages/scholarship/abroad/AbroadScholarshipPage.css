@@ -158,6 +158,70 @@
   font-size: 14px;
 }
 
+.list-mode-hint-wrapper {
+  margin: 0 0 22px;
+}
+
+.list-mode-hint-wrapper .list-mode-hint {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.list-mode-hint-wrapper .list-mode-hint span {
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.list-mode-hint-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #374151;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-mode-hint-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.list-mode-hint-link:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.list-mode-hint-link:hover {
+  background: #1f2937;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.25);
+}
+
+.list-mode-hint-link:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .list-empty-message {
   margin: 10px 0 26px;
   color: #6b7280;
