@@ -118,7 +118,10 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await AuthUser.findOne({ where: { email } });
+        const user = await AuthUser.findOne({ 
+            where: { email },
+            attributes: ['id', 'email', 'name', 'picture', 'password', 'isVerified', 'phone', 'nationality', 'role']
+        });
         if (!user) return res.status(404).json({ error: 'User not found' });
 
         if (!user.password) {
@@ -146,15 +149,6 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 picture: user.picture,
                 role: user.role || 'user',
-                profileType: user.profileType || null,
-                educationLevel: user.educationLevel || null,
-                studentType: user.studentType || null,
-                parentType: user.parentType || null,
-                academicType: user.academicType || null,
-                universityField: user.universityField || null,
-                grades: user.grades || null,
-                interests: user.interests || null,
-                skills: user.skills || null,
                 isVerified: user.isVerified,
                 nationality: user.nationality || null,
                 phone: user.phone || null,
@@ -172,12 +166,13 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await AuthUser.findByPk(req.user.id, {
-            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'role', 'profileType', 'educationLevel', 'studentType', 'parentType', 'academicType', 'universityField', 'interests', 'skills', 'grades']
+            attributes: ['id', 'email', 'name', 'picture', 'isVerified', 'phone', 'nationality', 'role']
         });
         if (!user) return res.status(404).json({ error: 'User not found' });
         res.json(user);
     } catch (err) {
-        res.status(500).json({ error: 'Failed to get user' });
+        console.error('Error fetching user:', err);
+        res.status(500).json({ error: 'Failed to get user', details: err.message });
     }
 });
 
@@ -190,16 +185,11 @@ router.put('/profile', authenticateToken, async (req, res) => {
         const user = await AuthUser.findByPk(req.user.id);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        const { name, phone, nationality, profileType, educationLevel, studentType, parentType, academicType, universityField, interests, skills, grades } = req.body;
+        const { name, phone, nationality, interests, skills, grades } = req.body;
+        
         if (name !== undefined) user.name = name;
         if (phone !== undefined) user.phone = phone;
         if (nationality !== undefined) user.nationality = nationality;
-        if (profileType !== undefined) user.profileType = profileType;
-        if (educationLevel !== undefined) user.educationLevel = educationLevel;
-        if (studentType !== undefined) user.studentType = studentType;
-        if (parentType !== undefined) user.parentType = parentType;
-        if (academicType !== undefined) user.academicType = academicType;
-        if (universityField !== undefined) user.universityField = universityField;
         if (interests !== undefined) user.interests = interests;
         if (skills !== undefined) user.skills = skills;
         if (grades !== undefined) user.grades = grades;
@@ -209,14 +199,17 @@ router.put('/profile', authenticateToken, async (req, res) => {
         res.json({
             message: 'Profile updated successfully',
             profile: {
-                id: user.id, name: user.name, phone: user.phone,
-                nationality: user.nationality, profileType: user.profileType, educationLevel: user.educationLevel,
-                studentType: user.studentType, parentType: user.parentType,
-                academicType: user.academicType, universityField: user.universityField,
-                interests: user.interests, skills: user.skills, grades: user.grades,
+                id: user.id, 
+                name: user.name, 
+                phone: user.phone,
+                nationality: user.nationality,
+                interests: user.interests, 
+                skills: user.skills, 
+                grades: user.grades,
             }
         });
     } catch (err) {
+        console.error('Error updating profile:', err);
         res.status(500).json({ error: 'Failed to update profile', details: err.message });
     }
 });

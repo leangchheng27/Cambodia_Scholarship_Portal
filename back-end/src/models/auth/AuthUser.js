@@ -57,18 +57,19 @@ const AuthUserModel = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        parentType: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        academicType: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        universityField: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
+        // TODO: These fields need to be added to database schema and then uncommented
+        // parentType: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        // },
+        // academicType: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        // },
+        // universityField: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        // },
         interests: {
             type: DataTypes.JSON,
             allowNull: true,
@@ -81,16 +82,16 @@ const AuthUserModel = (sequelize) => {
             type: DataTypes.JSON,
             allowNull: true,
         },
-        profileType: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            comment: 'student, parent, staff, admin',
-        },
-        educationLevel: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            comment: 'High School Student, College/University Student, Graduate Student, Other',
-        },
+        // profileType: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        //     comment: 'student, parent, staff, admin',
+        // },
+        // educationLevel: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        //     comment: 'High School Student, College/University Student, Graduate Student, Other',
+        // },
     }, {
         tableName: 'users',
     });
